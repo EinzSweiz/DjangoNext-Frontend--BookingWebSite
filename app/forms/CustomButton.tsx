@@ -11,7 +11,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 }) => {
     return (
         <div
-            onClick={onClick} // Use onClick from props
+            onClick={onClick}
             className={`text-center w-full py-4 bg-airbnb hover:bg-airbnb-dark text-white rounded-xl transition cursor-pointer ${className}`}
         >
             {label}
