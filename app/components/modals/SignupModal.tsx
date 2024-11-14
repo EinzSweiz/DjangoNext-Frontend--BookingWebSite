@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import useSignupModal from "@/app/hooks/useSignupModal"
 import CustomButton from "@/app/forms/CustomButton"
 import apiService from "@/app/services/apiService"
+import { handleLogin } from "@/app/lib/actions"
 
 const SignupModal = () => {
     const router = useRouter()
@@ -28,7 +29,8 @@ const SignupModal = () => {
             const response = await apiService.post('/api/auth/register/', JSON.stringify(formData))
 
             if (response.access) {
-                // Handle successful signup
+                handleLogin(response.user.id, response.access, response.refresh)
+                
                 signupModal.close()
                 router.push('/')
             } else {
