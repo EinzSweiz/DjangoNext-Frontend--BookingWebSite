@@ -4,6 +4,7 @@ import MenuLink from "./MenuLink"
 import useLoginModal from "@/app/hooks/useLoginModal"
 import useSignupModal from "@/app/hooks/useSignupModal"
 import LogoutButton from "../LogoutButton"
+import { useRouter } from "next/navigation"
 
 interface UserNavProps {
     userId?: string | null
@@ -15,6 +16,7 @@ const UserNav: React.FC<UserNavProps> = ({
     const loginModal = useLoginModal()
     const signupModal = useSignupModal()
     const [isOpen, setIsOpen] = useState(false)
+    const router = useRouter()
     return (
         <div className="p-2 relative inline-block border rounded-full">
             <button className="flex items-center" onClick={() => setIsOpen(!isOpen)}>
@@ -29,17 +31,25 @@ const UserNav: React.FC<UserNavProps> = ({
                 <div className="w-[220px] absolute top-[40px] right-0 bg-white border rounded-xl shadow-md flex flex-col cursor-pointer">
                     {
                         userId ? (
-                            <LogoutButton />
+                            <>
+                            <MenuLink label="My Properties" onClick={() => {
+                                setIsOpen(false)
+                                router.push('/myproperties')
+                                }} />
+                            <MenuLink label="My reservations" onClick={() => {
+                                setIsOpen(false)
+                                router.push('/myreservations')
+                                }} />
+                            <LogoutButton closeMenu={() => setIsOpen(false)}/>
+                            </>
 
                         ) : (
                     <>
                     <MenuLink label="Login" onClick={() => {
-                        console.log('Clicked')
                         setIsOpen(false)
                         loginModal.open()
                     }}/>
                     <MenuLink label="Sign up" onClick={() => {
-                        console.log('Clicked')
                         setIsOpen(false)
                         signupModal.open() 
                     }}/>

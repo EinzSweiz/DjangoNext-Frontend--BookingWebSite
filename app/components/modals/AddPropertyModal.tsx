@@ -37,7 +37,6 @@ const AddPropertyModal = () => {
     }
 
     const submitForm = async () => {
-        console.log('Submit form')
         if (dataCategory &&
             dataTitle &&
             dataDescription &&

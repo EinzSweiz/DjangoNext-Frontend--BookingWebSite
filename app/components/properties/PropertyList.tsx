@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import PropertyListItem from "./PropertyListItem"
 import { json } from "stream/consumers"
 import apiService from "@/app/services/apiService"
+import { url } from "inspector"
 
 export type PropertyType = {
     id: string
@@ -10,10 +11,21 @@ export type PropertyType = {
     price_per_night: number
     image_url: string
 }
-const PropertyList = () => {
+
+interface PropertyListProps {
+    landlord_id?: string | null
+}
+
+const PropertyList: React.FC<PropertyListProps> = ({
+    landlord_id
+}) => {
     const [properties, setProperties] = useState<PropertyType[]>([])
     const getProperties = async () => {
-        const url = '/api/properities/'
+        let url = '/api/properities/'
+        if (landlord_id) {
+            url += `?landlord_id=${landlord_id}`
+        }
+
         const tmpProperties = await apiService.get(url)
         setProperties(tmpProperties.data)
     }

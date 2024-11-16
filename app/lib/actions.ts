@@ -28,9 +28,9 @@ export async function handleLogin(userId: string, accessToken: string, refreshTo
 }
 export async function resetAuthCookies() {
     const cookieStore = await cookies(); // Await cookies() call
-    cookieStore.set('session_userid', '', { maxAge: 0 }); // Expire the cookie immediately
-    cookieStore.set('session_access_token', '', { maxAge: 0 });
-    cookieStore.set('session_refresh_token', '', { maxAge: 0 });
+    cookieStore.set('session_userid', ''); // Expire the cookie immediately
+    cookieStore.set('session_access_token', '');
+    cookieStore.set('session_refresh_token', '');
 }
 
 export async function getUserId() {

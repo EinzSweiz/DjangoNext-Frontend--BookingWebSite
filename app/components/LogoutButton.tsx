@@ -1,21 +1,34 @@
-'use client'
+'use client';
 
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation';
+import MenuLink from './navbar/MenuLink';
+import { resetAuthCookies } from '../lib/actions';
+import useLoginModal from '../hooks/useLoginModal';
 
-import MenuLink from "./navbar/MenuLink"
-import { resetAuthCookies } from "../lib/actions"
 
+interface LogoutButtonProps {
+    closeMenu: () => void
+}
 
-const LogoutButton: React.FC = () => {
-    const router = useRouter()
+const LogoutButton: React.FC<LogoutButtonProps> = ({
+    closeMenu
+}) => {
+    const router = useRouter();
+    const loginModal = useLoginModal();
+
     const submitLogout = async () => {
-        resetAuthCookies()
-        router.push('/')
-    }
+        resetAuthCookies(); // Reset authentication cookies
+        loginModal.close();
+        closeMenu()
+        router.push('/');   // Redirect to the home page
+    };
+
     return (
         <MenuLink 
-        label="Logout"
-        onClick={submitLogout} />
-    )
-}
-export default LogoutButton
+            label="Logout" 
+            onClick={submitLogout} 
+        />
+    );
+};
+
+export default LogoutButton;
