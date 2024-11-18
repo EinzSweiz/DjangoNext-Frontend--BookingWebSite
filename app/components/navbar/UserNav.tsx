@@ -32,6 +32,10 @@ const UserNav: React.FC<UserNavProps> = ({
                     {
                         userId ? (
                             <>
+                             <MenuLink label="Inbox" onClick={() => {
+                                setIsOpen(false)
+                                router.push('/inbox')
+                                }} />
                             <MenuLink label="My Properties" onClick={() => {
                                 setIsOpen(false)
                                 router.push('/myproperties')
@@ -39,6 +43,10 @@ const UserNav: React.FC<UserNavProps> = ({
                             <MenuLink label="My reservations" onClick={() => {
                                 setIsOpen(false)
                                 router.push('/myreservations')
+                                }} />
+                            <MenuLink label="My favorites" onClick={() => {
+                                setIsOpen(false)
+                                router.push('/myfavorites')
                                 }} />
                             <LogoutButton closeMenu={() => setIsOpen(false)}/>
                             </>
