@@ -1,32 +1,34 @@
 import { create } from "zustand";
 
 export type SearchQuery = {
-    country: string
-    checkin: Date | null
-    checkout: Date | null
+    country: string | undefined
+    checkin: Date | undefined
+    checkout: Date | undefined
     guests: number
     bathrooms: number
     bedrooms: number
     category: string
 }
 
-interface SerachModalStore {
+interface SearchModalStore {
     isOpen: boolean
-    open: () => void
+    open: (step: string) => void
     close: () => void
+    step: string
     query: SearchQuery
     setQuery: (query: SearchQuery) => void 
 }
 
 
-const useSerachModal =  create<SerachModalStore>((set) => ({
+const useSearchModal =  create<SearchModalStore>((set) => ({
     isOpen: false,
-    open: () => set({isOpen: true}),
+    open: (step) => set({isOpen: true, step:step}),
     close: () => set({isOpen: false}),
+    step: '',
     query: {
-        country: '',
-        checkin: null,
-        checkout: null,
+        country: undefined,
+        checkin: undefined,
+        checkout: undefined,
         guests: 1,
         bathrooms: 0,
         bedrooms: 0,
@@ -35,4 +37,4 @@ const useSerachModal =  create<SerachModalStore>((set) => ({
     setQuery: (query: SearchQuery) => set({query: query})
 }))
 
-export default useSerachModal
+export default useSearchModal

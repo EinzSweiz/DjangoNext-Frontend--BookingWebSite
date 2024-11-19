@@ -1,21 +1,25 @@
+'use client'
+import useSearchModal from "@/app/hooks/useSearchModal";
 const SearchFilters = () => {
+    const searchModel = useSearchModal()
     return (
-        <div className="h-[48px] lg:h-[64px] flex flex-row items-center justify-between border rounded-full">
+        <div
+        className="h-[48px] lg:h-[64px] flex flex-row items-center justify-between border rounded-full">
             <div className="hidden lg:block">
                 <div className="flex flex-row items-center justify-between">
-                    <div className="cursor-pointer w-[250px] h-[64px] px-8 flex flex-col justify-center rounded-full hover:bg-gray-100">
+                    <div onClick={() => searchModel.open('location')} className="cursor-pointer w-[250px] h-[64px] px-8 flex flex-col justify-center rounded-full hover:bg-gray-100">
                         <p className="text-xs font-semibold">Search</p>
                         <p className="text-sm">Location</p>
                     </div>
-                    <div className="cursor-pointer h-[48px] lg:h-[64px] px-8 flex flex-col justify-center rounded-full hover:bg-gray-100">
+                    <div onClick={() => searchModel.open('checkin')} className="cursor-pointer h-[48px] lg:h-[64px] px-8 flex flex-col justify-center rounded-full hover:bg-gray-100">
                         <p className="text-xs font-semibold">Check in</p>
                         <p className="text-sm">Add dates</p>
                     </div>
-                    <div className="cursor-pointer h-[48px] lg:h-[64px] px-8 flex flex-col justify-center rounded-full hover:bg-gray-100">
+                    <div onClick={() => searchModel.open('checkout')} className="cursor-pointer h-[48px] lg:h-[64px] px-8 flex flex-col justify-center rounded-full hover:bg-gray-100">
                         <p className="text-xs font-semibold">Checkout</p>
                         <p className="text-sm">Add dates</p>
                     </div>
-                    <div className="cursor-pointer h-[48px] lg:h-[64px] px-8 flex flex-col justify-center rounded-full hover:bg-gray-100">
+                    <div onClick={() => searchModel.open('details')} className="cursor-pointer h-[48px] lg:h-[64px] px-8 flex flex-col justify-center rounded-full hover:bg-gray-100">
                         <p className="text-xs font-semibold">Who</p>
                         <p className="text-sm">Add guests</p>
                     </div>
