@@ -1,76 +1,43 @@
-import ConversationDetail from "@/app/components/inbox/ConversationDetail";
+import { getUserId } from "../../lib/actions";
+import React, {useState, useEffect } from 'react';
 import apiService from "@/app/services/apiService";
-import { getAccessToken, getUserId } from "@/app/lib/actions";
+import ConversationDetail from "@/app/components/inbox/ConversationDetail";
 import { UserType } from "../page";
+import { getAccessToken } from "../../lib/actions";
 
 export type MessageType = {
     id: string;
     name: string;
     body: string;
-    conversation_id: string;
+    conversationId: string;
     sent_to: UserType;
-    created_by: UserType;
-};
+    created_by: UserType
+}
 
-type ConversationResponse = {
-    conversation: {
-        id: string;
-        users: { id: string; name: string }[];
-        modified_at: string;
-    };
-    messages: MessageType[];
-};
-
-// Directly pass `params` as part of the component props in the `app/` directory
-const ConversationPage = async ({ params }: { params: { id: string } }) => {
-    // Debugging logs
-    console.log("Params:", params);
-
-    if (!params?.id) {
-        return (
-            <main className="max-w-[2000px] mx-auto py-12 px-6">
-                <p>Conversation ID is missing.</p>
-            </main>
-        );
-    }
-
+const ConversationPage = async ({ params }: { params: {id: string }}) => {
     const userId = await getUserId();
     const token = await getAccessToken();
 
     if (!userId || !token) {
         return (
-            <main className="max-w-[2000px] mx-auto py-12 px-6">
-                <p>You need to be authorized to view this page.</p>
+            <main className="max-w-[1500px] max-auto px-6 py-12">
+                <p>You need to be authenticated...</p>
             </main>
-        );
+        )
     }
 
-    try {
-        const response = await apiService.getWithToken(`/api/chat/${params.id}`);
-        const conversation: ConversationResponse = await response.json();
+    const conversation = await apiService.get(`/api/chat/${params.id}/`)
 
-        if (!conversation.conversation || !conversation.messages) {
-            throw new Error("Incomplete conversation data.");
-        }
-
-        return (
-            <main className="max-w-[2000px] mx-auto px-6 pb-6">
-                <ConversationDetail
-                    conversation={conversation.conversation}
-                    userId={userId}
-                    token={token}
-                    messages={conversation.messages}
-                />
-            </main>
-        );
-    } catch (error) {
-        console.error("Error fetching conversation:", error);
-        return (
-            <main className="max-w-[2000px] mx-auto py-12 px-6">
-                <p>Failed to load the conversation. Please try again later.</p>
-            </main>
-        );
-    }
-};
+    return (
+        <main className="max-w-[1500px] mx-auto px-6 pb-6">
+            <ConversationDetail 
+                token={token}
+                userId={userId}
+                messages={conversation.messages}
+                conversation={conversation.conversation}
+            />
+        </main>
+    )
+}
 
 export default ConversationPage;
