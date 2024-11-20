@@ -42,7 +42,7 @@ const Categories = () => {
                     key={category}
                     onClick={() => handleCategoryClick(category)}
                     className={`pb-4 flex flex-col items-center space-y-2 border-b-2 
-                        ${selectedCategory === category ? 'border-black opacity-100' : 'border-white opacity-60'} 
+                        ${selectedCategory === category ? 'border-green-500 opacity-100' : 'border-white opacity-60'} 
                         hover:border-gray-200 hover:opacity-100 cursor-pointer`}
                 >
                     <Image

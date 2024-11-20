@@ -1,6 +1,50 @@
 'use server';
 
+import { error } from 'console';
 import { cookies } from 'next/headers';
+import { json } from 'stream/consumers';
+
+export async function handleRefresh(): Promise<string | undefined> {
+    console.log('handleRefresh');
+    const CookiesStore = await cookies();
+
+    const refreshToken = await getRefreshToken();
+
+    const token = await fetch('http://localhost:8000/api/auth/token/refresh/', {
+        method: 'POST',
+        body: JSON.stringify({
+            refresh: refreshToken,
+        }),
+        headers: {
+            Accept: 'application/json',
+            'Content-type': 'application/json',
+        },
+    })
+        .then((response) => response.json())
+        .then((json) => {
+            console.log('Response-Refresh', json);
+            if (json.access) {
+                CookiesStore.set('session_access_token', json.access, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    maxAge: 60 * 60,
+                    path: '/',
+                });
+                return json.access; // Return the token
+            } else {
+                resetAuthCookies();
+                return undefined; // Explicitly return undefined if no access token
+            }
+        })
+        .catch((error) => {
+            console.log('error:', error);
+            resetAuthCookies();
+            return undefined; // Return undefined in case of an error
+        });
+
+    return token;
+}
+
 
 export async function handleLogin(userId: string, accessToken: string, refreshToken: string) {
     const cookieStore = await cookies(); // Await cookies() call
@@ -43,5 +87,15 @@ export async function getUserId() {
 export async function getAccessToken() {
     const cookieStore = await cookies()
     let tokenAccess = cookieStore.get('session_access_token')?.value
+    
+    if (!tokenAccess) {
+        tokenAccess = await handleRefresh()
+    }
     return tokenAccess
+}
+
+export async function getRefreshToken() {
+        const cookieStore = await cookies()
+        let tokenRefresh = cookieStore.get('session_refresh_token')?.value
+        return tokenRefresh
 }

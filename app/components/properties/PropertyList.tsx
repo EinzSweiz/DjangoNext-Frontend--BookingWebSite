@@ -4,6 +4,7 @@ import PropertyListItem from "./PropertyListItem"
 import { json } from "stream/consumers"
 import apiService from "@/app/services/apiService"
 import { url } from "inspector"
+import { useSearchParams } from "next/navigation"
 import useSearchModal from "@/app/hooks/useSearchModal"
 import format from "date-fns/format"
 
@@ -24,6 +25,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
     landlord_id,
     favorites
 }) => {
+    const params = useSearchParams()
     const searchModal = useSearchModal()
     const country = searchModal.query.country
     const numGuests = searchModal.query.guests
@@ -93,7 +95,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
     }
     useEffect(() => {
         getProperties();
-    }, [category, searchModal.query])
+    }, [category, searchModal.query, params])
     return (
         <>
         {properties.map((property) => {
