@@ -21,7 +21,12 @@ type ConversationResponse = {
     messages: MessageType[];
 };
 
-const ConversationPage = async ({ params }: { params: { id: string } }) => {
+// Ensure `params` matches Next.js PageProps expectations
+interface PageProps {
+    params: { id: string };
+}
+
+const ConversationPage = async ({ params }: PageProps) => {
     // Debugging logs
     console.log("Params:", params);
 
