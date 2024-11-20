@@ -26,7 +26,7 @@ export async function handleRefresh(): Promise<string | undefined> {
             if (json.access) {
                 CookiesStore.set('session_access_token', json.access, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: false,
                     maxAge: 60 * 60,
                     path: '/',
                 });
@@ -51,21 +51,21 @@ export async function handleLogin(userId: string, accessToken: string, refreshTo
 
     cookieStore.set('session_userid', userId, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Secure cookies in production
+        secure: false,
         maxAge: 60 * 60 * 24 * 7, // One week
         path: '/',
     });
 
     cookieStore.set('session_access_token', accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Secure cookies in production
+        secure: false,
         maxAge: 60 * 60, // 60 minutes
         path: '/',
     });
 
     cookieStore.set('session_refresh_token', refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Secure cookies in production
+        secure: false,
         maxAge: 60 * 60 * 24 * 7, // One week
         path: '/',
     });
