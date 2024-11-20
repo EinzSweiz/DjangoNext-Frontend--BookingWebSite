@@ -22,10 +22,7 @@ type ConversationResponse = {
 };
 
 // Directly pass `params` as part of the component props in the `app/` directory
-const ConversationPage = async ({ params }: { params: { id: string } }) => {
-    // Debugging logs
-    console.log("Params:", params);
-
+const ConversationPage = ({ params }: { params: { id: string } }) => {
     if (!params?.id) {
         return (
             <main className="max-w-[2000px] mx-auto py-12 px-6">
@@ -34,43 +31,48 @@ const ConversationPage = async ({ params }: { params: { id: string } }) => {
         );
     }
 
-    const userId = await getUserId();
-    const token = await getAccessToken();
+    // You can keep the async functions for your API requests
+    const fetchData = async () => {
+        const userId = await getUserId();
+        const token = await getAccessToken();
 
-    if (!userId || !token) {
-        return (
-            <main className="max-w-[2000px] mx-auto py-12 px-6">
-                <p>You need to be authorized to view this page.</p>
-            </main>
-        );
-    }
-
-    try {
-        const response = await apiService.getWithToken(`/api/chat/${params.id}`);
-        const conversation: ConversationResponse = await response.json();
-
-        if (!conversation.conversation || !conversation.messages) {
-            throw new Error("Incomplete conversation data.");
+        if (!userId || !token) {
+            return (
+                <main className="max-w-[2000px] mx-auto py-12 px-6">
+                    <p>You need to be authorized to view this page.</p>
+                </main>
+            );
         }
 
-        return (
-            <main className="max-w-[2000px] mx-auto px-6 pb-6">
-                <ConversationDetail
-                    conversation={conversation.conversation}
-                    userId={userId}
-                    token={token}
-                    messages={conversation.messages}
-                />
-            </main>
-        );
-    } catch (error) {
-        console.error("Error fetching conversation:", error);
-        return (
-            <main className="max-w-[2000px] mx-auto py-12 px-6">
-                <p>Failed to load the conversation. Please try again later.</p>
-            </main>
-        );
-    }
+        try {
+            const response = await apiService.getWithToken(`/api/chat/${params.id}`);
+            const conversation: ConversationResponse = await response.json();
+
+            if (!conversation.conversation || !conversation.messages) {
+                throw new Error("Incomplete conversation data.");
+            }
+
+            return (
+                <main className="max-w-[2000px] mx-auto px-6 pb-6">
+                    <ConversationDetail
+                        conversation={conversation.conversation}
+                        userId={userId}
+                        token={token}
+                        messages={conversation.messages}
+                    />
+                </main>
+            );
+        } catch (error) {
+            console.error("Error fetching conversation:", error);
+            return (
+                <main className="max-w-[2000px] mx-auto py-12 px-6">
+                    <p>Failed to load the conversation. Please try again later.</p>
+                </main>
+            );
+        }
+    };
+
+    return fetchData();
 };
 
 export default ConversationPage;
