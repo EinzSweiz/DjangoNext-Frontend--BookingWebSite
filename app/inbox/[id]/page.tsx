@@ -18,10 +18,11 @@ type ConversationResponse = {
         users: { id: string; name: string }[];
         modified_at: string;
     };
+    messages: MessageType[];
 };
 
 const ConversationPage = async ({ params }: { params: { id: string } }) => {
-    // Ensure params.id exists
+    // Debugging logs
     console.log("Params:", params);
 
     if (!params?.id) {
@@ -32,7 +33,6 @@ const ConversationPage = async ({ params }: { params: { id: string } }) => {
         );
     }
 
-    // Authenticate the user
     const userId = await getUserId();
     const token = await getAccessToken();
 
@@ -44,11 +44,24 @@ const ConversationPage = async ({ params }: { params: { id: string } }) => {
         );
     }
 
-    // Fetch conversation data
-    const conversation = await apiService.getWithToken(`/api/chat/${params.id}`)
-
     try {
         const response = await apiService.getWithToken(`/api/chat/${params.id}`);
+        const conversation: ConversationResponse = await response.json();
+
+        if (!conversation.conversation || !conversation.messages) {
+            throw new Error("Incomplete conversation data.");
+        }
+
+        return (
+            <main className="max-w-[2000px] mx-auto px-6 pb-6">
+                <ConversationDetail
+                    conversation={conversation.conversation}
+                    userId={userId}
+                    token={token}
+                    messages={conversation.messages}
+                />
+            </main>
+        );
     } catch (error) {
         console.error("Error fetching conversation:", error);
         return (
@@ -57,17 +70,6 @@ const ConversationPage = async ({ params }: { params: { id: string } }) => {
             </main>
         );
     }
-
-    return (
-        <main className="max-w-[2000px] mx-auto px-6 pb-6">
-            <ConversationDetail
-                conversation={conversation.conversation}
-                userId={userId}
-                token={token}
-                messages={conversation.messages}
-            />
-        </main>
-    );
 };
 
 export default ConversationPage;
