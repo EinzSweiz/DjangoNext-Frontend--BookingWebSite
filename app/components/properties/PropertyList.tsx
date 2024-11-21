@@ -46,53 +46,37 @@ const PropertyList: React.FC<PropertyListProps> = ({
     };
     
     const getProperties = async () => {
-        let url = '/api/properities/'
-        if (landlord_id) {
-            url += `?landlord_id=${landlord_id}`
-        } else if (favorites) {
-            url += '?is_favorites=true'
-        } else {
-            let urlQuery = ''
-            if (country) {
-                urlQuery += '&country=' + country
-            }
-            if (numGuests) {
-                urlQuery += '&numGuests=' + numGuests
-            }
-            if (numBathrooms) {
-                urlQuery += '&numBathrooms=' + numBathrooms
-            }
-            if (numBathrooms) {
-                urlQuery += '&numBathrooms=' + numBathrooms
-            }
-            if (category) {
-                urlQuery += '&category=' + category
-            }
-            if (checkinDate) {
-                urlQuery += '&checkinDate=' + format(checkinDate, 'yyyy-MM-dd')
-            }
-            if (checkoutDate) {
-                urlQuery += '&checkoutDate=' + format(checkoutDate, 'yyyy-MM-dd')
-            }
-            if (urlQuery.length) {
-                console.log('Query:', urlQuery)
-                urlQuery = '?' + urlQuery.substring(1)
-                url += urlQuery
-            }
-            
-        }
-
-        const tmpProperties = await apiService.get(url)
-        console.log(tmpProperties)
-        setProperties(tmpProperties.data.map((property: PropertyType) => {
-            if (tmpProperties.favorites.includes(property.id)) {
-                property.is_favorite = true
+        try {
+            let url = '/api/properties/';
+            if (landlord_id) {
+                url += `?landlord_id=${landlord_id}`;
+            } else if (favorites) {
+                url += '?is_favorites=true';
             } else {
-                property.is_favorite = false
+                let urlQuery = '';
+                if (country) urlQuery += '&country=' + country;
+                if (numGuests) urlQuery += '&numGuests=' + numGuests;
+                if (numBathrooms) urlQuery += '&numBathrooms=' + numBathrooms;
+                if (category) urlQuery += '&category=' + category;
+                if (checkinDate) urlQuery += '&checkinDate=' + format(checkinDate, 'yyyy-MM-dd');
+                if (checkoutDate) urlQuery += '&checkoutDate=' + format(checkoutDate, 'yyyy-MM-dd');
+                if (urlQuery.length) url += '?' + urlQuery.substring(1);
             }
-            return property
-        }))
-    }
+    
+            const tmpProperties = await apiService.get(url);
+            setProperties(tmpProperties.data.map((property: PropertyType) => {
+                if (tmpProperties.favorites.includes(property.id)) {
+                    property.is_favorite = true;
+                } else {
+                    property.is_favorite = false;
+                }
+                return property;
+            }));
+        } catch (error) {
+            console.error("Error fetching properties:", error);
+        }
+    };
+    
     useEffect(() => {
         getProperties();
     }, [category, searchModal.query, params])
