@@ -1,12 +1,10 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import PropertyListItem from "./PropertyListItem"
-import { json } from "stream/consumers"
 import apiService from "@/app/services/apiService"
-import { url } from "inspector"
+import { format } from "date-fns"
 import { useSearchParams } from "next/navigation"
 import useSearchModal from "@/app/hooks/useSearchModal"
-import { format } from "date-fns"
 
 export type PropertyType = {
     id: string
@@ -79,7 +77,8 @@ const PropertyList: React.FC<PropertyListProps> = ({
     
     useEffect(() => {
         getProperties();
-    }, [category, searchModal.query, params])
+    }, [category, searchModal.query, params]);
+
     return (
         <>
         {properties.map((property) => {
@@ -89,12 +88,16 @@ const PropertyList: React.FC<PropertyListProps> = ({
                 property={property}
                 markFavorite={(is_favorite) => markFavorite(property.id, is_favorite)}
             />
-            
             )
         })}
         </>
     )
 }
 
+const PropertyListWithSuspense = (props: PropertyListProps) => (
+    <Suspense fallback={<div>Loading properties...</div>}>
+        <PropertyList {...props} />
+    </Suspense>
+)
 
-export default PropertyList
+export default PropertyListWithSuspense
