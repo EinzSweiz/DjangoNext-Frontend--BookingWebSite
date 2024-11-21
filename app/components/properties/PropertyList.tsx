@@ -6,7 +6,7 @@ import apiService from "@/app/services/apiService"
 import { url } from "inspector"
 import { useSearchParams } from "next/navigation"
 import useSearchModal from "@/app/hooks/useSearchModal"
-import format from "date-fns/format"
+import { format } from "date-fns"
 
 export type PropertyType = {
     id: string
