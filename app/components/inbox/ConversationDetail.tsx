@@ -52,7 +52,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                 body: lastJsonMessage.body as string,
                 sent_to: otherUser as UserType,
                 created_by: myUser as UserType,
-                conversation_id: conversation.id,
+                conversationId: conversation.id,
             };
             setRealTimeMessages((realtimeMessages) => [...realtimeMessages, message]);
         }
