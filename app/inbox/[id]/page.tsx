@@ -14,9 +14,11 @@ export type MessageType = {
 }
 
 // Correct type for params (not a Promise)
-type Params = { id: string };
+type Params = Promise<{ id: string }>
 
 const ConversationPage = async ({ params }: { params: Params }) => {
+    const resolvedParams = await params;
+    const { id } = resolvedParams; 
     const userId = await getUserId();
     const token = await getAccessToken();
 
@@ -29,7 +31,7 @@ const ConversationPage = async ({ params }: { params: Params }) => {
     }
 
     // Use params directly to get the conversation by id
-    const conversation = await apiService.get(`/api/chat/${params.id}/`);
+    const conversation = await apiService.get(`/api/chat/${id}/`);
 
     return (
         <main className="max-w-[1500px] mx-auto px-6 pb-6">
