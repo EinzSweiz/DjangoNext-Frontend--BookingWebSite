@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react';
+import { NextPage } from 'next';
 import apiService from "@/app/services/apiService";
 import ConversationDetail from "@/app/components/inbox/ConversationDetail";
 import { UserType } from "../page";
@@ -15,9 +16,10 @@ export type MessageType = {
 };
 
 interface ConversationPageProps {
-    params: {id: string}
+    params: { id: string }; // Expecting the dynamic part of the URL
 }
-const ConversationPage: React.FC<ConversationPageProps> = ({ params }) => {
+
+const ConversationPage: NextPage<ConversationPageProps> = ({ params }) => {
     const [userId, setUserId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [conversation, setConversation] = useState<any>(null);
