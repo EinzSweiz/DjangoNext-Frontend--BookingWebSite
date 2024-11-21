@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useState, useEffect } from 'react';
 import apiService from "@/app/services/apiService";
 import ConversationDetail from "@/app/components/inbox/ConversationDetail";
@@ -14,7 +15,13 @@ export type MessageType = {
     created_by: UserType;
 }
 
-const ConversationPage = ({ params }: { params: { id: string | undefined } }) => {
+interface ConversationPageProps {
+    params: {
+        id: string
+    }
+}
+
+export default function ConversationPage({params: {id}}: ConversationPageProps) {
     const [userId, setUserId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [conversation, setConversation] = useState<any>(null);  // you can improve typing here
@@ -34,7 +41,7 @@ const ConversationPage = ({ params }: { params: { id: string | undefined } }) =>
             setToken(fetchedToken);
 
             try {
-                const conversationResponse = await apiService.get(`/api/chat/${params.id}/`);
+                const conversationResponse = await apiService.get(`/api/chat/${id}/`);
                 setConversation(conversationResponse);
             } catch (error) {
                 console.error("Error fetching conversation:", error);
@@ -44,7 +51,7 @@ const ConversationPage = ({ params }: { params: { id: string | undefined } }) =>
         };
 
         fetchData();
-    }, [params.id]);  // runs when `params.id` changes
+    }, [id]);  // runs when `params.id` changes
 
     if (loading) {
         return (
@@ -76,4 +83,4 @@ const ConversationPage = ({ params }: { params: { id: string | undefined } }) =>
     );
 }
 
-export default ConversationPage;
+// export default ConversationPage;
