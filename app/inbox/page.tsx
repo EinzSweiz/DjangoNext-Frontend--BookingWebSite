@@ -24,7 +24,7 @@ const InboxPage = async () => {
         )
     }
     const conversations = await apiService.getWithToken('/api/chat/')
-    if ({conversations}) { 
+    if (conversations) { 
 
         return (
             <main className="max-w-[2000px] mx-auto px-6 pb-6">
