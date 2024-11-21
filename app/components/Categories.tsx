@@ -1,11 +1,13 @@
-'use client'
+"use client"
 import { useState } from "react"
 import Image from "next/image"
+import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai'; // Arrow icons
 import useSearchModal, { SearchQuery } from "../hooks/useSearchModal"
 
 const Categories = () => {
     const searchModal = useSearchModal()
     const [selectedCategory, setSelectedCategory] = useState('')
+    const [isOpen, setIsOpen] = useState(true); // Toggle state for categories
 
     const categories = [
         "Beach",
@@ -35,25 +37,51 @@ const Categories = () => {
         searchModal.setQuery(query)
     }
 
+    const toggleCategories = () => {
+        setIsOpen(prevState => !prevState); // Toggle the state for categories visibility
+    }
+
     return (
-        <div className="pt-3 pb-6 flex items-center space-x-12 overflow-x-auto">
-            {categories.map((category) => (
-                <div
-                    key={category}
-                    onClick={() => handleCategoryClick(category)}
-                    className={`pb-4 flex flex-col items-center space-y-2 border-b-2 
-                        ${selectedCategory === category ? 'border-green-500 opacity-100' : 'border-white opacity-60'} 
-                        hover:border-gray-200 hover:opacity-100 cursor-pointer`}
+        <div className="min-h-[100px] flex justify-center items-center">
+            <div className="flex flex-col items-center">
+                {/* Toggle Arrow */}
+                <div 
+                    onClick={toggleCategories}
+                    className="cursor-pointer py-2 text-white"
                 >
-                    <Image
-                        src="/icn_category.jpg"
-                        alt={`cat-${category.toLowerCase().replace(" ", "-")}`}
-                        width={30}
-                        height={30}
-                    />
-                    <span className="text-xs">{category}</span>
+                    {isOpen ? <AiOutlineUp size={18} className="text-black" /> : <AiOutlineDown size={18} className="text-black" />}
                 </div>
-            ))}
+
+                {/* Conditional Rendering: Show categories list or SVG icon based on isOpen */}
+                {isOpen ? (
+                    <div className={`pt-3 pb-6 flex items-center space-x-12 overflow-x-auto bg-white p-4 rounded-lg shadow-lg transition-all duration-500`}>
+                        {categories.map((category) => (
+                            <div
+                                key={category}
+                                onClick={() => handleCategoryClick(category)}
+                                className={`pb-4 flex flex-col items-center space-y-2 border-b-2 
+                                    ${selectedCategory === category ? 'border-green-500 opacity-100' : 'border-white opacity-60'} 
+                                    hover:border-gray-200 hover:opacity-100 cursor-pointer transition-all duration-200`}
+                            >
+                                <Image
+                                    src={`/icn_category_${category}.jpg`}
+                                    alt={`cat-${category.toLowerCase().replace(" ", "-")}`}
+                                    width={30}
+                                    height={30}
+                                />
+                                <span className="text-xs">{category}</span>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    // SVG Icon (this could be any icon you like)
+                    <div className="pt-1 pb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="h-5 w-5">
+                            <path d="M40 48C26.7 48 16 58.7 16 72l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24L40 48zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L192 64zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zM16 232l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0z"/>
+                        </svg>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

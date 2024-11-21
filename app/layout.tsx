@@ -7,6 +7,7 @@ import LoginModal from "./components/modals/LoginModal";
 import SignupModal from "./components/modals/SignupModal";
 import AddPropertyModal from "./components/modals/AddPropertyModal";
 import SearchModal from "./components/modals/SearchModal";
+import Footer from "./components/footer/footer";
  
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
