@@ -2,7 +2,7 @@ import { rejects } from "assert"
 import { error } from "console"
 import { resolve } from "path"
 import { json } from "stream/consumers"
-import { getAccessToken } from "../lib/actions"
+import { getAccessToken, getRefreshToken } from "../lib/actions"
 const apiService = {
     get: async function (url: string): Promise<any> {
         console.log('GET request to:', url);
@@ -33,10 +33,10 @@ const apiService = {
     getWithToken: async function (url: string): Promise<any> {
         console.log('GET with token request to:', url);
         try {
-            const token = await getAccessToken();
-
+            let token = await getAccessToken();
             if (!token) {
-                throw new Error('Unauthorized: No valid token');
+                token = await getRefreshToken()
+                // throw new Error('Unauthorized: No valid token');
             }
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
