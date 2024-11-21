@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import { useState } from "react"
 import Image from "next/image"
 import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai'; // Arrow icons
@@ -43,7 +43,7 @@ const Categories = () => {
 
     return (
         <div className="min-h-[100px] flex justify-center items-center">
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center w-full">
                 {/* Toggle Arrow */}
                 <div 
                     onClick={toggleCategories}
@@ -54,14 +54,15 @@ const Categories = () => {
 
                 {/* Conditional Rendering: Show categories list or SVG icon based on isOpen */}
                 {isOpen ? (
-                    <div className={`pt-3 pb-6 flex items-center space-x-12 overflow-x-auto bg-white p-4 rounded-lg shadow-lg transition-all duration-500`}>
+                    <div className={`pt-3 pb-6 flex flex-wrap items-center justify-center gap-4 bg-white p-4 rounded-lg shadow-lg transition-all duration-500`}>
                         {categories.map((category) => (
                             <div
                                 key={category}
                                 onClick={() => handleCategoryClick(category)}
                                 className={`pb-4 flex flex-col items-center space-y-2 border-b-2 
                                     ${selectedCategory === category ? 'border-green-500 opacity-100' : 'border-white opacity-60'} 
-                                    hover:border-gray-200 hover:opacity-100 cursor-pointer transition-all duration-200`}
+                                    hover:border-gray-200 hover:opacity-100 cursor-pointer transition-all duration-200 
+                                    w-1/3 sm:w-auto`} 
                             >
                                 <Image
                                     src={`/icn_category_${category}.jpg`}

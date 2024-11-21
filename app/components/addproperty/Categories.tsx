@@ -34,7 +34,7 @@ const Categories: React.FC<CategoriesProps> = ({ dataCategory, setCategory }) =>
                         hover:border-gray-200 hover:opacity-100 cursor-pointer`}
                 >
                     <Image
-                        src="/icn_category.jpg"
+                        src={`/icn_category_${category}.jpg`}
                         alt={`cat-${category.toLowerCase().replace(" ", "-")}`}
                         width={20}
                         height={20}

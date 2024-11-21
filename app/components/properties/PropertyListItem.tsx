@@ -22,7 +22,7 @@ const PropertyListItem: React.FC<PropertyProps> = ({
                     fill 
                     src={property.image_url} 
                     alt="Item-Image-House" 
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 33vw"
                     className="hover:scale-110 object-cover transition h-full w-full"
                 />
                 {markFavorite && (
