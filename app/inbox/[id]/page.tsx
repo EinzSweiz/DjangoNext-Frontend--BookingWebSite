@@ -1,10 +1,10 @@
 "use client"
 import { useState, useEffect } from 'react';
+import { NextPage } from 'next';
 import apiService from "@/app/services/apiService";
 import ConversationDetail from "@/app/components/inbox/ConversationDetail";
 import { UserType } from "../page";
 import { getUserId, getAccessToken } from "../../lib/actions";
-import { useParams } from 'next/navigation';  // Import useParams from next/navigation
 
 export type MessageType = {
     id: string;
@@ -15,17 +15,17 @@ export type MessageType = {
     created_by: UserType;
 };
 
-const ConversationPage = () => {
+interface ConversationPageProps {
+    params: { id: string | undefined }; // Expecting the dynamic part of the URL
+}
+
+const ConversationPage: React.FC<ConversationPageProps> = ({ params }) => {
     const [userId, setUserId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [conversation, setConversation] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const { id } = useParams(); // Access dynamic route params using useParams
-
     useEffect(() => {
-        if (!id) return; // Don't run if ID is undefined
-
         const fetchData = async () => {
             const fetchedUserId = await getUserId();
             const fetchedToken = await getAccessToken();
@@ -39,13 +39,13 @@ const ConversationPage = () => {
             setToken(fetchedToken);
 
             // Fetch conversation data
-            const conversationResponse = await apiService.get(`/api/chat/${id}/`);
+            const conversationResponse = await apiService.get(`/api/chat/${params.id}/`);
             setConversation(conversationResponse);
             setLoading(false);
         };
 
         fetchData();
-    }, [id]); // Effect runs whenever `id` changes
+    }, [params.id]); // Effect runs whenever `params.id` changes
 
     if (loading) {
         return (
