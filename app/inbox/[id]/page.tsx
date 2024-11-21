@@ -1,10 +1,9 @@
-"use client"
-import { useState, useEffect } from 'react';
-import { NextPage } from 'next';
+'use client'
+import React, { useState, useEffect } from 'react';
 import apiService from "@/app/services/apiService";
 import ConversationDetail from "@/app/components/inbox/ConversationDetail";
-import { UserType } from "../page";
 import { getUserId, getAccessToken } from "../../lib/actions";
+import { UserType } from "../page";
 
 export type MessageType = {
     id: string;
@@ -13,16 +12,12 @@ export type MessageType = {
     conversationId: string;
     sent_to: UserType;
     created_by: UserType;
-};
-
-interface ConversationPageProps {
-    params: { id: string | undefined }; // Expecting the dynamic part of the URL
 }
 
-const ConversationPage: React.FC<ConversationPageProps> = ({ params }) => {
+const ConversationPage = ({ params }: { params: { id: string | undefined } }) => {
     const [userId, setUserId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
-    const [conversation, setConversation] = useState<any>(null);
+    const [conversation, setConversation] = useState<any>(null);  // you can improve typing here
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -38,18 +33,22 @@ const ConversationPage: React.FC<ConversationPageProps> = ({ params }) => {
             setUserId(fetchedUserId);
             setToken(fetchedToken);
 
-            // Fetch conversation data
-            const conversationResponse = await apiService.get(`/api/chat/${params.id}/`);
-            setConversation(conversationResponse);
+            try {
+                const conversationResponse = await apiService.get(`/api/chat/${params.id}/`);
+                setConversation(conversationResponse);
+            } catch (error) {
+                console.error("Error fetching conversation:", error);
+                // You can set some error state here if needed
+            }
             setLoading(false);
         };
 
         fetchData();
-    }, [params.id]); // Effect runs whenever `params.id` changes
+    }, [params.id]);  // runs when `params.id` changes
 
     if (loading) {
         return (
-            <main className="max-w-[1500px] mx-auto px-6 py-12">
+            <main className="max-w-[1500px] max-auto px-6 py-12">
                 <p>Loading...</p>
             </main>
         );
@@ -57,7 +56,7 @@ const ConversationPage: React.FC<ConversationPageProps> = ({ params }) => {
 
     if (!userId || !token) {
         return (
-            <main className="max-w-[1500px] mx-auto px-6 py-12">
+            <main className="max-w-[1500px] max-auto px-6 py-12">
                 <p>You need to be authenticated...</p>
             </main>
         );
