@@ -14,7 +14,10 @@ export type MessageType = {
     created_by: UserType;
 };
 
-const ConversationPage = ({ params }: { params: {id: string} }) => {
+interface ConversationPageProps {
+    params: {id: string}
+}
+const ConversationPage: React.FC<ConversationPageProps> = ({ params }) => {
     const [userId, setUserId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [conversation, setConversation] = useState<any>(null);
