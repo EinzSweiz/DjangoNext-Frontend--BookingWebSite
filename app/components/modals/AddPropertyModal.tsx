@@ -36,41 +36,47 @@ const AddPropertyModal = () => {
         }
     }
 
-    const submitForm = async () => {
-        if (dataCategory &&
-            dataTitle &&
-            dataDescription &&
-            dataPrice &&
-            dataBedrooms &&
-            dataCountry &&
-            dataImage
-        ) {
-            const formData = new FormData()
-            formData.append('category', dataCategory);
-            formData.append('title', dataTitle);
-            formData.append('description', dataDescription);
-            formData.append('price_per_night', dataPrice);
-            formData.append('bedrooms', dataBedrooms);
-            formData.append('bathrooms', dataBathrooms);
-            formData.append('guests', dataGuests);
-            formData.append('country', dataCountry.label);
-            formData.append('country_code', dataCountry.value);
-            formData.append('image', dataImage);
-            
-            const response = await apiService.post('/api/properties/create/', formData)
+const submitForm = async () => {
+    console.log('Submit form triggered');
+    if (dataCategory &&
+        dataTitle &&
+        dataDescription &&
+        dataPrice &&
+        dataBedrooms &&
+        dataCountry &&
+        dataImage
+    ) {
+        const formData = new FormData()
+        formData.append('category', dataCategory);
+        formData.append('title', dataTitle);
+        formData.append('description', dataDescription);
+        formData.append('price_per_night', dataPrice);
+        formData.append('bedrooms', dataBedrooms);
+        formData.append('bathrooms', dataBathrooms);
+        formData.append('guests', dataGuests);
+        formData.append('country', dataCountry.label);
+        formData.append('country_code', dataCountry.value);
+        formData.append('image', dataImage);
+        
+        try {
+            const response = await apiService.post('/api/properties/create/', formData);
+            console.log(response);
             if (response.success) {
-                console.log('SUCCESS')
-                router.push('/?added=true')
-                addPropertyModal.close()
+                console.log('SUCCESS');
+                router.push('/?added=true');
+                addPropertyModal.close();
             } else {
-                console.log('ERROR')
+                console.log('ERROR');
                 const tmpErrors: string[] = Object.values(response).map((error: any) => {
-                    return error
-                })
-                setErrors(tmpErrors)
+                    return error;
+                });
+                setErrors(tmpErrors);
             }
+        } catch (err) {
+            console.error('Error submitting form', err);
         }
     }
+};
 
     const content = (
         <>
@@ -178,10 +184,11 @@ const AddPropertyModal = () => {
                 {errors.map((error, index) => {
                     return (
                         <div key={index} className="p-5 mb-4 bg-airbnb text-white rounded-xl opacity-80">
-                            {error}
+                            {JSON.stringify(error)}  {/* Convert the entire error object to a string */}
                         </div>
-                    )
+                    );
                 })}
+
                 <div className="flex justify-between">
                         <CustomButton className="mx-3 bg-black hover:bg-gray-800" label="Previous" onClick={() => setCurrentStep(4)} />
                         <CustomButton className="bg-green-500 hover:bg-green-700" label="Submit" onClick={submitForm} />

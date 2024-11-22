@@ -31,7 +31,7 @@ const ConversationPage = async ({ params }: { params: Params }) => {
     }
 
     // Use params directly to get the conversation by id
-    const conversation = await apiService.get(`/api/chat/${id}/`);
+    const conversation = await apiService.getWithToken(`/api/chat/${id}/`);
 
     return (
         <main className="max-w-[1500px] mx-auto px-6 pb-6">
