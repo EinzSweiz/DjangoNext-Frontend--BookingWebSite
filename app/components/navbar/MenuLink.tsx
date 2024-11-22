@@ -1,17 +1,20 @@
-interface CustomMenuLink {
+interface MenuLinkProps {
     label: string;
+    icon?: React.ReactNode; // Optional icon prop
     onClick: () => void;
-}
-const MenuLink: React.FC<CustomMenuLink> = ({
-    label,
-    onClick
-}) => {
+  }
+  
+  const MenuLink: React.FC<MenuLinkProps> = ({ label, icon, onClick }) => {
     return (
-        <div onClick={onClick} className="px-4 py-2 cursort-pointer hover:bg-gray-300">
-            {label}
-        </div>
-    )
-}
-
-
-export default MenuLink
+      <div
+        className="flex items-center p-2 hover:bg-gray-100"
+        onClick={onClick}
+      >
+        {icon && <span className="mr-2">{icon}</span>}
+        <span>{label}</span>
+      </div>
+    );
+  };
+  
+  export default MenuLink;
+  

@@ -8,10 +8,12 @@ import useLoginModal from '../hooks/useLoginModal';
 
 interface LogoutButtonProps {
     closeMenu: () => void
+    icon?: React.ReactNode;
 }
 
 const LogoutButton: React.FC<LogoutButtonProps> = ({
-    closeMenu
+    closeMenu,
+    icon
 }) => {
     const router = useRouter();
     const loginModal = useLoginModal();
@@ -24,7 +26,8 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({
     };
 
     return (
-        <MenuLink 
+        <MenuLink
+            icon={icon}
             label="Logout" 
             onClick={submitLogout} 
         />
