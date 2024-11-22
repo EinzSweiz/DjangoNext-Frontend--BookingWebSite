@@ -5,6 +5,7 @@ import useLoginModal from "@/app/hooks/useLoginModal"
 import useSignupModal from "@/app/hooks/useSignupModal"
 import LogoutButton from "../LogoutButton"
 import { useRouter } from "next/navigation"
+import useProfileModal from "@/app/hooks/useProfileModal"
 
 interface UserNavProps {
     userId?: string | null
@@ -13,6 +14,7 @@ interface UserNavProps {
 const UserNav: React.FC<UserNavProps> = ({
     userId
 }) => {
+    const profileModal = useProfileModal()
     const loginModal = useLoginModal()
     const signupModal = useSignupModal()
     const [isOpen, setIsOpen] = useState(false)
@@ -32,6 +34,10 @@ const UserNav: React.FC<UserNavProps> = ({
                     {
                         userId ? (
                             <>
+                             <MenuLink label="Profile" onClick={() => {
+                                setIsOpen(false)
+                                profileModal.open()
+                                }} />
                              <MenuLink label="Inbox" onClick={() => {
                                 setIsOpen(false)
                                 router.push('/inbox')

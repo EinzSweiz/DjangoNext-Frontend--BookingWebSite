@@ -8,6 +8,7 @@ import SignupModal from "./components/modals/SignupModal";
 import AddPropertyModal from "./components/modals/AddPropertyModal";
 import SearchModal from "./components/modals/SearchModal";
 import Footer from "./components/footer/footer";
+import ProfileModal from "./components/modals/ProfileModal";
  
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -42,6 +43,7 @@ export default function RootLayout({
         <div className="pt-32">
         {children}
         </div>
+        <ProfileModal />
         <LoginModal />
         <SearchModal />
         <SignupModal />
