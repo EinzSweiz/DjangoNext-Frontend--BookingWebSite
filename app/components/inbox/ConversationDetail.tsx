@@ -26,10 +26,15 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     const messageDiv = useRef<HTMLDivElement>(null); // Corrected type
     const [realtimeMessages, setRealTimeMessages] = useState<MessageType[]>([]);
 
-    const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
+    const { readyState, lastJsonMessage, sendJsonMessage } = useWebSocket(
         `${process.env.NEXT_PUBLIC_WS_HOST}/ws/${conversation.id}/?token=${token}`,
         {
-            share: false,
+            onError: (error) => {
+                console.error("WebSocket Error:", error);
+            },
+            onClose: (event) => {
+                console.log("WebSocket Closed:", event);
+            },
             shouldReconnect: () => true,
         }
     );
