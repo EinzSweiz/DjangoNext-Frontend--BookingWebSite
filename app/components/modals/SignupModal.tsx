@@ -5,10 +5,13 @@ import { useRouter } from "next/navigation"
 import useSignupModal from "@/app/hooks/useSignupModal"
 import CustomButton from "@/app/forms/CustomButton"
 import apiService from "@/app/services/apiService"
+import useLoginModal from "@/app/hooks/useLoginModal"
+import useProfileModal from "@/app/hooks/useProfileModal"
 import { handleLogin } from "@/app/lib/actions"
 
 const SignupModal = () => {
     const router = useRouter()
+    const profileModal = useProfileModal()
     const signupModal = useSignupModal()
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -29,9 +32,12 @@ const SignupModal = () => {
             const response = await apiService.postWithoutToken('/api/auth/register/', JSON.stringify(formData))
 
             if (response.access) {
-                handleLogin(response.user.id, response.access, response.refresh)
+                handleLogin(response.id, response.access, response.refresh)
                 
                 signupModal.close()
+
+                useProfileModal()
+                
                 router.push('/')
             } else {
                 // Handle error response

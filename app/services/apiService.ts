@@ -110,6 +110,33 @@ const apiService = {
                 reject(error)
             })
         })
+    },
+
+    put: async function (url: string, data:any): Promise<any> {
+        console.log('put', url, data)
+        return new Promise(async (resolve, reject) => {
+            let token = await getAccessToken()
+
+            if (!token) {
+                reject("Unauthorized: No valid token");
+                return;
+            }
+
+            fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: data
+            })
+            .then((response) => response.json())
+            .then((json) => {
+                resolve(json)
+            })
+            .catch ((error) => {
+                reject(error)
+            })
+        })
     }
 }
 
