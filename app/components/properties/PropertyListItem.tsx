@@ -30,7 +30,7 @@ const PropertyListItem: React.FC<PropertyProps> = ({
                 <FavoriteButton
                     id={property.id}
                     is_favorite={property.is_favorite}
-                    markFavorite={markFavorite}
+                    markFavorite={(is_favotite) => markFavorite(is_favotite)}
                 />
             )}
         </div>

@@ -1,12 +1,10 @@
-'use client'
-
-import { useEffect, useState } from "react"
-import apiService from "@/app/services/apiService"
+import { useEffect, useState } from "react";
+import apiService from "@/app/services/apiService";
 
 interface FavoriteProps {
-    id: string
-    is_favorite: boolean
-    markFavorite: (is_favorite: boolean) => void
+    id: string;
+    is_favorite: boolean;
+    markFavorite: (is_favorite: boolean) => void;
 }
 
 const FavoriteButton: React.FC<FavoriteProps> = ({
@@ -14,32 +12,50 @@ const FavoriteButton: React.FC<FavoriteProps> = ({
     is_favorite,
     markFavorite    
 }) => {
-    const [favoriteStatus, setFavoriteStatus] = useState(is_favorite)
+    const [favoriteStatus, setFavoriteStatus] = useState(is_favorite);
 
     // Fetch favorite status from localStorage when the component mounts
     useEffect(() => {
-        const savedFavoriteStatus = localStorage.getItem(`favorite_${id}`)
+        const savedFavoriteStatus = localStorage.getItem(`favorite_${id}`);
         if (savedFavoriteStatus !== null) {
-            setFavoriteStatus(JSON.parse(savedFavoriteStatus))
+            try {
+                // Ensure savedFavoriteStatus is a valid JSON boolean
+                const parsedStatus = JSON.parse(savedFavoriteStatus);
+                if (typeof parsedStatus === "boolean") {
+                    setFavoriteStatus(parsedStatus);
+                } else {
+                    console.error('Invalid favorite status:', parsedStatus);
+                    setFavoriteStatus(is_favorite);
+                }
+            } catch (error) {
+                console.error('Error parsing favorite status from localStorage:', error);
+                setFavoriteStatus(is_favorite);
+            }
+        } else {
+            setFavoriteStatus(is_favorite);
         }
-    }, [id])
+    }, [id, is_favorite]);
 
     const toggleFavorite = async (e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation()
+        e.stopPropagation();
         try {
-            const response = await apiService.post(`/api/properties/${id}/toggle_favorite/`, null) // Empty body
-            console.log('API Response:', response) // Log response for debugging
+            const response = await apiService.post(`/api/properties/${id}/toggle_favorite/`, null); 
+            console.log('API Response:', response); 
             
-            // Update UI with the new state
-            markFavorite(response.is_favorited)
-            
-            // Update localStorage with the new favorite status
-            setFavoriteStatus(response.is_favorited)
-            localStorage.setItem(`favorite_${id}`, JSON.stringify(response.is_favorited))
+            if (typeof response.is_favorited === 'boolean') {
+                // Update UI with the new state
+                markFavorite(response.is_favorited);
+                
+                // Update localStorage with the new favorite status
+                setFavoriteStatus(response.is_favorited);
+                localStorage.setItem(`favorite_${id}`, JSON.stringify(response.is_favorited));
+            } else {
+                console.error('Invalid response structure', response);
+            }
         } catch (error) {
-            console.error('Error toggling favorite:', error)
+            console.error('Error toggling favorite:', error);
         }
-    }
+    };
 
     return (
         <div
@@ -48,11 +64,11 @@ const FavoriteButton: React.FC<FavoriteProps> = ({
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill={favoriteStatus ? 'red' : 'none'}  // Red fill when favorited, otherwise no fill
+                fill={favoriteStatus ? 'red' : 'none'}
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
-                stroke={favoriteStatus ? 'red' : 'currentColor'} // Set stroke color to red when favorited
-                className="size-6 hover:fill-red-500"  // Hover effect to fill the heart with red color
+                stroke={favoriteStatus ? 'red' : 'currentColor'}
+                className="size-6 hover:fill-red-500"
             >
                 <path
                     strokeLinecap="round"
@@ -61,7 +77,7 @@ const FavoriteButton: React.FC<FavoriteProps> = ({
                 />
             </svg>
         </div>
-    )
-}
+    );
+};
 
-export default FavoriteButton
+export default FavoriteButton;
