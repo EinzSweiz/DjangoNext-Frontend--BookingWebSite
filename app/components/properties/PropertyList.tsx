@@ -35,13 +35,15 @@ const PropertyList: React.FC<PropertyListProps> = ({
     const [properties, setProperties] = useState<PropertyType[]>([])
 
     const markFavorite = (id: string, is_favorite: boolean) => {
-        const updatedProperties = properties.map((property) =>
-            property.id === id
-                ? { ...property, is_favorite }
-                : property
+        setProperties((prevProperties) =>
+            prevProperties.map((property) =>
+                property.id === id
+                    ? { ...property, is_favorite }
+                    : property
+            )
         );
-        setProperties(updatedProperties);
     };
+    
     
     const getProperties = async () => {
         try {
@@ -62,14 +64,12 @@ const PropertyList: React.FC<PropertyListProps> = ({
             }
     
             const tmpProperties = await apiService.get(url);
-            setProperties(tmpProperties.data.map((property: PropertyType) => {
-                if (tmpProperties.favorites.includes(property.id)) {
-                    property.is_favorite = true;
-                } else {
-                    property.is_favorite = false;
-                }
-                return property;
-            }));
+            setProperties(
+                tmpProperties.data.map((property: PropertyType) => ({
+                    ...property,
+                    is_favorite: !!property.is_favorite, // Ensure proper boolean
+                }))
+            );
         } catch (error) {
             console.error("Error fetching properties:", error);
         }

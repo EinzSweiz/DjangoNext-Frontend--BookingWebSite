@@ -16,7 +16,7 @@ const Navbar = async () => {
               className="transition-transform duration-300 ease-in-out transform hover:scale-110 border rounded-full border-black"
               src="/logo.png"
               alt="Logo"
-              width={100}
+              width={80}
               height={38}
               priority
             />
