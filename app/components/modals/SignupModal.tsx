@@ -1,124 +1,170 @@
 "use client"
+
 import Modal from "./Modal"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import useSignupModal from "@/app/hooks/useSignupModal"
-import CustomButton from "@/app/forms/CustomButton"
 import apiService from "@/app/services/apiService"
-import useProfileModal from "@/app/hooks/useProfileModal"
 import { handleLogin } from "@/app/lib/actions"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import Link from "next/link"
 
 const SignupModal = () => {
-    const router = useRouter()
-    const profileModal = useProfileModal()
-    const signupModal = useSignupModal()
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [avatar, setAvatar] = useState<File | null>(null)  // Change type to File | null
-    const [password1, setPassword1] = useState('')
-    const [password2, setPassword2] = useState('')
-    const [errors, setErrors] = useState<string[]>([]) 
+  const router = useRouter()
+  const signupModal = useSignupModal()
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [avatar, setAvatar] = useState<File | null>(null)
+  const [password1, setPassword1] = useState('')
+  const [password2, setPassword2] = useState('')
+  const [errors, setErrors] = useState<string[]>([])
 
-    // Handle form submission
-    const submitSignup = async () => {
-        const formData = new FormData()
+  // Handle form submission
+  const submitSignup = async () => {
+    const formData = new FormData()
+    formData.append('name', name)
+    formData.append('email', email)
+    formData.append('password1', password1)
+    formData.append('password2', password2)
 
-        formData.append('name', name)
-        formData.append('email', email)
-        formData.append('password1', password1)
-        formData.append('password2', password2)
-
-        // Append avatar file if it's selected
-        if (avatar) {
-            formData.append('avatar', avatar)
-        }
-
-        try {
-            const response = await apiService.postWithoutToken('/api/auth/register/', formData)
-
-            if (response.access) {
-                handleLogin(response.id, response.access, response.refresh)
-                
-                signupModal.close()
-
-                useProfileModal()
-                
-                router.push('/')
-            } else {
-                // Handle error response
-                const tmpErrors: string[] = Object.values(response).map((error: any) => error)
-                setErrors(tmpErrors)
-
-                // Clear errors after a delay
-                setTimeout(() => {
-                    setErrors([])
-                }, 2000)
-            }
-        } catch (err) {
-            console.error('Error during signup:', err)
-        }
+    // Append avatar file if it's selected
+    if (avatar) {
+      formData.append('avatar', avatar)
     }
 
-    const content = (
-        <>
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}> {/* Prevent native form submit */}
-            <input
-                onChange={(e) => setName(e.target.value)}
-                type="text"
-                className="w-full h-[54px] px-4 border border-gray-300 rounded-xl"
-                placeholder="Your username"
-                required
-            />
-            <input
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
-                className="w-full h-[54px] px-4 border border-gray-300 rounded-xl"
-                placeholder="Your e-mail address"
-                required
-            />
-            <input
-                onChange={(e) => setPassword1(e.target.value)}
-                type="password"
-                className="w-full h-[54px] px-4 border border-gray-300 rounded-xl"
-                placeholder="Your password"
-                required
-            />
-            <input
-                onChange={(e) => setPassword2(e.target.value)}
-                type="password"
-                className="w-full h-[54px] px-4 border border-gray-300 rounded-xl"
-                placeholder="Repeat your password"
-                required
-            />
-            
-            {/* Avatar upload field */}
-            <input
-                onChange={(e) => setAvatar(e.target.files ? e.target.files[0] : null)} // Set avatar as File
-                type="file"
-                className="w-full h-[54px] px-4 border border-gray-300 rounded-xl"
-                accept="image/*"
-            />
+    try {
+      const response = await apiService.postWithoutToken('/api/auth/register/', formData)
 
-            {errors.map((error, index) => (
-                <div key={`error_${index}`} className="p-2 bg-airbnb text-white rounded-xl opacity-80">
-                    {error}
-                </div>
-            ))}
-            
-            {/* CustomButton now uses onClick to trigger submitSignup */}
-            <CustomButton label="Register" onClick={submitSignup} />
+      if (response.access) {
+        handleLogin(response.id, response.access, response.refresh)
+        signupModal.close()
+        router.push('/')
+      } else {
+        // Handle error response
+        const tmpErrors: string[] = Object.values(response).map((error: any) => error)
+        setErrors(tmpErrors)
+
+        // Clear errors after a delay
+        setTimeout(() => {
+          setErrors([])
+        }, 2000)
+      }
+    } catch (err) {
+      console.error('Error during signup:', err)
+    }
+  }
+
+  const content = (
+    <Card className="mx-full max-w-full">
+      <CardHeader>
+        <CardDescription>
+          Fill in the details to create your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          {/* Username Input */}
+          <div className="grid gap-2">
+            <Label htmlFor="name">Username</Label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Your username"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Email Input */}
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="Your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Password Input */}
+          <div className="grid gap-2">
+            <Label htmlFor="password1">Password</Label>
+            <Input
+              id="password1"
+              type="password"
+              placeholder="Your password"
+              value={password1}
+              onChange={(e) => setPassword1(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Repeat Password Input */}
+          <div className="grid gap-2">
+            <Label htmlFor="password2">Confirm Password</Label>
+            <Input
+              id="password2"
+              type="password"
+              placeholder="Repeat your password"
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Avatar Upload */}
+          <div className="grid gap-2">
+            <Label htmlFor="avatar">Upload Avatar</Label>
+            <Input
+              id="avatar"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setAvatar(e.target.files ? e.target.files[0] : null)}
+            />
+          </div>
+
+          {/* Display errors if any */}
+          {errors.length > 0 && (
+            <div className="p-2 bg-red-600 text-white rounded-xl opacity-90">
+              {errors.join(', ')}
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <Button type="submit" onClick={submitSignup} className="w-full">
+            Register
+          </Button>
         </form>
-        </>
-    )
 
-    return (
-        <Modal 
-            isOpen={signupModal.isOpen}
-            close={signupModal.close}
-            label="Register"
-            content={content}
-        />
-    )
+        <div className="mt-4 text-center text-sm">
+          Already have an account?{" "}
+          <Link href="/login" className="underline">
+            Login here
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  )
+
+  return (
+    <Modal
+      isOpen={signupModal.isOpen}
+      close={signupModal.close}
+      label="Register"
+      content={content}
+    />
+  )
 }
 
 export default SignupModal

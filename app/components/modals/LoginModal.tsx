@@ -55,7 +55,7 @@ const LoginModal = () => {
     }
 
     const content = (
-        <Card className="mx-auto max-w-xl">
+        <Card className="mx-full max-w-full">
             <CardHeader>
                 <CardDescription>
                     Enter your email and password to log in to your account

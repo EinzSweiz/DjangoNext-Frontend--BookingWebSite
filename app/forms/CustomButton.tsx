@@ -1,5 +1,7 @@
+import { ReactNode } from "react";
+
 interface CustomButtonProps {
-    label: string
+    label: ReactNode
     className?: string
     onClick: () => void;
 }

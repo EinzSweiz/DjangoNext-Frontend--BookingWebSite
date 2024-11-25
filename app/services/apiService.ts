@@ -63,20 +63,33 @@ const apiService = {
         }
     },
 
-    postWithoutToken: async function (url:string, data:any): Promise<any> {
+    postWithoutToken: async function (url: string, data: any, isFormData = false): Promise<any> {
         console.log('post', url, data)
-
+    
         return new Promise((resolve, reject) => {
+            // Set default headers
+            const headers: { [key: string]: string } = {
+                'Accept': 'application/json', // Always expect JSON response
+            }
+    
+            let body = data;
+    
+            // If the request is for registration (which involves file upload), use FormData
+            if (isFormData) {
+                // If it's FormData (for file uploads), don't manually set Content-Type
+                headers['Content-Type'] = 'multipart/form-data'; // This is optional, as FormData sets it automatically
+            } else {
+                // For login (JSON data), set content type as application/json
+                headers['Content-Type'] = 'application/json';
+                body = data // Convert data to JSON string
+            }
+    
             fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-type': 'application/json',
-                },
-                body: data
+                headers,
+                body,
             })
             .then(response => response.json())
-            
             .then((json) => {
                 resolve(json)
             })
@@ -85,6 +98,7 @@ const apiService = {
             })
         })
     },
+    
     post: async function (url:string, data:any): Promise<any> {
         console.log('post', url, data)
         return new Promise(async (resolve, reject) => {

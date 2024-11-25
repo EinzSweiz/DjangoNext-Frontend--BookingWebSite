@@ -1,11 +1,11 @@
-"use client"
+'use client'
 import CustomButton from "@/app/forms/CustomButton";
 import { ConversationType } from "@/app/inbox/page";
 import { useEffect, useState, useRef } from "react";
 import useWebSocket from "react-use-websocket";
-import { ReadyState } from "react-use-websocket";
 import { MessageType } from "@/app/inbox/[id]/page";
 import { UserType } from "@/app/inbox/page";
+import { FiSend } from 'react-icons/fi'; // You can use any other icons as well
 
 interface ConversationDetailProps {
     conversation: ConversationType;
@@ -23,7 +23,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     const [newMessage, setNewMessage] = useState('');
     const myUser = conversation.users?.find((user) => user.id == userId);
     const otherUser = conversation.users?.find((user) => user.id != userId);
-    const messageDiv = useRef<HTMLDivElement>(null); // Corrected type
+    const messageDiv = useRef<HTMLDivElement>(null);
     const [realtimeMessages, setRealTimeMessages] = useState<MessageType[]>([]);
 
     const { readyState, lastJsonMessage, sendJsonMessage } = useWebSocket(
@@ -61,11 +61,10 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
             };
             setRealTimeMessages((realtimeMessages) => [...realtimeMessages, message]);
         }
-        scrollToButton();
+        scrollToBottom();
     }, [lastJsonMessage]);
 
     const sendMessage = async () => {
-        console.log('SendMessage');
         sendJsonMessage({
             event: 'chat_message',
             data: {
@@ -76,59 +75,56 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
             },
         });
         setNewMessage('');
-
-        setTimeout(() => {
-            scrollToButton();
-        }, 50);
+        scrollToBottom();
     };
 
-    const scrollToButton = () => {
+    const scrollToBottom = () => {
         if (messageDiv.current) {
-            messageDiv.current.scrollTop = messageDiv.current.scrollHeight; // Fixed capitalization
+            messageDiv.current.scrollTop = messageDiv.current.scrollHeight; // Scroll to the bottom of the chat
         }
     };
 
     return (
-        <>
-            <div ref={messageDiv} className="max-h-[400px] overflow-auto flex flex-col space-y-4">
-                {messages.map((message, index) => (
+        <div className="flex flex-col space-y-4">
+            <div ref={messageDiv} className="flex-1 overflow-auto p-4 bg-gray-50 rounded-lg shadow-md max-h-[70vh]">
+                {/* Display previous messages */}
+                {messages.concat(realtimeMessages).map((message, index) => (
                     <div
                         key={index}
-                        className={`w-[80%] py-4 px-6 rounded-xl text-black ${
-                            message.created_by.name === myUser?.name ? 'ml-[20%] bg-green-200' : 'bg-gray-200'
+                        className={`max-w-[75%] py-3 px-5 rounded-lg ${
+                            message.created_by.name === myUser?.name
+                                ? 'ml-auto bg-blue-500 text-white'
+                                : 'bg-gray-300 text-black'
                         }`}
                     >
-                        <p className="font-bold text-gray-500">{message.created_by.name}</p>
-                        <p>{message.body}</p>
-                    </div>
-                ))}
-                {realtimeMessages.map((message, index) => (
-                    <div
-                        key={index}
-                        className={`w-[80%] py-4 px-6 rounded-xl text-black ${
-                            message.name === myUser?.name ? 'ml-[20%] bg-green-200' : 'bg-gray-200'
-                        }`}
-                    >
-                        <p className="font-bold text-gray-500">{message.name}</p>
-                        <p>{message.body}</p>
+                        <p className="font-medium text-sm">{message.created_by.name}</p>
+                        <p className="text-base">{message.body}</p>
                     </div>
                 ))}
             </div>
-            <div className="mt-4 py-4 px-6 flex border border-gray-300 space-x-4 rounded-xl ">
-                <input
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    type="text"
-                    placeholder="Type your message..."
-                    className="w-full p-2 bg-gray-200 rounded-xl"
-                />
-                <CustomButton
-                    label="Send"
-                    onClick={sendMessage}
-                    className="w-[100px]"
-                />
+
+            <div className="flex items-center p-2 bg-white rounded-lg shadow-md border-t-2 border-gray-200">
+                {/* Input field takes 5/6 of the space */}
+                <div className="flex-5">
+                    <input
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        type="text"
+                        placeholder="Type a message..."
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                
+                {/* Button takes 1/6 of the space */}
+                <div className="flex-1">
+                    <CustomButton
+                        label={<FiSend />}
+                        onClick={sendMessage}
+                        className="bg-blue-500 hover:bg-blue-600 text-white p-1.5 rounded-full transition duration-200 text-xl w-full"
+                    />
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 
