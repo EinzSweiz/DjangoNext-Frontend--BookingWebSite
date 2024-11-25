@@ -28,6 +28,7 @@ export async function handleRefresh(): Promise<string | undefined> {
                     httpOnly: true,
                     secure: false,
                     maxAge: 60 * 60,
+                    sameSite: 'none',
                     path: '/',
                 });
                 return json.access; // Return the token
@@ -49,26 +50,30 @@ export async function handleRefresh(): Promise<string | undefined> {
 export async function handleLogin(userId: string, accessToken: string, refreshToken: string) {
     const cookieStore = await cookies(); // Await cookies() call
 
+
     cookieStore.set('session_userid', userId, {
         httpOnly: true,
         secure: false,
-        maxAge: 60 * 60 * 24 * 7, // One week
+        maxAge: 60 * 60 * 24, // One day (24 hours)
+        sameSite: 'none',
         path: '/',
     });
-
+    
     cookieStore.set('session_access_token', accessToken, {
         httpOnly: true,
         secure: false,
-        maxAge: 60 * 60, // 60 minutes
+        maxAge: 60 * 60, // 60 minutes (1 hour)
+        sameSite: 'none',
         path: '/',
     });
-
+    
     cookieStore.set('session_refresh_token', refreshToken, {
         httpOnly: true,
         secure: false,
-        maxAge: 60 * 60 * 24 * 7, // One week
+        maxAge: 60 * 60 * 24, // One day (24 hours)
+        sameSite: 'none',
         path: '/',
-    });
+    });    
 }
 export async function resetAuthCookies() {
     const cookieStore = await cookies(); // Await cookies() call

@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import Modal from './Modal';
 import { ChangeEvent, useState, useEffect } from 'react';
 import useProfileModal from '@/app/hooks/useProfileModal';
@@ -24,7 +23,6 @@ const ProfileModal = () => {
                 try {
                     const userid = await getUserId();
                     const response = await apiService.getWithToken(`/api/auth/profile/${userid}/`);
-                    console.log('Fetched user data:', response); // Debug log
                     setDataname(response.name || ''); // Set username
                     setCurrentUserImage(response.avatar_url || null); // Set current avatar
                 } catch (err) {
@@ -35,15 +33,6 @@ const ProfileModal = () => {
         }
     }, [profileModal.isOpen]);
 
-    const fileToBase64 = (file: File) => {
-        return new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
-    };
-    // Set uploaded image
     const setImage = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             const tmpImage = event.target.files[0];
@@ -60,14 +49,12 @@ const ProfileModal = () => {
             }
             if (dataImage) {
                 formData.append('avatar', dataImage);
-        }
-    
+            }
+
             try {
-                const userId = await getUserId()
+                const userId = await getUserId();
                 const response = await apiService.put(`/api/auth/profile/update/${userId}`, formData);
-                console.log('Response:', response)
                 if (response) {
-                    console.log('Profile updated successfully');
                     router.push('/'); // Navigate to home or refresh
                     profileModal.close(); // Close modal
                 } else {
@@ -79,14 +66,12 @@ const ProfileModal = () => {
             }
         }
     };
-    
 
     // Modal content
     const content = (
         <>
             <h2 className="mb-4 text-2xl">Edit Profile</h2>
             <div className="space-y-4">
-                {/* Username input */}
                 <div className="flex flex-col space-y-2">
                     <label>Username</label>
                     <input
@@ -98,7 +83,6 @@ const ProfileModal = () => {
                     />
                 </div>
 
-                {/* Profile image input */}
                 <div className="flex flex-col space-y-2">
                     <label>Profile Image</label>
                     <input
@@ -109,7 +93,6 @@ const ProfileModal = () => {
                     />
                 </div>
 
-                {/* Display current or uploaded profile image */}
                 <div className="w-[200px] h-[250px] relative">
                     {dataImage ? (
                         <Image
@@ -117,6 +100,7 @@ const ProfileModal = () => {
                             alt="Upload image"
                             src={URL.createObjectURL(dataImage)}
                             className="w-full h-full object-cover rounded-xl"
+                            sizes="(max-width: 768px) 100vw, 50vw"
                         />
                     ) : (
                         currentUserImage && (
@@ -125,22 +109,18 @@ const ProfileModal = () => {
                                 alt="Current avatar"
                                 src={currentUserImage}
                                 className="w-full h-full object-cover rounded-xl"
+                                sizes="(max-width: 768px) 100vw, 50vw"
                             />
                         )
                     )}
                 </div>
 
-                {/* Error messages */}
-                {errors.map((error, index) => (
-                    <div
-                        key={index}
-                        className="p-5 mb-4 bg-red-500 text-white rounded-xl opacity-80"
-                    >
-                        {error}
+                {errors.length > 0 && (
+                    <div className="p-5 mb-4 bg-red-500 text-white rounded-xl opacity-80">
+                        {errors.join(', ')}
                     </div>
-                ))}
+                )}
 
-                {/* Action buttons */}
                 <div className="flex justify-between">
                     <CustomButton
                         className="mx-3 bg-black hover:bg-gray-800"
@@ -157,7 +137,6 @@ const ProfileModal = () => {
         </>
     );
 
-    // Render modal
     return (
         <Modal
             isOpen={profileModal.isOpen}

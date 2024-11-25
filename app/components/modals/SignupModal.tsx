@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import useSignupModal from "@/app/hooks/useSignupModal"
 import CustomButton from "@/app/forms/CustomButton"
 import apiService from "@/app/services/apiService"
-import useLoginModal from "@/app/hooks/useLoginModal"
 import useProfileModal from "@/app/hooks/useProfileModal"
 import { handleLogin } from "@/app/lib/actions"
 
@@ -15,21 +14,27 @@ const SignupModal = () => {
     const signupModal = useSignupModal()
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
+    const [avatar, setAvatar] = useState<File | null>(null)  // Change type to File | null
     const [password1, setPassword1] = useState('')
     const [password2, setPassword2] = useState('')
     const [errors, setErrors] = useState<string[]>([]) 
 
     // Handle form submission
     const submitSignup = async () => {
-        const formData = {
-            name: name,
-            email: email,
-            password1: password1,
-            password2: password2
+        const formData = new FormData()
+
+        formData.append('name', name)
+        formData.append('email', email)
+        formData.append('password1', password1)
+        formData.append('password2', password2)
+
+        // Append avatar file if it's selected
+        if (avatar) {
+            formData.append('avatar', avatar)
         }
 
         try {
-            const response = await apiService.postWithoutToken('/api/auth/register/', JSON.stringify(formData))
+            const response = await apiService.postWithoutToken('/api/auth/register/', formData)
 
             if (response.access) {
                 handleLogin(response.id, response.access, response.refresh)
@@ -84,6 +89,14 @@ const SignupModal = () => {
                 className="w-full h-[54px] px-4 border border-gray-300 rounded-xl"
                 placeholder="Repeat your password"
                 required
+            />
+            
+            {/* Avatar upload field */}
+            <input
+                onChange={(e) => setAvatar(e.target.files ? e.target.files[0] : null)} // Set avatar as File
+                type="file"
+                className="w-full h-[54px] px-4 border border-gray-300 rounded-xl"
+                accept="image/*"
             />
 
             {errors.map((error, index) => (

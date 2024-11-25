@@ -1,4 +1,5 @@
 "use client"
+
 import Modal from "./Modal"
 import { useState } from "react"
 import useLoginModal from "@/app/hooks/useLoginModal"
@@ -6,6 +7,16 @@ import CustomButton from "@/app/forms/CustomButton"
 import apiService from "@/app/services/apiService"
 import { useRouter } from "next/navigation"
 import { handleLogin } from "@/app/lib/actions"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import Link from "next/link"
 
 const LoginModal = () => {
     const loginModal = useLoginModal()
@@ -44,40 +55,67 @@ const LoginModal = () => {
     }
 
     const content = (
-        <>
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                {/* Email Input */}
-                <input 
-                    onChange={(e) => setEmail(e.target.value)} 
-                    type="email" 
-                    className="w-full h-[54px] px-4 border border-gray-300 rounded-xl" 
-                    placeholder="Your e-mail address" 
-                    value={email} 
-                />
-
-                {/* Password Input */}
-                <input 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    type="password" 
-                    className="w-full h-[54px] px-4 border border-gray-300 rounded-xl" 
-                    placeholder="Your password" 
-                    value={password} 
-                />
-
-                {/* Display errors if any */}
-                {errors.length > 0 && (
-                    <div className="p-2 bg-red-600 text-white rounded-xl opacity-90">
-                        {errors.join(', ')}
+        <Card className="mx-auto max-w-xl">
+            <CardHeader>
+                <CardDescription>
+                    Enter your email and password to log in to your account
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                    {/* Email Input */}
+                    <div className="grid gap-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            placeholder="m@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
                     </div>
-                )}
 
-                {/* Submit Button */}
-                <CustomButton 
-                    label="Submit"
-                    onClick={submitLogin}
-                />
-            </form>
-        </>
+                    {/* Password Input */}
+                    <div className="grid gap-2">
+                        <div className="flex items-center">
+                            <Label htmlFor="password">Password</Label>
+                            <Link href="#" className="ml-auto inline-block text-sm underline">
+                                Forgot your password?
+                            </Link>
+                        </div>
+                        <Input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    {/* Display errors if any */}
+                    {errors.length > 0 && (
+                        <div className="p-2 bg-red-600 text-white rounded-xl opacity-90">
+                            {errors.join(', ')}
+                        </div>
+                    )}
+
+                    {/* Submit Button */}
+                    <Button type="submit" onClick={submitLogin} className="w-full">
+                        Login
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                        Login with Google
+                    </Button>
+                </form>
+                <div className="mt-4 text-center text-sm">
+                    Don&apos;t have an account?{" "}
+                    <Link href="/signup" className="underline">
+                        Sign up
+                    </Link>
+                </div>
+            </CardContent>
+        </Card>
     )
 
     return (
