@@ -1,16 +1,17 @@
-'use client';
-
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-type Params = {
+
+
+type Params = Promise<{
     uid: string;
     token: string;
-};
+}>;
 
-export default function ConfirmEmail({ params }: { params: Params }) {
+ const ConfirmEmail = async ({ params }: { params: Params }) => {
+    const resolvedParams = await params
     const router = useRouter();
-    const { uid, token } = params;
+    const { uid, token } = resolvedParams;
     const [message, setMessage] = useState('Validating...');
 
     useEffect(() => {
