@@ -64,40 +64,42 @@ const apiService = {
     },
 
     postWithoutToken: async function (url: string, data: any, isFormData = false): Promise<any> {
-        console.log('post', url, data)
-    
+        console.log('post', url, data);
+      
         return new Promise((resolve, reject) => {
-            // Set default headers
-            const headers: { [key: string]: string } = {
-                'Accept': 'application/json', // Always expect JSON response
-            }
-    
-            let body = data;
-    
-            // If the request is for registration (which involves file upload), use FormData
-            if (isFormData) {
-                // If it's FormData (for file uploads), don't manually set Content-Type
-                headers['Content-Type'] = 'multipart/form-data'; // This is optional, as FormData sets it automatically
-            } else {
-                // For login (JSON data), set content type as application/json
-                headers['Content-Type'] = 'application/json';
-                body = data // Convert data to JSON string
-            }
-    
-            fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
-                method: 'POST',
-                headers,
-                body,
+          // Set default headers
+          const headers: { [key: string]: string } = {
+            'Accept': 'application/json', // Always expect JSON response
+          };
+      
+          if (!isFormData) {
+            // For JSON data, set Content-Type explicitly
+            headers['Content-type'] = 'application/json';
+            data = JSON.stringify(data); // Convert data to JSON string
+          }
+      
+          fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+            method: 'POST',
+            headers,
+            body: data, // FormData or JSON string
+          })
+            .then(async (response) => {
+              if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error ${response.status}: ${errorText}`);
+              }
+              return response.json(); // Parse response as JSON
             })
-            .then(response => response.json())
             .then((json) => {
-                resolve(json)
+              resolve(json);
             })
             .catch((error) => {
-                reject(error)
-            })
-        })
-    },
+              console.error('Error during POST:', error);
+              reject(error);
+            });
+        });
+      },
+      
     
     post: async function (url:string, data:any): Promise<any> {
         console.log('post', url, data)

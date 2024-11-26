@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import { error } from "console"
 
 const SignupModal = () => {
   const router = useRouter()
@@ -29,38 +30,49 @@ const SignupModal = () => {
 
   // Handle form submission
   const submitSignup = async () => {
-    const formData = new FormData()
-    formData.append('name', name)
-    formData.append('email', email)
-    formData.append('password1', password1)
-    formData.append('password2', password2)
-
-    // Append avatar file if it's selected
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('password1', password1);
+    formData.append('password2', password2);
+  
     if (avatar) {
-      formData.append('avatar', avatar)
+      formData.append('avatar', avatar);
     }
-
-    try {
-      const response = await apiService.postWithoutToken('/api/auth/register/', formData)
-
+  
+      const response = await apiService.postWithoutToken('/api/auth/register/', formData, true);
+  
+      // Check if the response contains access, meaning the signup was successful
       if (response.access) {
-        handleLogin(response.id, response.access, response.refresh)
-        signupModal.close()
-        router.push('/')
+        signupModal.close();
+        router.push('/');
       } else {
-        // Handle error response
-        const tmpErrors: string[] = Object.values(response).map((error: any) => error)
-        setErrors(tmpErrors)
-
-        // Clear errors after a delay
+        // If there's an error, extract the error messages and show them
+        const tmpErrors: string[] = [];
+  
+        if (response.non_field_errors) {
+          tmpErrors.push(...response.non_field_errors);
+        }
+  
+        if (response.detail) {
+          tmpErrors.push(response.detail);
+        }
+  
+        if (response.email) {
+          tmpErrors.push(response.email);
+        }
+  
+        // Update the state with the errors
+        setErrors(tmpErrors);
+  
+        // Optionally, clear the errors after a delay
         setTimeout(() => {
-          setErrors([])
-        }, 2000)
+          setErrors([]);
+        }, 2000);
       }
-    } catch (err) {
-      console.error('Error during signup:', err)
-    }
-  }
+    }  
+  
+  
 
   const content = (
     <Card className="mx-full max-w-full">
@@ -136,10 +148,12 @@ const SignupModal = () => {
 
           {/* Display errors if any */}
           {errors.length > 0 && (
-            <div className="p-2 bg-red-600 text-white rounded-xl opacity-90">
-              {errors.join(', ')}
-            </div>
-          )}
+            errors.map((error, index) => (
+              <div key={index} className="p-2 bg-red-600 text-white rounded-xl opacity-90">
+                  {error}
+              </div>
+            ))
+            )}
 
           {/* Submit Button */}
           <Button type="submit" onClick={submitSignup} className="w-full">
