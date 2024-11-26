@@ -13,7 +13,6 @@ export type MessageType = {
     created_by: UserType;
 }
 
-// Correct type for params (not a Promise)
 type Params = Promise<{ id: string }>
 
 const ConversationPage = async ({ params }: { params: Params }) => {
