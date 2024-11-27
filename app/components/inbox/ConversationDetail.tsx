@@ -111,7 +111,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                                     {message.created_by.name}
                                 </span>
                                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                    {new Date('Will add' || Date.now()).toLocaleTimeString()}
+                                    {new Date(Date.now()).toLocaleTimeString()} {/* Displays the current time */}
                                 </span>
                             </div>
                             <p className="text-sm font-normal py-2.5">
