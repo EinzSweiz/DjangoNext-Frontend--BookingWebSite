@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import Modal from './Modal';
 import { ChangeEvent, useState, useEffect } from 'react';
 import useProfileModal from '@/app/hooks/useProfileModal';
@@ -23,7 +23,7 @@ const ProfileModal = () => {
                 try {
                     const userid = await getUserId();
                     const response = await apiService.getWithToken(`/api/auth/profile/${userid}/`);
-                    console.log('Response is',response)
+                    console.log('Response is', response);
                     setDataname(response.name || ''); // Set username
                     setCurrentUserImage(response.avatar_url || null); // Set current avatar
                 } catch (err) {
@@ -71,7 +71,28 @@ const ProfileModal = () => {
     // Modal content
     const content = (
         <>
-            <h2 className="mb-4 text-2xl">Edit Profile</h2>
+            <div className="w-[200px] h-[220px] relative mx-auto flex items-center justify-center">
+                {dataImage ? (
+                    <Image
+                        fill
+                        alt="Upload image"
+                        src={URL.createObjectURL(dataImage)}
+                        className="w-full h-full object-cover rounded-full"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                ) : (
+                    currentUserImage && (
+                        <Image
+                            fill
+                            alt="Current avatar"
+                            src={currentUserImage}
+                            className="w-full h-full object-cover rounded-full"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                        />
+                    )
+                )}
+            </div>
+
             <div className="space-y-4">
                 <div className="flex flex-col space-y-2">
                     <label>Username</label>
@@ -94,28 +115,6 @@ const ProfileModal = () => {
                     />
                 </div>
 
-                <div className="w-[200px] h-[250px] relative">
-                    {dataImage ? (
-                        <Image
-                            fill
-                            alt="Upload image"
-                            src={URL.createObjectURL(dataImage)}
-                            className="w-full h-full object-cover rounded-xl"
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                    ) : (
-                        currentUserImage && (
-                            <Image
-                                fill
-                                alt="Current avatar"
-                                src={currentUserImage}
-                                className="w-full h-full object-cover rounded-xl"
-                                sizes="(max-width: 768px) 100vw, 50vw"
-                            />
-                        )
-                    )}
-                </div>
-
                 {errors.length > 0 && (
                     <div className="p-5 mb-4 bg-red-500 text-white rounded-xl opacity-80">
                         {errors.join(', ')}
@@ -124,18 +123,19 @@ const ProfileModal = () => {
 
                 <div className="flex justify-between">
                     <CustomButton
-                        className="mx-3 bg-black hover:bg-gray-800"
+                        className="mx-3 bg-black hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-900"
                         label="Close"
                         onClick={profileModal.close}
                     />
                     <CustomButton
-                        className="bg-green-500 hover:bg-green-700"
+                        className="bg-green-500 hover:bg-green-700 dark:bg-green-800 dark:hover:bg-green-900"
                         label="Save Changes"
                         onClick={submitForm}
                     />
                 </div>
             </div>
         </>
+
     );
 
     return (

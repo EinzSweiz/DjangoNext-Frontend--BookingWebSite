@@ -85,6 +85,7 @@
     font-family: var(--font-geist-sans), sans-serif;  /* Apply the Geist font */
     transition: background-color 0.3s ease, color 0.3s ease;
   }
+  
 }
 
 @layer components {

@@ -1,11 +1,12 @@
-'use client'
+'use client';
+
 import CustomButton from "@/app/forms/CustomButton";
 import { ConversationType } from "@/app/inbox/page";
 import { useEffect, useState, useRef } from "react";
 import useWebSocket from "react-use-websocket";
 import { MessageType } from "@/app/inbox/[id]/page";
 import { UserType } from "@/app/inbox/page";
-import { FiSend } from 'react-icons/fi'; // You can use any other icons as well
+import { FiSend } from 'react-icons/fi';
 
 interface ConversationDetailProps {
     conversation: ConversationType;
@@ -29,12 +30,8 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     const { readyState, lastJsonMessage, sendJsonMessage } = useWebSocket(
         `${process.env.NEXT_PUBLIC_WS_HOST}/ws/${conversation.id}/?token=${token}`,
         {
-            onError: (error) => {
-                console.error("WebSocket Error:", error);
-            },
-            onClose: (event) => {
-                console.log("WebSocket Closed:", event);
-            },
+            onError: (error) => console.error("WebSocket Error:", error),
+            onClose: (event) => console.log("WebSocket Closed:", event),
             shouldReconnect: () => true,
         }
     );
@@ -44,7 +41,6 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     }, [readyState]);
 
     useEffect(() => {
-        console.log("Last JSON Message:", lastJsonMessage);
         if (
             lastJsonMessage &&
             typeof lastJsonMessage === 'object' &&
@@ -59,71 +55,103 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                 created_by: myUser as UserType,
                 conversationId: conversation.id,
             };
-            setRealTimeMessages((realtimeMessages) => [...realtimeMessages, message]);
+            setRealTimeMessages((prev) => [...prev, message]);
         }
         scrollToBottom();
     }, [lastJsonMessage]);
 
-    const sendMessage = async () => {
-        sendJsonMessage({
-            event: 'chat_message',
-            data: {
-                body: newMessage,
-                name: myUser?.name,
-                sent_to_id: otherUser?.id,
-                conversation_id: conversation.id,
-            },
-        });
-        setNewMessage('');
-        scrollToBottom();
+    const sendMessage = () => {
+        if (newMessage.trim()) {
+            sendJsonMessage({
+                event: 'chat_message',
+                data: {
+                    body: newMessage,
+                    name: myUser?.name,
+                    sent_to_id: otherUser?.id,
+                    conversation_id: conversation.id,
+                },
+            });
+            setNewMessage('');
+            scrollToBottom();
+        }
     };
 
     const scrollToBottom = () => {
         if (messageDiv.current) {
-            messageDiv.current.scrollTop = messageDiv.current.scrollHeight; // Scroll to the bottom of the chat
+            messageDiv.current.scrollTop = messageDiv.current.scrollHeight;
         }
     };
 
     return (
         <div className="flex flex-col space-y-4">
-            <div ref={messageDiv} className="flex-1 overflow-auto p-4 bg-gray-50 rounded-lg shadow-md max-h-[70vh]">
-                {/* Display previous messages */}
+            <div ref={messageDiv} className="flex-1 overflow-auto p-4  bg-[url('/bg.jpg')] rounded-lg shadow-md max-h-[70vh]">
                 {messages.concat(realtimeMessages).map((message, index) => (
                     <div
                         key={index}
-                        className={`max-w-[75%] py-3 px-5 rounded-lg ${
-                            message.created_by.name === myUser?.name
-                                ? 'ml-auto bg-blue-500 text-white'
-                                : 'bg-gray-300 text-black'
+                        className={`flex items-start gap-2.5 mb-4 ${
+                            message.created_by.name === myUser?.name ? 'flex-row-reverse' : ''
                         }`}
                     >
-                        <p className="font-medium text-sm">{message.created_by.name}</p>
-                        <p className="text-base">{message.body}</p>
+                        {/* Profile Picture */}
+                        <img
+                            src={message.created_by.avatar_url || '/images.jpeg'}
+                            alt={`${message.created_by.name} avatar`}
+                            className="w-12 h-12 rounded-full"
+                        />
+                        {/* Message Content */}
+                        <div
+                            className={`flex flex-col w-full max-w-[320px] leading-1.5 p-4 ${
+                                message.created_by.name === myUser?.name
+                                    ? 'bg-blue-500 text-white rounded-s-xl rounded-se-xl dark:bg-blue-700'
+                                    : 'bg-gray-100 text-black rounded-e-xl rounded-es-xl dark:bg-gray-700'
+                            }`}
+                        >
+                            <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                                <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                                    {message.created_by.name}
+                                </span>
+                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                    {new Date('Will add' || Date.now()).toLocaleTimeString()}
+                                </span>
+                            </div>
+                            <p className="text-sm font-normal py-2.5">
+                                {message.body}
+                            </p>
+                            <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                Delivered
+                            </span>
+                        </div>
                     </div>
                 ))}
             </div>
 
-            <div className="flex items-center p-2 bg-white rounded-lg shadow-md border-t-2 border-gray-200">
-                {/* Input field takes 5/6 of the space */}
-                <div className="flex-5">
+            {/* Message Input Section */}
+            <div className="flex items-center gap-4 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg shadow-md">
+                {/* Input Field */}
+                <div className="flex-1 relative">
                     <input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         type="text"
                         placeholder="Type a message..."
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 pl-4 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-white dark:border-gray-600 dark:bg-gray-700 placeholder-gray-400"
                     />
+                    {/* Add a subtle icon inside the input field */}
+                    <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500">
+                        <FiSend />
+                    </span>
                 </div>
-                
-                {/* Button takes 1/6 of the space */}
-                <div className="flex-1">
+
+                {/* Send Button */}
+                <div className="flex-shrink-0">
                     <CustomButton
-                        label={<FiSend />}
+                        label="Send"
                         onClick={sendMessage}
-                        className="bg-blue-500 hover:bg-blue-600 text-white p-1.5 rounded-full transition duration-200 text-xl w-full"
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-medium shadow-lg transition-all duration-200 transform hover:scale-105 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
                 </div>
             </div>
+
         </div>
     );
 };

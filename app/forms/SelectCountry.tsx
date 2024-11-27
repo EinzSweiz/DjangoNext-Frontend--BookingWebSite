@@ -23,6 +23,7 @@ const SelectCountry: React.FC<SelectCountryTypeProps> = ({
     return (
         <>
          <Select isClearable 
+         className='text-black'
          placeholder="Anywhere" 
          options={getAll()} 
          value={value}

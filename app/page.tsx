@@ -14,6 +14,8 @@ export default function Home() {
           <PropertyList />
         </Suspense>
       </div>
+
     </main>
   );
 }
+

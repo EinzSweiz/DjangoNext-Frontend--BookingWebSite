@@ -5,8 +5,10 @@ import apiService from "../services/apiService"
 interface ContactButtonProps {
     userId?: string | null
     landlordId: string
+    className: string
 }
 const ContactButton: React.FC<ContactButtonProps> = ({
+    className,
     userId,
     landlordId
 }) => {
