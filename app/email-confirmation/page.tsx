@@ -6,8 +6,8 @@ const EmailConfirmation = () => {
   const searchParams = useSearchParams();
   const uid = searchParams.get('uid');
   const token = searchParams.get('token');
-  console.log(uid)
-  console.log(token)
+  console.log(uid);
+  console.log(token);
 
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +22,6 @@ const EmailConfirmation = () => {
     // Send the UID and token to the backend to confirm the email
     fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/auth/${uid}/${token}/`)
       .then(response => {
-        console.log(response)
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -62,4 +61,12 @@ const EmailConfirmation = () => {
   );
 };
 
-export default EmailConfirmation;
+// Wrap the component inside Suspense if needed
+import React, { Suspense } from 'react';
+export default function EmailConfirmationWithSuspense() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmailConfirmation />
+    </Suspense>
+  );
+}
