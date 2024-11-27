@@ -43,9 +43,9 @@ const SignupModal = () => {
       const response = await apiService.postWithoutToken('/api/auth/register/', formData, true);
   
       // Check if the response contains access, meaning the signup was successful
-      if (response.access) {
+      if (response.detail) {
         signupModal.close();
-        router.push('/');
+        router.push('/thankyou');
       } else {
         // If there's an error, extract the error messages and show them
         const tmpErrors: string[] = [];

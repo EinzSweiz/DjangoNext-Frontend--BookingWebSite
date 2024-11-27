@@ -23,6 +23,7 @@ const ProfileModal = () => {
                 try {
                     const userid = await getUserId();
                     const response = await apiService.getWithToken(`/api/auth/profile/${userid}/`);
+                    console.log('Response is',response)
                     setDataname(response.name || ''); // Set username
                     setCurrentUserImage(response.avatar_url || null); // Set current avatar
                 } catch (err) {
