@@ -1,44 +1,44 @@
 'use client'
-import { BellRing, Check } from "lucide-react"
+
+import { BellRing } from 'lucide-react'
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { useState, useEffect } from "react"
-import { Switch } from "@/components/ui/switch"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/card'
+import { useState, useEffect } from 'react'
+import { Switch } from '@/components/ui/switch'
+import { cn } from '@/lib/utils'
 
 const notifications = [
   {
-    title: "Thank you for signing up!",
-    description: "We have sent a confirmation email to your address.",
+    title: 'Thank you for signing up!',
+    description: 'We have sent a confirmation email to your address.',
   },
   {
-    title: "Confirmation pending.",
-    description: "Please confirm your email to complete the registration.",
+    title: 'Confirmation pending.',
+    description: 'Please confirm your email to complete the registration.',
   },
 ]
 
-type CardProps = React.ComponentProps<typeof Card>
+export default function ThankYouPage() {
+  const [isChecked, setIsChecked] = useState(false)
 
-const  ThankYouPage = ({ className, ...props }: CardProps) => {
-    const [isChecked, setIsChecked ] = useState(false)
-    useEffect(() => {
-        // Simulate a delay for when the user sees the Switch being checked
-        const timer = setTimeout(() => {
-          setIsChecked(true) // This will change the state after 4 seconds (4000ms)
-        }, 4000)
-    
-        // Clean up the timer if the component is unmounted
-        return () => clearTimeout(timer)
-      }, [])
+  useEffect(() => {
+    // Simulate a delay for when the user sees the Switch being checked
+    const timer = setTimeout(() => {
+      setIsChecked(true) // This will change the state after 4 seconds (4000ms)
+    }, 4000)
+
+    // Clean up the timer if the component is unmounted
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-800">
-      <Card className={cn("w-[600px] p-8", className)} {...props}>
+      <Card className="w-[600px] p-8">
         <CardHeader>
           <CardTitle className="text-4xl font-semibold text-green-600 dark:text-green-400">
             Thank You for Signing Up!
@@ -82,5 +82,3 @@ const  ThankYouPage = ({ className, ...props }: CardProps) => {
     </div>
   )
 }
-
-export default ThankYouPage
