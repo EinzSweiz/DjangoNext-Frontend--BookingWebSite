@@ -101,8 +101,10 @@ const apiService = {
     
     post: async function (url:string, data:any): Promise<any> {
         console.log('post', url, data)
+        console.log('DATA:', data)
         return new Promise(async (resolve, reject) => {
             let token = await getAccessToken();
+            console.log('Token:', token)
         
             if (!token) {
                 reject("Unauthorized: No valid token");
@@ -111,7 +113,7 @@ const apiService = {
                 fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: data
             })

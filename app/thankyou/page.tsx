@@ -25,7 +25,7 @@ const notifications = [
 
 type CardProps = React.ComponentProps<typeof Card>
 
-export function ThankYouPage({ className, ...props }: CardProps) {
+const  ThankYouPage = ({ className, ...props }: CardProps) => {
     const [isChecked, setIsChecked ] = useState(false)
     useEffect(() => {
         // Simulate a delay for when the user sees the Switch being checked
