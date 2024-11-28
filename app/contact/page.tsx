@@ -72,7 +72,7 @@ const ContactForm = () => {
             <div className="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform bg-white w-80 dark:bg-gray-800">
                 <h5
                     id="drawer-label"
-                    className="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
+                    className="mt-6 inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
                 >
                     <svg
                         className="w-4 h-4 me-2.5"
@@ -90,7 +90,7 @@ const ContactForm = () => {
                 <button
                     type="button"
                     onClick={contactModal.close} // Close the modal on click
-                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 right-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    className="mt-6 text-gray-400 bg-transparent hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 right-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                     <svg
                         className="w-3 h-3"

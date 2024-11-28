@@ -34,15 +34,7 @@ const LeftModal: React.FC<ModalProps> = ({ isOpen, close, label, content }) => {
                 className="bg-white w-80 h-screen p-4 transform transition-transform duration-300 ease-in-out z-50"
                 style={{ transform: isOpen ? "translateX(0)" : "translateX(-100%)" }}
             >
-                <div className="relative">
-                    <h2 className="text-lg font-bold">{label}</h2>
-                    <button
-                        onClick={handleClose}
-                        className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-                    >
-                        X
-                    </button>
-                </div>
+                    
                 {content}
             </div>
         </div>
