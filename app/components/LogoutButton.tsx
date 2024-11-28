@@ -23,6 +23,9 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({
         loginModal.close();
         closeMenu()
         router.push('/');   // Redirect to the home page
+        setTimeout(() => {
+            window.location.reload()
+        }, 200)
     };
 
     return (

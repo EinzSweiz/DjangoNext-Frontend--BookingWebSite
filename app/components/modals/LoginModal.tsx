@@ -37,9 +37,11 @@ const LoginModal = () => {
                 loginModal.close()
                 console.log('API Response:', response);
                 console.log('User ID:', response.user.pk);
-                console.log(response.user.pk)
                 handleLogin(response.user.pk, response.access, response.refresh)
                 router.push('/')
+                setTimeout(() => {
+                    window.location.reload()
+                }, 200)
             } else {
                 const tmpErrors: string[] = Object.values(response).map((error: any) => error)
                 setErrors(tmpErrors)
