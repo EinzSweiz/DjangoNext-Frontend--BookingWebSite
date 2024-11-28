@@ -7,6 +7,7 @@ import LoginModal from "./components/modals/LoginModal";
 import SignupModal from "./components/modals/SignupModal";
 import AddPropertyModal from "./components/modals/AddPropertyModal";
 import SearchModal from "./components/modals/SearchModal";
+import ContactModal from "./contact/page";
 import Footer from "./components/footer/footer";
 import ProfileModal from "./components/modals/ProfileModal";
 import { ThemeProvider } from "./components/theme-provider";
@@ -54,6 +55,7 @@ export default function RootLayout({
           <SearchModal />
           <SignupModal />
           <AddPropertyModal />
+          <ContactModal />
           <Footer />
         </ThemeProvider>
       </body>
