@@ -28,7 +28,6 @@ export async function handleRefresh(): Promise<string | undefined> {
                     httpOnly: true,
                     secure: false,
                     maxAge: 60 * 60,
-                    sameSite: 'none',
                     path: '/',
                 });
                 return json.access; // Return the token
@@ -55,7 +54,6 @@ export async function handleLogin(userId: string, accessToken: string, refreshTo
         httpOnly: true,
         secure: false,
         maxAge: 60 * 60 * 24, // One day (24 hours)
-        sameSite: 'none',
         path: '/',
     });
     
@@ -63,7 +61,6 @@ export async function handleLogin(userId: string, accessToken: string, refreshTo
         httpOnly: true,
         secure: false,
         maxAge: 60 * 60, // 60 minutes (1 hour)
-        sameSite: 'none',
         path: '/',
     });
     
@@ -71,7 +68,6 @@ export async function handleLogin(userId: string, accessToken: string, refreshTo
         httpOnly: true,
         secure: false,
         maxAge: 60 * 60 * 24, // One day (24 hours)
-        sameSite: 'none',
         path: '/',
     });    
 }
