@@ -8,7 +8,11 @@ import apiService from "../services/apiService";
 
 const ContactForm = () => {
     const [email, setEmail] = useState('');
+    const [subject, setSubject] = useState('')
+    const [message, setMessage] = useState('')
     const contactModal = useContactModal();
+    const [statusMessage, setStatusMessage] = useState('');
+    const [statusType, setStatusType] = useState<'success' | 'error' | ''>(''); // State for success/error
 
     // Fetch the token only on client side
     useEffect(() => {
@@ -33,6 +37,34 @@ const ContactForm = () => {
         };
     }, [contactModal.isOpen]);
     
+    const handleSubmit = async (e: any) => {
+        e.preventDefault(); // Prevent the default form submission
+    
+        try {
+            // Prepare the data to send to the backend
+            const data = {
+                email: email,   // User email
+                subject: subject, // Subject entered by user
+                message: message, // Message entered by user
+            };
+    
+            // Call the API to create the inquiry
+            const response = await apiService.postWithoutImages('/api/inquiries/create/', data);
+    
+            if (response) {
+                setStatusMessage("Inquiry submitted successfully!");
+                setStatusType('success'); // Set status to success
+                setTimeout(() => { contactModal.close() }, 2000); // Close the modal after 2 seconds
+            } else {
+                setStatusMessage("Error submitting inquiry. Please try again.");
+                setStatusType('error'); // Set status to error
+            }            
+        } catch (error) {
+            console.error('Error in handleSubmit:', error);
+            setStatusMessage("Error submitting inquiry. Please try again.");
+            setStatusType('error'); // Set status to error
+        }
+    };
     
     const content = (
         <div className="text-center bg-gray-400">
@@ -79,7 +111,13 @@ const ContactForm = () => {
                 </button>
 
                 {/* Contact form */}
-                <form className="mb-6">
+                <form onSubmit={handleSubmit} className="mb-6">
+                    <div
+                        aria-live="polite"
+                        className={`text-center ${statusType === 'success' ? 'text-green-500' : 'text-red-500'}`}
+                    >
+                        {statusMessage}
+                    </div>
                     <div className="mb-6">
                         <label
                             htmlFor="email"
@@ -107,6 +145,7 @@ const ContactForm = () => {
                         <input
                             type="text"
                             id="subject"
+                            onChange={(e) => setSubject(e.target.value)}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Let us know how we can help you"
                             required
@@ -122,6 +161,7 @@ const ContactForm = () => {
                         <textarea
                             id="message"
                             rows={4}
+                            onChange={(e) => setMessage(e.target.value)}
                             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Your message..."
                         ></textarea>
@@ -135,16 +175,19 @@ const ContactForm = () => {
                 </form>
 
                 {/* Contact info */}
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                    <a href="mailto:riad.sultanov.1999@gmail.com" className="hover:underline">
-                        riad.sultanov.1999@gmail.com
-                    </a>
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                    <a href="tel:+994-50-888-87-08" className="hover:underline">
-                        +994-50-888-87-08
-                    </a>
-                </p>
+                    <p className="font-semibold text-gray-900 dark:text-white mb-2">
+                        Need more help? Contact us at
+                    </p>
+                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <a href="mailto:riad.sultanov.1999@gmail.com" className="hover:underline">
+                            riad.sultanov.1999@gmail.com
+                        </a>
+                     </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <a href="tel:+994-50-888-87-08" className="hover:underline">
+                            +994-50-888-87-08
+                        </a>
+                    </p>
             </div>
         </div>
     );

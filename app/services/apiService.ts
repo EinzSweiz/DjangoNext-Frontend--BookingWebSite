@@ -127,6 +127,44 @@ const apiService = {
             })
         })
     },
+    postWithoutImages: async function (url: string, data: any): Promise<any> {
+        console.log('post', url, data);
+        
+        try {
+            // Retrieve the token
+            let token = await getAccessToken();
+            console.log('Token:', token);
+    
+            // Check if token exists
+            if (!token) {
+                throw new Error("Unauthorized: No valid token");
+            }
+    
+            // Make the fetch request with async/await
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json', // Correct header for JSON data
+                },
+                body: JSON.stringify(data),  // Ensure data is serialized
+            });
+    
+            // Check if the response is OK (status code 200-299)
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            // Parse and return the JSON response
+            const json = await response.json();
+            return json;
+    
+        } catch (error) {
+            console.error('Error in POST request:', error);
+            throw error; // Re-throw the error after logging it
+        }
+    },
+    
 
     put: async function (url: string, data:any): Promise<any> {
         console.log('put', url, data)
