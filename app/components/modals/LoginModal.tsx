@@ -58,6 +58,7 @@ const LoginModal = () => {
     }
 
     const content = (
+        
         <Card className="mx-full max-w-full">
             <CardHeader>
                 <CardDescription>

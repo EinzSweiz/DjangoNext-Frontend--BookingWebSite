@@ -9,7 +9,7 @@ const AboutUs = () => {
                 <img className="w-100 h-80 object-cover dark:hidden" src="/logo.png" alt="Image showcasing our platform" />
               </div>
               <div className="flex justify-center">
-                <img className="hidden w-full h-48 object-cover dark:block" src="https://via.placeholder.com/1200x800?text=Dark+Mode" alt="Image showcasing our platform" />
+                <img className="hidden w-100 h-80 object-cover dark:block" src="logo.png" alt="Image showcasing our platform" />
               </div>
             </div>
             <div className="mx-auto max-w-2xl space-y-6">

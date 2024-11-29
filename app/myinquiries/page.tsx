@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useEffect, useState } from 'react';
 import apiService from '../services/apiService';
 import { useRouter } from 'next/navigation';
@@ -32,11 +32,11 @@ const MyInquiries = () => {
     }, []);
 
     return (
-        <div className="p-5 font-sans">
-            {error && <p className="text-red-600">{error}</p>}
+        <div className="p-5 font-sans dark:bg-gray-900 dark:text-gray-200">
+            {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full text-sm text-left text-gray-500">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
                         <tr>
                             <th className="px-6 py-3">Inquiry ID</th>
                             <th className="px-6 py-3">Subject</th>
@@ -47,7 +47,7 @@ const MyInquiries = () => {
                     <tbody>
                         {inquiries.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className="px-6 py-3 text-gray-500 text-center">
+                                <td colSpan={4} className="px-6 py-3 text-gray-500 text-center dark:text-gray-400">
                                     No inquiries found.
                                 </td>
                             </tr>
@@ -55,7 +55,7 @@ const MyInquiries = () => {
                             inquiries.map((inquiry) => (
                                 <tr
                                     key={inquiry.id}
-                                    className="bg-white border-b hover:bg-gray-50 cursor-pointer"
+                                    className="bg-white border-b hover:bg-gray-50 cursor-pointer dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
                                     onClick={() => router.push(`/myinquiries/${inquiry.id}`)}
                                 >
                                     <td className="px-6 py-4">{inquiry.id}</td>
@@ -64,10 +64,10 @@ const MyInquiries = () => {
                                         <span
                                             className={`px-3 py-1 rounded text-center ${
                                                 inquiry.status.toLowerCase() === 'open'
-                                                    ? 'bg-green-100 text-green-700'
-                                                    : inquiry.status.toLowerCase() === 'in-progress'
-                                                    ? 'bg-yellow-100 text-yellow-700'
-                                                    : 'bg-red-100 text-red-700'
+                                                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                                                    : inquiry.status.toLowerCase() === 'in_progress'
+                                                    ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
+                                                    : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                                             }`}
                                         >
                                             {inquiry.status}

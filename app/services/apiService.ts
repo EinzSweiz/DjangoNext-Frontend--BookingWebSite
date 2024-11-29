@@ -180,6 +180,7 @@ const apiService = {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
+                    
                 },
                 body: data
             })
@@ -191,7 +192,35 @@ const apiService = {
                 reject(error)
             })
         })
-    }
+    },
+    putWithoutImage: async function (url: string, data:any): Promise<any> {
+        console.log('put', url, data)
+        return new Promise(async (resolve, reject) => {
+            let token = await getAccessToken()
+
+            if (!token) {
+                reject("Unauthorized: No valid token");
+                return;
+            }
+
+            fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                    
+                },
+                body: JSON.stringify(data)
+            })
+            .then((response) => response.json())
+            .then((json) => {
+                resolve(json)
+            })
+            .catch ((error) => {
+                reject(error)
+            })
+        })
+    },
 }
 
 
