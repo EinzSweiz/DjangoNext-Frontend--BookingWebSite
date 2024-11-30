@@ -6,7 +6,7 @@ import { PaymentSuccessPage } from "@/app/components/PaymentSuccess";
 type Params = Promise<{ id: string }>
 
 const Page = ({ params }: { params: Params }) => {
-  const resolvedParams = React.use(params);
+  const resolvedParams = params
 
   return <PaymentSuccessPage reservationId={resolvedParams} />;
 }
