@@ -1,8 +1,6 @@
-// app/components/PaymentSuccess.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';  // Use next/router to capture query params
 import apiService from '../services/apiService';
 
 interface Reservation {
@@ -14,29 +12,19 @@ interface Reservation {
   guests: number;
 }
 
-interface PaymentSuccessPageProps {
-  reservationId: any;
-}
-
-export const PaymentSuccessPage: React.FC<PaymentSuccessPageProps> = ({ reservationId }) => {
+export const PaymentSuccessPage = ({ reservationId }: { reservationId: string }) => {
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchReservationDetails = async () => {
-      if (!reservationId) {
-        setError('Reservation ID is missing');
-        return;
-      }
-
-      console.log(`Fetching reservation details for reservation ID: ${reservationId}`);
+      console.log(`Fetching reservation details for ID: ${reservationId}`);
       try {
         setLoading(true);
         const response = await apiService.getWithToken(`/api/payment/success/${reservationId}/`);
         console.log("API Response Status:", response.status);
         console.log('Response:', response)
-
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error('Reservation not found');
@@ -44,7 +32,6 @@ export const PaymentSuccessPage: React.FC<PaymentSuccessPageProps> = ({ reservat
             throw new Error('Failed to fetch payment success details');
           }
         }
-
         const data: Reservation = await response.json();
         console.log("Fetched Reservation Data:", data);
         setReservation(data);
@@ -56,8 +43,12 @@ export const PaymentSuccessPage: React.FC<PaymentSuccessPageProps> = ({ reservat
       }
     };
 
-    fetchReservationDetails();
-  }, [reservationId]);  // Re-run when `reservationId` changes
+    if (reservationId) {
+      fetchReservationDetails();
+    } else {
+      console.error("Missing reservation ID");
+    }
+  }, [reservationId]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -86,5 +77,3 @@ export const PaymentSuccessPage: React.FC<PaymentSuccessPageProps> = ({ reservat
     </div>
   );
 };
-
-export default PaymentSuccessPage;
