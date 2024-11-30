@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import apiService from '../services/apiService';
 
 interface Reservation {
@@ -12,11 +12,14 @@ interface Reservation {
   guests: number;
 }
 
-export const PaymentSuccessPage = ({ reservationId }: { reservationId: string }) => {
+interface PaymentSuccessPageProps {
+  reservationId: string;  // Ensure reservationId is typed as a string
+}
+
+export const PaymentSuccessPage: React.FC<PaymentSuccessPageProps> = ({ reservationId }: { reservationId: string }) => {
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
   useEffect(() => {
     const fetchReservationDetails = async () => {
       console.log(`Fetching reservation details for ID: ${reservationId}`);
