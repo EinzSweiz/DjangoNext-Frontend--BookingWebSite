@@ -1,3 +1,4 @@
+// app/components/PaymentSuccess.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -13,28 +14,29 @@ interface Reservation {
   guests: number;
 }
 
-export const PaymentSuccessPage = () => {
+interface PaymentSuccessPageProps {
+  reservationId: any;
+}
+
+export const PaymentSuccessPage: React.FC<PaymentSuccessPageProps> = ({ reservationId }) => {
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  
-  const router = useRouter();
-  const { id } = router.query;  // Capture the `id` from the URL path, which is the reservation ID
-  
+
   useEffect(() => {
     const fetchReservationDetails = async () => {
-      if (!id) {
+      if (!reservationId) {
         setError('Reservation ID is missing');
         return;
       }
-      
-      console.log(`Fetching reservation details for reservation ID: ${id}`);
+
+      console.log(`Fetching reservation details for reservation ID: ${reservationId}`);
       try {
         setLoading(true);
-        // Pass the reservation ID to the backend to fetch reservation details
-        const response = await apiService.getWithToken(`/api/payment/success/${id}/`);
+        const response = await apiService.getWithToken(`/api/payment/success/${reservationId}/`);
         console.log("API Response Status:", response.status);
-        
+        console.log('Response:', response)
+
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error('Reservation not found');
@@ -54,12 +56,8 @@ export const PaymentSuccessPage = () => {
       }
     };
 
-    if (id) {
-      fetchReservationDetails();
-    } else {
-      setError('Reservation ID is missing');
-    }
-  }, [id]);  // Re-run when `id` changes
+    fetchReservationDetails();
+  }, [reservationId]);  // Re-run when `reservationId` changes
 
   if (loading) {
     return <div>Loading...</div>;

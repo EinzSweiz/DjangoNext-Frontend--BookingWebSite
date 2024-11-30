@@ -8,7 +8,7 @@ type Params = Promise<{ id: string }>
 const Page = ({ params }: { params: Params }) => {
   const resolvedParams = React.use(params);
 
-  return <PaymentSuccessPage  />;
+  return <PaymentSuccessPage reservationId={resolvedParams} />;
 }
 
 export default Page
