@@ -46,10 +46,12 @@ const ReservationSidebar: React.FC<ReservationSidebarProps> = ({
                 formData.append('end_date', format(dateRange.endDate, 'yyyy-MM-dd'))
                 formData.append('number_of_nights', nights.toString())
                 formData.append('total_price', totalPrice.toString())
-
+    
                 const response = await apiService.post(`/api/properties/${property.id}/book/`, formData)
-                if (response.success) {
-                    console.log('Booking passed successfully')
+                console.log(response)
+                if (response) {
+                    // Redirect to the Stripe checkout page
+                    window.location.href = response.url
                 } else {
                     console.log('Something went wrong...')
                 }
@@ -58,7 +60,7 @@ const ReservationSidebar: React.FC<ReservationSidebarProps> = ({
             loginModal.open()
         }
     }
-
+    
     const _setDateRange = (selection:any) => {
         const newStartDate = new Date(selection.startDate)
         const newEndDate = new Date(selection.endDate)
