@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import apiService from '../services/apiService';
-
+import React from 'react';
 interface Reservation {
   property_name: string;
   start_date: string;
@@ -12,27 +12,26 @@ interface Reservation {
   guests: number;
 }
 
-interface PaymentSuccessPageProps {
-  reservationId: string; // Prop passed from the page
-}
+type Params = Promise<{reservationId: string}>
 
-export const PaymentSuccessPage = ({ reservationId }: PaymentSuccessPageProps) => {
+export const PaymentSuccessPage = ({ params }: {params: Params}) => {
+  const resolvedParams = React.use(params);
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchReservationDetails = async () => {
-      if (!reservationId) {
+      if (!resolvedParams.reservationId) {
         setError('Reservation ID is missing');
         return;
       }
 
-      console.log(`Fetching reservation details for reservation ID: ${reservationId}`);
+      console.log(`Fetching reservation details for reservation ID: ${resolvedParams.reservationId}`);
       try {
         setLoading(true);
         // Pass the reservationId to the backend to fetch reservation details
-        const response = await apiService.getWithToken(`/api/payment/success/${reservationId}/`);
+        const response = await apiService.getWithToken(`/api/payment/success/${resolvedParams.reservationId}/`);
         console.log("API Response Status:", response.status);
 
         if (!response.ok) {
@@ -54,12 +53,12 @@ export const PaymentSuccessPage = ({ reservationId }: PaymentSuccessPageProps) =
       }
     };
 
-    if (reservationId) {
+    if (resolvedParams.reservationId) {
       fetchReservationDetails();
     } else {
       setError('Reservation ID is missing');
     }
-  }, [reservationId]);
+  }, [resolvedParams.reservationId]);
 
   if (loading) {
     return <div>Loading...</div>;
