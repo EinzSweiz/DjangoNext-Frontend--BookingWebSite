@@ -12,19 +12,29 @@ interface Reservation {
   guests: number;
 }
 
-export const PaymentSuccessPage = ({ reservationId }: { reservationId: string }) => {
+interface PaymentSuccessPageProps {
+  reservationId: string; // Prop passed from the page
+}
+
+export const PaymentSuccessPage = ({ reservationId }: PaymentSuccessPageProps) => {
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchReservationDetails = async () => {
-      console.log(`Fetching reservation details for ID: ${reservationId}`);
+      if (!reservationId) {
+        setError('Reservation ID is missing');
+        return;
+      }
+
+      console.log(`Fetching reservation details for reservation ID: ${reservationId}`);
       try {
         setLoading(true);
+        // Pass the reservationId to the backend to fetch reservation details
         const response = await apiService.getWithToken(`/api/payment/success/${reservationId}/`);
         console.log("API Response Status:", response.status);
-        console.log('Response:', response)
+
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error('Reservation not found');
@@ -32,6 +42,7 @@ export const PaymentSuccessPage = ({ reservationId }: { reservationId: string })
             throw new Error('Failed to fetch payment success details');
           }
         }
+
         const data: Reservation = await response.json();
         console.log("Fetched Reservation Data:", data);
         setReservation(data);
@@ -46,7 +57,7 @@ export const PaymentSuccessPage = ({ reservationId }: { reservationId: string })
     if (reservationId) {
       fetchReservationDetails();
     } else {
-      console.error("Missing reservation ID");
+      setError('Reservation ID is missing');
     }
   }, [reservationId]);
 
@@ -77,3 +88,5 @@ export const PaymentSuccessPage = ({ reservationId }: { reservationId: string })
     </div>
   );
 };
+
+export default PaymentSuccessPage;

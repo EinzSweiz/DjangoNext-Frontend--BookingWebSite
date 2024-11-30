@@ -1,14 +1,13 @@
-// app/payment/success/[id]/page.tsx
-
 import React from "react";
 import { PaymentSuccessPage } from "@/app/components/PaymentSuccess";
 
-type Params = Promise<{ id: string }>
+type Params = { id: string };
 
 const Page = ({ params }: { params: Params }) => {
-  const resolvedParams = React.use(params);
+  // Extract the `id` directly from `params`
+  const { id } = params;
 
-  return <PaymentSuccessPage reservationId={resolvedParams.id} />;
-}
+  return <PaymentSuccessPage reservationId={id} />;
+};
 
-export default Page
+export default Page;
