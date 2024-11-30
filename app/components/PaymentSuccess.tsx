@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import apiService from '../services/apiService';
 
 interface Reservation {
   property_name: string;
@@ -21,7 +22,7 @@ export const PaymentSuccessPage = ({ reservationId }: { reservationId: string })
       console.log(`Fetching reservation details for ID: ${reservationId}`);
       try {
         setLoading(true);
-        const response = await fetch(`/api/payment/success/${reservationId}/`);
+        const response = await apiService.getWithToken(`/api/payment/success/${reservationId}/`);
         console.log("API Response Status:", response.status);
         console.log('Response:', response)
         if (!response.ok) {
