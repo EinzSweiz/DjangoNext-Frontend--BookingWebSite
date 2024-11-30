@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router'; // Use next/router to capture query params
 import apiService from '../services/apiService';
-import React from 'react';
+
 interface Reservation {
   property_name: string;
   start_date: string;
@@ -11,29 +12,32 @@ interface Reservation {
   number_of_nights: number;
   guests: number;
 }
+interface PaymentSuccessPageProps {
+  reservationId: string;
+}
 
-type Params = Promise<{reservationId: string}>
-
-export const PaymentSuccessPage = ({ params }: {params: Params}) => {
-  const resolvedParams = React.use(params);
+export const PaymentSuccessPage = ({ reservationId }: PaymentSuccessPageProps) => {
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
+  
+  const router = useRouter();
+  const { session_id } = router.query;  // Capture session_id from URL query params
+  
   useEffect(() => {
     const fetchReservationDetails = async () => {
-      if (!resolvedParams.reservationId) {
-        setError('Reservation ID is missing');
+      if (!session_id) {
+        setError('Session ID is missing');
         return;
       }
-
-      console.log(`Fetching reservation details for reservation ID: ${resolvedParams.reservationId}`);
+      
+      console.log(`Fetching reservation details for session ID: ${session_id}`);
       try {
         setLoading(true);
-        // Pass the reservationId to the backend to fetch reservation details
-        const response = await apiService.getWithToken(`/api/payment/success/${resolvedParams.reservationId}/`);
+        // Pass the session_id to the backend to fetch reservation details
+        const response = await apiService.getWithToken(`/api/payment/success/${session_id}/`);
         console.log("API Response Status:", response.status);
-
+        
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error('Reservation not found');
@@ -53,12 +57,12 @@ export const PaymentSuccessPage = ({ params }: {params: Params}) => {
       }
     };
 
-    if (resolvedParams.reservationId) {
+    if (session_id) {
       fetchReservationDetails();
     } else {
-      setError('Reservation ID is missing');
+      setError('Session ID is missing');
     }
-  }, [resolvedParams.reservationId]);
+  }, [session_id]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -88,4 +92,5 @@ export const PaymentSuccessPage = ({ params }: {params: Params}) => {
   );
 };
 
-export default PaymentSuccessPage;
+
+export default PaymentSuccessPage
