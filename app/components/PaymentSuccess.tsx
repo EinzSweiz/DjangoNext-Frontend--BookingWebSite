@@ -18,9 +18,12 @@ export const PaymentSuccessPage = ({ reservationId }: { reservationId: string })
 
   useEffect(() => {
     const fetchReservationDetails = async () => {
+      console.log(`Fetching reservation details for ID: ${reservationId}`);
       try {
         setLoading(true);
         const response = await fetch(`/api/payment/success/${reservationId}/`);
+        console.log("API Response Status:", response.status);
+        console.log('Response:', response)
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error('Reservation not found');
@@ -29,8 +32,10 @@ export const PaymentSuccessPage = ({ reservationId }: { reservationId: string })
           }
         }
         const data: Reservation = await response.json();
+        console.log("Fetched Reservation Data:", data);
         setReservation(data);
       } catch (error: any) {
+        console.error("Error fetching reservation details:", error.message);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -39,6 +44,8 @@ export const PaymentSuccessPage = ({ reservationId }: { reservationId: string })
 
     if (reservationId) {
       fetchReservationDetails();
+    } else {
+      console.error("Missing reservation ID");
     }
   }, [reservationId]);
 
