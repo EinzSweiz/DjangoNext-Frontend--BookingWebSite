@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router'; // Use next/router to capture query params
+import { useRouter } from 'next/router';  // Use next/router to capture query params
 import apiService from '../services/apiService';
 
 interface Reservation {
@@ -12,30 +12,27 @@ interface Reservation {
   number_of_nights: number;
   guests: number;
 }
-interface PaymentSuccessPageProps {
-  reservationId: string;
-}
 
-export const PaymentSuccessPage = ({ reservationId }: PaymentSuccessPageProps) => {
+export const PaymentSuccessPage = () => {
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   
   const router = useRouter();
-  const { session_id } = router.query;  // Capture session_id from URL query params
+  const { id } = router.query;  // Capture the `id` from the URL path, which is the reservation ID
   
   useEffect(() => {
     const fetchReservationDetails = async () => {
-      if (!session_id) {
-        setError('Session ID is missing');
+      if (!id) {
+        setError('Reservation ID is missing');
         return;
       }
       
-      console.log(`Fetching reservation details for session ID: ${session_id}`);
+      console.log(`Fetching reservation details for reservation ID: ${id}`);
       try {
         setLoading(true);
-        // Pass the session_id to the backend to fetch reservation details
-        const response = await apiService.getWithToken(`/api/payment/success/${session_id}/`);
+        // Pass the reservation ID to the backend to fetch reservation details
+        const response = await apiService.getWithToken(`/api/payment/success/${id}/`);
         console.log("API Response Status:", response.status);
         
         if (!response.ok) {
@@ -57,12 +54,12 @@ export const PaymentSuccessPage = ({ reservationId }: PaymentSuccessPageProps) =
       }
     };
 
-    if (session_id) {
+    if (id) {
       fetchReservationDetails();
     } else {
-      setError('Session ID is missing');
+      setError('Reservation ID is missing');
     }
-  }, [session_id]);
+  }, [id]);  // Re-run when `id` changes
 
   if (loading) {
     return <div>Loading...</div>;
@@ -92,5 +89,4 @@ export const PaymentSuccessPage = ({ reservationId }: PaymentSuccessPageProps) =
   );
 };
 
-
-export default PaymentSuccessPage
+export default PaymentSuccessPage;
