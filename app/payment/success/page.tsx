@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import apiService from '../services/apiService';
+import { useSearchParams } from 'next/navigation';
+import apiService from '@/app/services/apiService';
+
 
 interface Reservation {
   property_name: string;
@@ -13,19 +15,24 @@ interface Reservation {
 }
 
 export const PaymentSuccessPage: React.FC = () => {
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get('session_id');
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchPaymentDetails = async () => {
+    const fetchReservationDetails = async () => {
+      if (!sessionId) {
+        setError('Missing session_id');
+        return;
+      }
+
       try {
         setLoading(true);
-        const response = await apiService.getWithToken(`/api/stripe/payment/success/`);
+        const response = await apiService.getWithToken(`/api/payment/success/?session_id=${sessionId}`);
         if (!response.ok) {
-          throw new Error(
-            response.status === 404 ? 'Payment details not found' : 'Failed to fetch payment details'
-          );
+          throw new Error('Failed to fetch payment success details');
         }
         const data: Reservation = await response.json();
         setReservation(data);
@@ -36,25 +43,12 @@ export const PaymentSuccessPage: React.FC = () => {
       }
     };
 
-    fetchPaymentDetails();
-  }, []);
+    fetchReservationDetails();
+  }, [sessionId]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return (
-      <div>
-        <p>Error: {error}</p>
-        <button onClick={() => window.location.reload()}>Retry</button>
-      </div>
-    );
-  }
-
-  if (!reservation) {
-    return <div>No reservation found.</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!reservation) return <div>No reservation details found.</div>;
 
   return (
     <div className="payment-success">
