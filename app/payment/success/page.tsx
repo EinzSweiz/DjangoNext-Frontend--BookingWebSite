@@ -3,12 +3,13 @@
 import apiService from '@/app/services/apiService';
 
 interface PaymentSuccessPageProps {
-  sessionId: string;
   paymentData: any;
 }
 
-const PaymentSuccessPage = async ({ searchParams }: { searchParams: { session_id: string } }) => {
-  const { session_id } = searchParams;  // Extract session_id from query parameters
+type Params = Promise<{session_id: string}>
+
+const PaymentSuccessPage = async ({ searchParams }: { searchParams: Params }) => {
+  const { session_id } = await searchParams;  // Extract session_id from query parameters
 
   if (!session_id) {
     throw new Error('Session ID is missing');
