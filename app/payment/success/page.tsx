@@ -7,8 +7,8 @@ import apiService from '@/app/services/apiService';
 const PaymentSuccessPage = () => {
   const router = useRouter();
   const [sessionId, setSessionId] = useState<string | undefined>(undefined);
+  const [paymentData, setPaymentData] = useState<any>(null);  // Optional: Store payment data from the API
 
-  // Use useEffect to trigger logic only when the router is ready
   useEffect(() => {
     if (router.isReady) {
       const { session_id } = router.query;
@@ -20,10 +20,10 @@ const PaymentSuccessPage = () => {
 
   useEffect(() => {
     if (sessionId) {
-      // Make the API call to the backend
-      apiService.getWithToken(`/payment/success/?session_id=${sessionId}`)
-        .then(response => response.json())
+      // Make the API call to the backend once sessionId is available
+      apiService.getWithToken(`/payment/success?session_id=${sessionId}`)
         .then(data => {
+          setPaymentData(data);  // Store response data in state
           console.log('Payment success data:', data);
         })
         .catch(error => {
@@ -39,6 +39,14 @@ const PaymentSuccessPage = () => {
         <p>Session ID: {sessionId}</p>
       ) : (
         <p>Loading payment information...</p>
+      )}
+      
+      {/* Optional: Show payment details once they are fetched */}
+      {paymentData && (
+        <div>
+          <p>Payment details:</p>
+          <pre>{JSON.stringify(paymentData, null, 2)}</pre>
+        </div>
       )}
     </div>
   );
