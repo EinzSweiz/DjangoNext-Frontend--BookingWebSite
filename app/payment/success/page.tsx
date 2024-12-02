@@ -1,32 +1,42 @@
 'use client'
-import { useEffect } from 'react';
-import apiService from '@/app/services/apiService';
+
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import apiService from '@/app/services/apiService';
 
 const PaymentSuccessPage = () => {
   const router = useRouter();
-  const { session_id } = router.query;
+  const [sessionId, setSessionId] = useState<string | undefined>(undefined);
+
+  // Ensure that router is available and we can get the session_id from the query string
+  useEffect(() => {
+    if (router.isReady) {
+      const { session_id } = router.query;
+      if (session_id) {
+        setSessionId(session_id as string);  // Set session_id when the router is ready
+      }
+    }
+  }, [router.isReady, router.query]);
 
   useEffect(() => {
-    if (session_id) {
-      // Make a call to the backend to handle the payment success
-      apiService.getWithToken(`/payment/success/?session_id=${session_id}`)
+    if (sessionId) {
+      // Make the API call to the backend
+      apiService.getWithToken(`/payment/success/?session_id=${sessionId}`)
         .then(response => response.json())
         .then(data => {
           console.log('Payment success data:', data);
-          // Handle the response (e.g., show confirmation, etc.)
         })
         .catch(error => {
           console.error('Error calling payment success API:', error);
         });
     }
-  }, [session_id]);
+  }, [sessionId]);
 
   return (
     <div>
       <h1>Payment Success</h1>
-      {session_id ? (
-        <p>Session ID: {session_id}</p>
+      {sessionId ? (
+        <p>Session ID: {sessionId}</p>
       ) : (
         <p>Loading payment information...</p>
       )}
