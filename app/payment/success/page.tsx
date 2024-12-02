@@ -14,7 +14,7 @@ interface Reservation {
   guests: number;
 }
 
-export const PaymentSuccessPage: React.FC = () => {
+const PaymentSuccessPage: React.FC = () => {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [reservation, setReservation] = useState<Reservation | null>(null);
@@ -65,3 +65,6 @@ export const PaymentSuccessPage: React.FC = () => {
     </div>
   );
 };
+
+
+export default PaymentSuccessPage
