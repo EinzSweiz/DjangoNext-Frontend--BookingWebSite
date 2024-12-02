@@ -1,54 +1,42 @@
-import { GetServerSideProps } from 'next';
+// app/payment/success/page.tsx
+
 import apiService from '@/app/services/apiService';
 
-interface PaymentSuccessProps {
-  sessionId: string | null;
-  paymentData: any | null;
+interface PaymentSuccessPageProps {
+  sessionId: string;
+  paymentData: any;
 }
 
-const PaymentSuccessPage = ({ sessionId, paymentData }: PaymentSuccessProps) => {
+const PaymentSuccessPage = async ({ searchParams }: { searchParams: { session_id: string } }) => {
+  const { session_id } = searchParams;  // Extract session_id from query parameters
+
+  if (!session_id) {
+    throw new Error('Session ID is missing');
+  }
+
+  // Fetch payment data using the session_id
+  let paymentData = null;
+  try {
+    const response = await apiService.getWithToken(`/payment/success?session_id=${session_id}`);
+    paymentData = await response.json();
+  } catch (error) {
+    console.error('Error fetching payment data:', error);
+  }
+
   return (
     <div>
       <h1>Payment Success</h1>
-      {sessionId ? (
-        <p>Session ID: {sessionId}</p>
-      ) : (
-        <p>Loading payment information...</p>
-      )}
-
-      {paymentData && (
+      <p>Session ID: {session_id}</p>
+      {paymentData ? (
         <div>
           <p>Payment details:</p>
           <pre>{JSON.stringify(paymentData, null, 2)}</pre>
         </div>
+      ) : (
+        <p>Loading payment information...</p>
       )}
     </div>
   );
-};
-
-// This function will run on the server side to fetch the session_id and payment data
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { session_id } = context.query;  // Extract session_id from query params
-
-  if (!session_id) {
-    return { notFound: true };  // Return 404 if no session_id is found
-  }
-
-  try {
-    // Fetch payment data using the session_id
-    const paymentData = await apiService.getWithToken(`/payment/success?session_id=${session_id}`);
-
-    // Return the session_id and payment data as props to the page
-    return {
-      props: {
-        sessionId: session_id as string,
-        paymentData,  // Pass fetched data to the page
-      },
-    };
-  } catch (error) {
-    console.error('Error fetching payment data:', error);
-    return { notFound: true };  // Return 404 if API call fails
-  }
 };
 
 export default PaymentSuccessPage;
