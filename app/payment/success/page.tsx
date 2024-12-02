@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -7,16 +7,23 @@ import apiService from '@/app/services/apiService';
 const PaymentSuccessPage = () => {
   const router = useRouter();
   const [sessionId, setSessionId] = useState<string | undefined>(undefined);
+  const [isMounted, setIsMounted] = useState<boolean>(false);  // Flag to check if the component is mounted
 
-  // Ensure that router is available and we can get the session_id from the query string
+  // Ensure that useRouter and the rest of the logic is only executed on the client side
   useEffect(() => {
+    setIsMounted(true);  // Set the flag to true once the component is mounted on the client
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;  // Avoid executing any router logic before the component is mounted
+
     if (router.isReady) {
       const { session_id } = router.query;
       if (session_id) {
         setSessionId(session_id as string);  // Set session_id when the router is ready
       }
     }
-  }, [router.isReady, router.query]);
+  }, [isMounted, router.isReady, router.query]);
 
   useEffect(() => {
     if (sessionId) {
@@ -31,6 +38,8 @@ const PaymentSuccessPage = () => {
         });
     }
   }, [sessionId]);
+
+  if (!isMounted) return null;  // Return null until the component is mounted on the client side
 
   return (
     <div>
