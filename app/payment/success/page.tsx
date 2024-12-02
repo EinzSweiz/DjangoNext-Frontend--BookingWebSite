@@ -29,7 +29,7 @@ const PaymentSuccessPageContent: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await apiService.getWithToken(`/api/stripe/payment/success/`);
+        const response = await apiService.getWithToken(`/api/stripe/payment/success/?session_id=${sessionId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch payment success details');
         }
