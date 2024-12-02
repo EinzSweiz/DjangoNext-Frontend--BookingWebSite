@@ -19,6 +19,7 @@ const PaymentSuccessPage = async ({ searchParams }: { searchParams: Params }) =>
   let paymentData = null;
   try {
     const response = await apiService.getWithToken(`/payment/success?session_id=${session_id}`);
+    console.log('Response:', response)
     paymentData = await response.json();
   } catch (error) {
     console.error('Error fetching payment data:', error);
