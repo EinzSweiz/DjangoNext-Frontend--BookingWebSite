@@ -24,11 +24,13 @@ const PaymentSuccessPage = async ({ searchParams }: { searchParams: Params }) =>
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 font-sans">
-      <h1 className="text-center text-3xl font-bold text-green-500">Payment Successful</h1>
+    <div className="max-w-4xl mx-auto p-6 font-sans dark:bg-gray-900 dark:text-white">
+      <h1 className="text-center text-3xl font-bold text-green-500 dark:text-green-400">
+        Payment Successful
+      </h1>
       <p className="text-center text-lg mt-2">Session ID: {session_id}</p>
       {paymentData ? (
-        <div className="bg-gray-100 p-6 rounded-lg shadow-md mt-4">
+        <div className="bg-gray-100 p-6 rounded-lg shadow-md mt-4 dark:bg-gray-800 dark:text-white">
           <h2 className="text-xl font-semibold">Reservation Details</h2>
           <div className="mt-4 space-y-4">
             <p><strong>Start Date:</strong> {paymentData.reservation.start_date}</p>
