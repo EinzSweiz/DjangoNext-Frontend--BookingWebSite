@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import apiService from '@/app/services/apiService';
-
 
 interface Reservation {
   property_name: string;
@@ -14,7 +13,7 @@ interface Reservation {
   guests: number;
 }
 
-const PaymentSuccessPage: React.FC = () => {
+const PaymentSuccessPageContent: React.FC = () => {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [reservation, setReservation] = useState<Reservation | null>(null);
@@ -66,5 +65,11 @@ const PaymentSuccessPage: React.FC = () => {
   );
 };
 
+// Wrapper for Suspense with fallback
+const PaymentSuccessPage: React.FC = () => (
+  <Suspense fallback={<div>Loading payment details...</div>}>
+    <PaymentSuccessPageContent />
+  </Suspense>
+);
 
-export default PaymentSuccessPage
+export default PaymentSuccessPage;
