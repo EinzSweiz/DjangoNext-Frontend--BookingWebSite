@@ -27,6 +27,7 @@ const LoginModal = () => {
     const [errors, setErrors] = useState<string[]>([])
     const [resetEmail, setResetEmail] = useState('')
     const [isResetMode, setIsResetMode] = useState(false)
+    const [messages, setMessages] = useState<string[]>([])
     const router = useRouter()
 
     const hadnleSignupModal = () => {
@@ -72,7 +73,7 @@ const LoginModal = () => {
             const response = await apiService.postWithoutToken('/api/auth/password/reset/', JSON.stringify(formData))
             if (response) {
                 setIsResetMode(false)  // Reset the mode after success
-                alert('Check your email for password reset instructions')
+                setMessages(['Check your email for password reset instructions'])
             } else {
                 setErrors(['Failed to send reset email. Please try again later.'])
                 setTimeout(() => setErrors([]), 2000)
@@ -98,6 +99,11 @@ const LoginModal = () => {
                     {errors.length > 0 && (
                         <div className="p-1 bg-red-600 text-white rounded-xl opacity-90">
                             {errors.join(', ')}
+                        </div>
+                    )}
+                    {messages.length > 0 && (
+                        <div className="p-1 bg-green-600 text-white rounded-xl opacity-90">
+                            {messages.join(', ')}
                         </div>
                     )}
                     {/* Email Input */}
@@ -133,9 +139,29 @@ const LoginModal = () => {
                     )}
 
                     {/* Submit Button */}
-                    <Button type="submit" onClick={isResetMode ? handlePasswordResetRequest : submitLogin} className="w-full">
-                        {isResetMode ? 'Request Password Reset' : 'Login'}
-                    </Button>
+                    {isResetMode ? (
+                        <div className="flex space-x-4">
+                            <Button 
+                                type="button" 
+                                onClick={() => setIsResetMode(false)} 
+                                className="w-full bg-red-600 text-white hover:bg-red-700 dark:bg-red-800 dark:hover:bg-red-900"
+                            >
+                                Back to Login
+                            </Button>
+                            <Button 
+                                type="submit" 
+                                onClick={handlePasswordResetRequest} 
+                                className="w-full bg-green-600 text-white hover:bg-green-700 dark:bg-green-800 dark:hover:bg-green-900"
+                            >
+                                Request Password Reset
+                            </Button>
+                        </div>
+                    ) : (
+                        <Button type="submit" onClick={submitLogin} className="w-full">
+                            Login
+                        </Button>
+                    )}
+
                 </form>
 
                 {!isResetMode && (
