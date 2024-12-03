@@ -49,7 +49,7 @@ const PasswordReset = ({params}: {params: Params}) => {
             )
             console.log('Response:', response)
             console.log('Sending form data:', formData); // Debug log
-            if (response) {
+            if (response.success) {
                 setMessage('Password has been successfully reset!')
                 setErrors([])
                 setTimeout(() => {router.push('/')}, 2000)
