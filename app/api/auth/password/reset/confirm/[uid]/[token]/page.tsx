@@ -43,7 +43,7 @@ const PasswordReset = ({params}: {params: Params}) => {
 
         try {
             // Send request to reset the password
-            const response = await apiService.post(
+            const response = await apiService.postWithoutToken(
                 `/api/auth/password/reset/confirm/${uid}/${token}/`,
                 formData
             )
