@@ -37,8 +37,8 @@ const PasswordReset = ({params}: {params: Params}) => {
 
         // Prepare form data
         const formData = {
-            password: newPassword,
-            confirmPassword: confirmPassword,
+            new_password1: newPassword,
+            new_password2: confirmPassword,
             uid: uid, // Include UID
             token: token, // Include token
         }
