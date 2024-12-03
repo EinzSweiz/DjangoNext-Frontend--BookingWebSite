@@ -25,13 +25,6 @@ const PasswordReset = ({params}: {params: Params}) => {
         getParams()
     }, [params])
 
-    // This effect ensures the form is only shown when both `uid` and `token` are present
-    useEffect(() => {
-        if (!uid || !token) {
-            setErrors(['Invalid or missing UID/Token.'])
-        }
-    }, [uid, token])
-
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -55,7 +48,7 @@ const PasswordReset = ({params}: {params: Params}) => {
                 formData
             )
 
-            if (response.success) {
+            if (response) {
                 setMessage('Password has been successfully reset!')
                 setErrors([])
             } else {
@@ -73,12 +66,12 @@ const PasswordReset = ({params}: {params: Params}) => {
 
             {/* Display any error or success messages */}
             {errors.length > 0 && (
-                <div className="p-2 bg-red-600 text-white rounded mb-4">
+                <div className="p-2 text-red rounded mb-4">
                     {errors.join(', ')}
                 </div>
             )}
             {message && (
-                <div className="p-2 bg-green-600 text-white rounded mb-4">
+                <div className="p-2 text-green rounded mb-4">
                     {message}
                 </div>
             )}
