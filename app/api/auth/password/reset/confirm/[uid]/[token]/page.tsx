@@ -39,13 +39,15 @@ const PasswordReset = ({params}: {params: Params}) => {
         const formData = {
             password: newPassword,
             confirmPassword: confirmPassword,
+            uid: uid, // Include UID
+            token: token, // Include token
         }
 
         try {
             // Send request to reset the password
             const response = await apiService.postWithoutToken(
                 `/api/auth/password/reset/confirm/${uid}/${token}/`,
-                JSON.stringify(formData)
+                JSON.stringify(formData), false
             )
             console.log('Response:', response)
             console.log('Sending form data:', JSON.stringify(formData)); // Debug log
