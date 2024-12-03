@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import apiService from '@/app/services/apiService'  // Adjust path if necessary
 import { Button } from '@/components/ui/button' // Adjust path if necessary
 import { Input } from '@/components/ui/input' // Adjust path if necessary
@@ -14,6 +15,7 @@ const PasswordReset = ({params}: {params: Params}) => {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [errors, setErrors] = useState<string[]>([])
     const [message, setMessage] = useState('')
+    const router = useRouter()
 
     useEffect(() => {
         const getParams = async () => {
@@ -50,6 +52,7 @@ const PasswordReset = ({params}: {params: Params}) => {
             if (response) {
                 setMessage('Password has been successfully reset!')
                 setErrors([])
+                setTimeout(() => {router.push('/')}, 2000)
             } else {
                 setErrors([response.error || 'Failed to reset the password.'])
             }
@@ -65,12 +68,12 @@ const PasswordReset = ({params}: {params: Params}) => {
 
             {/* Display any error or success messages */}
             {errors.length > 0 && (
-                <div className="p-2 text-red rounded mb-4">
+                <div className="p-2 text-red-500 rounded mb-4">
                     {errors.join(', ')}
                 </div>
             )}
             {message && (
-                <div className="p-2 text-green rounded mb-4">
+                <div className="p-2 text-green-500 rounded mb-4">
                     {message}
                 </div>
             )}
