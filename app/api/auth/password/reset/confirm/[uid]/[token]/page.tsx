@@ -49,9 +49,7 @@ const PasswordReset = ({params}: {params: Params}) => {
                 `/api/auth/password/reset/confirm/${uid}/${token}/`,
                 JSON.stringify(formData), false
             )
-            console.log('Response:', response)
-            console.log('Sending form data:', JSON.stringify(formData)); // Debug log
-            if (response.success) {
+            if (response.ok) {
                 setMessage('Password has been successfully reset!')
                 setErrors([])
                 setTimeout(() => {router.push('/')}, 2000)
