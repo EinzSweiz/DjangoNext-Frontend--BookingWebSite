@@ -37,8 +37,6 @@ const PasswordReset = ({params}: {params: Params}) => {
         const formData = {
             password: newPassword,
             confirmPassword: confirmPassword,
-            token: token,
-            uid: uid,
         }
 
         try {
@@ -47,7 +45,8 @@ const PasswordReset = ({params}: {params: Params}) => {
                 `/api/auth/password/reset/confirm/${uid}/${token}/`,
                 formData
             )
-
+            console.log('Response:', response)
+            console.log('Sending form data:', formData); // Debug log
             if (response) {
                 setMessage('Password has been successfully reset!')
                 setErrors([])
