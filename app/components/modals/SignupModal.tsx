@@ -17,8 +17,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { error } from "console"
+import useLoginModal from "@/app/hooks/useLoginModal"
 
 const SignupModal = () => {
+  const loginModal = useLoginModal()
   const router = useRouter()
   const signupModal = useSignupModal()
   const [name, setName] = useState('')
@@ -27,6 +29,10 @@ const SignupModal = () => {
   const [password1, setPassword1] = useState('')
   const [password2, setPassword2] = useState('')
   const [errors, setErrors] = useState<string[]>([])
+  const handleLoginRedirect = () => {
+    signupModal.close(); // Close the signup modal
+    loginModal.open(); // Open the login modal
+  };
 
   // Handle form submission
   const submitSignup = async () => {
@@ -163,7 +169,7 @@ const SignupModal = () => {
 
         <div className="mt-4 text-center text-sm">
           Already have an account?{" "}
-          <Link href="/login" className="underline">
+          <Link href="#" onClick={handleLoginRedirect} className="underline">
             Login here
           </Link>
         </div>

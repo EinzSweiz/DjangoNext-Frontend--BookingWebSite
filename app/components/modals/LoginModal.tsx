@@ -17,13 +17,22 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import useSignupModal from "@/app/hooks/useSignupModal"
 
 const LoginModal = () => {
+    const signupModal = useSignupModal()
     const loginModal = useLoginModal()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [errors, setErrors] = useState<string[]>([])
+    const [resetEmail, setResetEmail] = useState('')
+    const [isResetMode, setIsResetMode] = useState(false)
     const router = useRouter()
+
+    const hadnleSignupModal = () => {
+        loginModal.close()
+        signupModal.open()
+    }
 
     const submitLogin = async () => {
         const formData = {
@@ -57,12 +66,30 @@ const LoginModal = () => {
         }
     }
 
+    const handlePasswordResetRequest = async () => {
+        const formData = { email: resetEmail }
+        try {
+            const response = await apiService.postWithoutToken('/api/auth/password/reset/', JSON.stringify(formData))
+            if (response.success) {
+                setIsResetMode(false)  // Reset the mode after success
+                alert('Check your email for password reset instructions')
+            } else {
+                setErrors(['Failed to send reset email. Please try again later.'])
+                setTimeout(() => setErrors([]), 2000)
+            }
+        } catch (err) {
+            console.error('Password reset error:', err)
+            setErrors(['An unexpected error occurred. Please try again later.'])
+        }
+    }
+
     const content = (
-        
         <Card className="mx-full max-w-full">
             <CardHeader>
                 <CardDescription>
-                    Enter your email and password to log in to your account
+                    {isResetMode
+                        ? 'Enter your email to reset your password'
+                        : 'Enter your email and password to log in to your account'}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -74,28 +101,30 @@ const LoginModal = () => {
                             id="email"
                             type="email"
                             placeholder="m@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={isResetMode ? resetEmail : email}
+                            onChange={(e) => isResetMode ? setResetEmail(e.target.value) : setEmail(e.target.value)}
                             required
                         />
                     </div>
 
-                    {/* Password Input */}
-                    <div className="grid gap-2">
-                        <div className="flex items-center">
-                            <Label htmlFor="password">Password</Label>
-                            <Link href="#" className="ml-auto inline-block text-sm underline">
-                                Forgot your password?
-                            </Link>
+                    {/* Password Input (only for login) */}
+                    {!isResetMode && (
+                        <div className="grid gap-2">
+                            <div className="flex items-center">
+                                <Label htmlFor="password">Password</Label>
+                                <Link href="#" className="ml-auto inline-block text-sm underline" onClick={() => setIsResetMode(true)}>
+                                    Forgot your password?
+                                </Link>
+                            </div>
+                            <Input
+                                id="password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
                         </div>
-                        <Input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
+                    )}
 
                     {/* Display errors if any */}
                     {errors.length > 0 && (
@@ -105,19 +134,19 @@ const LoginModal = () => {
                     )}
 
                     {/* Submit Button */}
-                    <Button type="submit" onClick={submitLogin} className="w-full">
-                        Login
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                        Login with Google
+                    <Button type="submit" onClick={isResetMode ? handlePasswordResetRequest : submitLogin} className="w-full">
+                        {isResetMode ? 'Request Password Reset' : 'Login'}
                     </Button>
                 </form>
-                <div className="mt-4 text-center text-sm">
-                    Don&apos;t have an account?{" "}
-                    <Link href="/signup" className="underline">
-                        Sign up
-                    </Link>
-                </div>
+
+                {!isResetMode && (
+                    <div className="mt-4 text-center text-sm">
+                        Don&apos;t have an account?{" "}
+                        <Link href="#" onClick={hadnleSignupModal} className="underline">
+                            Sign up
+                        </Link>
+                    </div>
+                )}
             </CardContent>
         </Card>
     )
@@ -126,7 +155,7 @@ const LoginModal = () => {
         <Modal 
             isOpen={loginModal.isOpen}
             close={loginModal.close}
-            label="Login"
+            label={isResetMode ? 'Password Reset' : 'Login'}
             content={content}
         />
     )
