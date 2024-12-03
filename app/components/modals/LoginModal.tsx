@@ -70,7 +70,7 @@ const LoginModal = () => {
         const formData = { email: resetEmail }
         try {
             const response = await apiService.postWithoutToken('/api/auth/password/reset/', JSON.stringify(formData))
-            if (response.success) {
+            if (response) {
                 setIsResetMode(false)  // Reset the mode after success
                 alert('Check your email for password reset instructions')
             } else {
@@ -94,6 +94,12 @@ const LoginModal = () => {
             </CardHeader>
             <CardContent>
                 <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                    {/* Display errors if any */}
+                    {errors.length > 0 && (
+                        <div className="p-1 bg-red-600 text-white rounded-xl opacity-90">
+                            {errors.join(', ')}
+                        </div>
+                    )}
                     {/* Email Input */}
                     <div className="grid gap-2">
                         <Label htmlFor="email">Email</Label>
@@ -123,13 +129,6 @@ const LoginModal = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
-                        </div>
-                    )}
-
-                    {/* Display errors if any */}
-                    {errors.length > 0 && (
-                        <div className="p-2 bg-red-600 text-white rounded-xl opacity-90">
-                            {errors.join(', ')}
                         </div>
                     )}
 
