@@ -147,18 +147,19 @@ const LoginModal = () => {
                         <Button
                             type="button"
                             onClick={() => setIsResetMode(false)}
-                            className="w-full sm:w-auto bg-red-600 text-white hover:bg-red-700 dark:bg-red-800 dark:hover:bg-red-900 py-3 px-6 text-lg"
+                            className="w-full sm:w-auto bg-red-600 text-white hover:bg-red-700 dark:bg-red-800 dark:hover:bg-red-900 py-2 px-6 text-lg sm:flex-1"
                         >
                             Back to Login
                         </Button>
                         <Button
                             type="submit"
                             onClick={handlePasswordResetRequest}
-                            className="w-full sm:w-auto bg-green-600 text-white hover:bg-green-700 dark:bg-green-800 dark:hover:bg-green-900 py-3 px-6 text-lg"
+                            className="w-full sm:w-auto bg-green-600 text-white hover:bg-green-700 dark:bg-green-800 dark:hover:bg-green-900 py-2 px-6 text-lg sm:flex-1"
                         >
                             Request Password Reset
                         </Button>
                     </div>
+                    
                     
                     ) : (
                         <>
