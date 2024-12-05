@@ -37,15 +37,22 @@ const LoginModal = () => {
     }
 
     const handleGoogleLogin = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
-            // Redirect to the Django-allauth Google login URL
-            window.location.href = '/accounts/google/login/'
+            // Call your backend endpoint to get the Google login redirect URL
+            const response = await apiService.get('/accounts/google/login/');
+            console.log('Response:', response)
+    
+            if (response?.data?.redirect_url) {
+                window.location.href = response.data.redirect_url;
+            } else {
+                throw new Error('No redirect URL provided by the backend.');
+            }
         } catch (err) {
-            console.error('Error during Google login:', err)
-            setLoading(false)
+            console.error('Error during Google login:', err);
+            setLoading(false);
         }
-    }
+    };
 
     const submitLogin = async () => {
         const formData = {
