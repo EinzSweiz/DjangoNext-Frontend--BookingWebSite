@@ -40,11 +40,20 @@ const LoginModal = () => {
         setLoading(true);
         try {
             // Call your backend endpoint to get the Google login redirect URL
-            const response = await apiService.get('/accounts/google/login/');
-            console.log('Response:', response)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/accounts/google/login/`);
     
-            if (response?.data?.redirect_url) {
-                window.location.href = response.data.redirect_url;
+            // Check if the response is okay
+            if (!response.ok) {
+                throw new Error('Failed to fetch the Google login URL');
+            }
+    
+            // Parse the JSON response
+            const data = await response.json();
+            console.log('Response:', data);
+    
+            // Check if the redirect URL is present in the response
+            if (data?.redirect_url) {
+                window.location.href = data.redirect_url;
             } else {
                 throw new Error('No redirect URL provided by the backend.');
             }
