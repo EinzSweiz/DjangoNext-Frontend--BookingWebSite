@@ -4,15 +4,15 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-      protocol: 'http',
-      hostname: 'localhost',
+      protocol: 'https',
+      hostname: '172.19.0.5',
       port: '8010',
       pathname: '/**'
       },
       {
-        protocol: 'http',
-        hostname: '165.22.76.137',
-        port: '1337',
+        protocol: 'https',
+        hostname: 'www.diplomaroad.pro',
+        port: '',
         pathname: '/**'
       }
   ]
