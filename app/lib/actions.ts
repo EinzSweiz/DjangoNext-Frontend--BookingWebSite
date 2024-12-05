@@ -1,6 +1,7 @@
 'use server';
 
 import { error } from 'console';
+import { tr } from 'date-fns/locale';
 import { cookies } from 'next/headers';
 import { json } from 'stream/consumers';
 
@@ -26,9 +27,10 @@ export async function handleRefresh(): Promise<string | undefined> {
             if (json.access) {
                 CookiesStore.set('session_access_token', json.access, {
                     httpOnly: true,
-                    secure: false,
+                    secure: true,
                     maxAge: 60 * 60,
                     path: '/',
+                    sameSite: 'lax'
                 });
                 return json.access; // Return the token
             } else {
@@ -48,28 +50,30 @@ export async function handleRefresh(): Promise<string | undefined> {
 
 export async function handleLogin(userId: string, accessToken: string, refreshToken: string) {
     const cookieStore = await cookies(); // Await cookies() call
-
-
     cookieStore.set('session_userid', userId, {
         httpOnly: true,
-        secure: false,
+        secure: true, // Make sure to set to true in production with HTTPS
         maxAge: 60 * 60 * 24, // One day (24 hours)
         path: '/',
+        sameSite: 'lax',  // Or 'Strict' or 'None' depending on your needs
     });
     
     cookieStore.set('session_access_token', accessToken, {
         httpOnly: true,
-        secure: false,
+        secure: true, // Make sure to set to true in production with HTTPS
         maxAge: 60 * 60, // 60 minutes (1 hour)
         path: '/',
+        sameSite: 'lax',  // Or 'Strict' or 'None' depending on your needs
     });
     
     cookieStore.set('session_refresh_token', refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: true, // Make sure to set to true in production with HTTPS
         maxAge: 60 * 60 * 24, // One day (24 hours)
         path: '/',
-    });    
+        sameSite: 'lax',  // Or 'Strict' or 'None' depending on your needs
+    });
+    
 }
 export async function resetAuthCookies() {
     const cookieStore = await cookies(); // Await cookies() call
