@@ -7,6 +7,7 @@ import CustomButton from "@/app/forms/CustomButton"
 import apiService from "@/app/services/apiService"
 import { useRouter } from "next/navigation"
 import { handleLogin } from "@/app/lib/actions"
+import { getAccessToken } from "@/app/lib/actions"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -36,12 +37,13 @@ const LoginModal = () => {
         signupModal.open()
     }
 
-    const handleGoogleLogin = () => {
+    const handleGoogleLogin = async () => {
+        const accessToken = await getAccessToken()
         setLoading(true); // Indicate loading state
-    
+        
         try {
             // Redirect the user to the backend endpoint to start the OAuth flow
-            window.location.href = `${process.env.NEXT_PUBLIC_API_HOST}/accounts/google/login/?process=login`;
+            window.location.href = `${process.env.NEXT_PUBLIC_API_HOST}/accounts/google/login/?access_token=${accessToken}`;
         } catch (err) {
             console.error('Error during Google login:', err);
             setLoading(false); // Reset loading state if there's an error
