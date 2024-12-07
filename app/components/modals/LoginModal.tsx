@@ -36,29 +36,15 @@ const LoginModal = () => {
         signupModal.open()
     }
 
-    const handleGoogleLogin = async () => {
-        setLoading(true);
+    const handleGoogleLogin = () => {
+        setLoading(true); // Indicate loading state
+    
         try {
-            // Call the backend endpoint to initiate Google login
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/accounts/google/login/?process=login`);
-    
-            // Check if the response is okay
-            if (!response.ok) {
-                throw new Error('Failed to fetch the Google login redirect URL');
-            }
-    
-            // Parse the response JSON
-            const data = await response.json();
-    
-            // Redirect the user to the Google login page
-            if (data?.redirect_url) {
-                window.location.href = data.redirect_url;
-            } else {
-                throw new Error('No redirect URL provided by the backend.');
-            }
+            // Redirect the user to the backend endpoint to start the OAuth flow
+            window.location.href = `${process.env.NEXT_PUBLIC_API_HOST}/accounts/google/login/?process=login`;
         } catch (err) {
             console.error('Error during Google login:', err);
-            setLoading(false);
+            setLoading(false); // Reset loading state if there's an error
         }
     };
 
