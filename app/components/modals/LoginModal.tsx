@@ -37,13 +37,12 @@ const LoginModal = () => {
         signupModal.open()
     }
 
-    const handleGoogleLogin = async () => {
-        const accessToken = await getAccessToken()
+    const handleGoogleLogin = () => {
         setLoading(true); // Indicate loading state
         
         try {
             // Redirect the user to the backend endpoint to start the OAuth flow
-            window.location.href = `${process.env.NEXT_PUBLIC_API_HOST}/accounts/google/login/?access_token=${accessToken}`;
+            window.location.href = `${process.env.NEXT_PUBLIC_API_HOST}/accounts/google/login/`;
         } catch (err) {
             console.error('Error during Google login:', err);
             setLoading(false); // Reset loading state if there's an error
