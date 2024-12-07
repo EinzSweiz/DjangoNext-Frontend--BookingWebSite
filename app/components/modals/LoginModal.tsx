@@ -96,6 +96,7 @@ const LoginModal = () => {
             const response = await apiService.postWithoutToken('/api/auth/password/reset/', JSON.stringify(formData))
             if (response) {
                 setIsResetMode(false)
+                loginModal.close()
                 router.push('/thankyou')
             } else {
                 setErrors(['Failed to send reset email. Please try again later.'])
