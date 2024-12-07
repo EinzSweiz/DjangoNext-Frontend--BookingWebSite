@@ -1,9 +1,10 @@
-'use client'
+'use client'; // Ensure this is at the top to mark this as client-side code
+
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { cookies } from "next/headers"; // Use next/headers for managing cookies
-import { GOOGLE_ACCESS_TOKEN } from "@/app/token"; // If you have the constant in the correct place
+import { setCookie } from "nookies"; // Import cookies handling from 'nookies'
+import { GOOGLE_ACCESS_TOKEN } from "@/app/token";
 
 function RedirectGoogleAuth() {
     const router = useRouter();
@@ -21,8 +22,7 @@ function RedirectGoogleAuth() {
                 console.log("AccessToken found: ", accessToken);
                 
                 // Store the access token in a secure, HttpOnly cookie
-                const cookieStore = await cookies();  // Ensure cookies() is awaited
-                cookieStore.set('google_access_token', accessToken, {
+                setCookie(null, 'google_access_token', accessToken, {
                     httpOnly: true,
                     secure: true,  // Set to true in production with HTTPS
                     maxAge: 60 * 60 * 24, // 1 day
@@ -40,9 +40,9 @@ function RedirectGoogleAuth() {
                     const { user_id } = response.data;
                     if (user_id) {
                         // Store user_id in an HTTP-only cookie
-                        cookieStore.set('session_userid', user_id, {
-                            httpOnly: true,
-                            secure: true,  // Set to true in production with HTTPS
+                        setCookie(null, 'session_userid', user_id, {
+                            httpOnly: true,  // Set to true in production with HTTPS
+                            secure: true,    // Set to true in production with HTTPS
                             maxAge: 60 * 60 * 24,  // One day
                             path: '/',
                             sameSite: 'lax',
