@@ -82,11 +82,12 @@ const ProfileModal = () => {
                     />
                 ) : (
                     currentUserImage && (
-                        <img
+                        <Image
+                            fill
                             alt="Current avatar"
-                            src={currentUserImage || '/images.jpeg'}
+                            src={currentUserImage}
                             className="w-full h-full object-cover rounded-full"
-                            style={{ objectFit: 'cover', borderRadius: '50%' }}
+                            sizes="(max-width: 768px) 100vw, 50vw"
                         />
                     )
                 )}
