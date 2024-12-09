@@ -28,7 +28,7 @@ export async function handleRefresh(): Promise<string | undefined> {
                 CookiesStore.set('session_access_token', json.access, {
                     httpOnly: true,
                     secure: true,
-                    maxAge: 60 * 60,
+                    maxAge: 60 * 60 * 72,
                     path: '/',
                     sameSite: 'lax'
                 });
@@ -88,7 +88,6 @@ export async function resetAuthCookies() {
 export async function getUserId() {
     const cookieStore = await cookies(); // Await cookies() call
     const userId = cookieStore.get('session_userid')?.value; // Access the cookie value
-
     return userId ? userId : null;
 }
 
