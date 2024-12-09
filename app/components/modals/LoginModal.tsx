@@ -50,14 +50,16 @@ const LoginModal = () => {
     };
     
     const handleGithubLogin = () => {
-        setLoading(true); // Indicate loading state
+        setLoading(true);
+        
+        const githubLoginUrl = `${process.env.NEXT_PUBLIC_API_HOST}/accounts/github/login/`;
+        console.log("GitHub login URL:", githubLoginUrl); // Log the URL for debugging
     
         try {
-            // Redirect the user to the backend endpoint to start the OAuth flow
-            window.location.href = `${process.env.NEXT_PUBLIC_API_HOST}/accounts/github/login/?process=login`;
+            window.location.href = githubLoginUrl;
         } catch (err) {
-            console.error('Error during Google login:', err);
-            setLoading(false); // Reset loading state if there's an error
+            console.error('Error during GitHub login:', err);
+            setLoading(false);
         }
     };
 
