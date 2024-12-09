@@ -96,6 +96,7 @@ const LoginModal = () => {
             const response = await apiService.postWithoutToken('/api/auth/password/reset/', JSON.stringify(formData))
             if (response) {
                 setIsResetMode(false)
+                setTimeout(() => setErrors([]), 1000)
                 loginModal.close()
                 router.push('/thankyou')
             } else {
