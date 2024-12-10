@@ -13,8 +13,8 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
     toggleStatusDetails,
     onAgentChange,
 }) => {
-    const [agents, setAgents] = useState<{ id: string; name: string }[]>([]);
-    const [selectedAgent, setSelectedAgent] = useState<string>(agent);
+    const [agents, setAgents] = useState<{ id: string; name: string; email: string }[]>([]);
+    const [selectedAgent, setSelectedAgent] = useState<string>(agent || "");
 
     useEffect(() => {
         const fetchAgents = async () => {
@@ -22,7 +22,7 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
                 const response = await apiService.getWithToken("/api/inquiries/customer-service-agents/");
                 console.log("Full response:", response);  // Log the full response object
                 console.log("Agents fetched:", response.data);  // Check if the data is available here
-                setAgents(response.data || []);  // Fallback to an empty array if data is undefined
+                setAgents(response || []);  // Fallback to an empty array if data is undefined
             } catch (error) {
                 console.error("Failed to fetch customer service agents:", error);
             }
