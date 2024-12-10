@@ -19,8 +19,9 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
         const fetchAgents = async () => {
             try {
                 const response = await apiService.getWithToken("/api/inquiries/customer-service-agents/");
-                console.log("Agents fetched:", response.data); // Debugging
-                setAgents(response.data || []); // Fallback to empty array if data is undefined
+                console.log("Full response:", response);  // Log the full response object
+                console.log("Agents fetched:", response.data);  // Check if the data is available here
+                setAgents(response.data || []);  // Fallback to an empty array if data is undefined
             } catch (error) {
                 console.error("Failed to fetch customer service agents:", error);
             }
