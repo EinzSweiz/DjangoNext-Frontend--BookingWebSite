@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import apiService
- from "@/app/services/apiService";
+import apiService from "@/app/services/apiService";
+
 interface AgentDisplayProps {
     agent: string;
     toggleStatusDetails: () => void;
-    userRole: 'user' | 'customer_service' | 'admin';
+    userRole: "user" | "customer_service" | "admin";
     onAgentChange: (newAgent: string) => void;
 }
 
@@ -17,12 +17,12 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
     const [agents, setAgents] = useState<{ id: string; name: string }[]>([]);
     const [selectedAgent, setSelectedAgent] = useState<string>(agent);
 
-    // Fetch agents when the component mounts
     useEffect(() => {
         const fetchAgents = async () => {
             try {
-                const response = await apiService.getWithToken("api/inquiries/customer-service-agents/"); // Adjust the endpoint as needed.
-                setAgents(response.data);
+                const response = await apiService.getWithToken("/api/inquiries/customer-service-agents/");
+                console.log("Agents fetched:", response.data); // Debugging
+                setAgents(response.data || []); // Fallback to empty array if data is undefined
             } catch (error) {
                 console.error("Failed to fetch customer service agents:", error);
             }
@@ -42,7 +42,7 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
     return (
         <div className="flex flex-col space-y-4">
             <div className="flex justify-between items-center">
-                {userRole === "customer_service" ? (
+                {userRole === "admin" ? (
                     <div>
                         <p className="font-semibold"><strong>Agent:</strong></p>
                         <select
@@ -53,7 +53,7 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
                             <option value="">Select an Agent</option>
                             {agents.map((agent) => (
                                 <option key={agent.id} value={agent.id}>
-                                    {agent.name}
+                                    {agent.name} {/* Fallback */}
                                 </option>
                             ))}
                         </select>
