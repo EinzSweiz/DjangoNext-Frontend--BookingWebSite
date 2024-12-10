@@ -50,8 +50,8 @@ const PasswordReset = ({params}: {params: Params}) => {
                 JSON.stringify(formData), false
             )
             console.log('Response:', response)
-            if (response.status === '200') {
-                setMessage(response.detail)
+            if (response.message === "Password has been reset successfully.") {
+                setMessage(response.message)
                 setErrors([])
                 setTimeout(() => {router.push('/')}, 2000)
             } else {
