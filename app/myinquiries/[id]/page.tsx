@@ -6,6 +6,7 @@ import React from 'react';
 import ResponseTextarea from "@/app/components/inquiry/ResponseTextarea";
 import MessageBubble from "@/app/components/inquiry/MessageBubble";
 import StatusDisplay from "@/app/components/inquiry/StatusDisplay";
+import AgentDisplay from "@/app/components/inquiry/AssignAgentButton";
 import UserInfoDisplay from "@/app/components/inquiry/UserInfoDisplay";
 import { format } from 'date-fns';
 
@@ -19,6 +20,7 @@ interface Inquiry {
     updated_at: Date;
     user_name: string;
     user_email: string;
+    customer_service: string;
 }
 
 interface Message {
@@ -67,6 +69,16 @@ const InquiryPage = ({ params }: { params: Params}) => {
             setInquiry((prev) => (prev ? { ...prev, status: newStatus } : null));
         } catch (error) {
             console.error('Failed to update status:', error);
+        }
+    };
+
+    const handleAssignAgent = async (newAgent: string) => {
+        if (!inquiry) return;
+        try {
+            await apiService.putWithoutImage(`/api/inquiries/assign-inquiry/${inquiry.id}/`, { customer_service: newAgent });
+            setInquiry((prev) => (prev ? { ...prev, customer_service: newAgent } : null));
+        } catch (error) {
+            console.error("Failed to assign agent:", error);
         }
     };
 
@@ -143,6 +155,12 @@ const InquiryPage = ({ params }: { params: Params}) => {
                         onStatusChange={handleStatusChange}
                     />
                 </div>
+                <AgentDisplay
+                    agent={inquiry.customer_service}
+                    toggleStatusDetails={toggleStatusDetails}
+                    userRole={userRole}
+                    onAgentChange={handleAssignAgent}
+                />
             </div>
 
             {/* Response Textarea (Fixed at bottom) */}
