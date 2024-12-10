@@ -42,7 +42,7 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
     return (
         <div className="flex flex-col space-y-4">
             <div className="flex justify-between items-center">
-                {userRole === "admin" ? (
+                {userRole === "customer_service" ? (
                     <div>
                         <p className="font-semibold"><strong>Agent:</strong></p>
                         <select
