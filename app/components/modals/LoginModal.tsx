@@ -100,7 +100,7 @@ const LoginModal = () => {
                 setIsResetMode(false)
                 setTimeout(() => setErrors([]), 1000)
                 loginModal.close()
-                router.push('/thankyou')
+                router.push('/password_change_message')
             } else {
                 setErrors(['Failed to send reset email. Please try again later.'])
                 setTimeout(() => setErrors([]), 2000)
