@@ -21,7 +21,7 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
     useEffect(() => {
         const fetchAgents = async () => {
             try {
-                const response = await apiService.get("api/inquiries/customer-service-agents/"); // Adjust the endpoint as needed.
+                const response = await apiService.getWithToken("api/inquiries/customer-service-agents/"); // Adjust the endpoint as needed.
                 setAgents(response.data);
             } catch (error) {
                 console.error("Failed to fetch customer service agents:", error);
