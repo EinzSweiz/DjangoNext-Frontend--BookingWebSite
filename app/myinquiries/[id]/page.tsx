@@ -158,7 +158,6 @@ const InquiryPage = ({ params }: { params: Params}) => {
                 <AgentDisplay
                     agent={inquiry.customer_service}
                     toggleStatusDetails={toggleStatusDetails}
-                    userRole={userRole}
                     onAgentChange={handleAssignAgent}
                 />
             </div>
