@@ -4,13 +4,11 @@ import apiService from "@/app/services/apiService";
 
 interface AgentDisplayProps {
     agent: string;
-    toggleStatusDetails: () => void;
     onAgentChange: (newAgent: string) => void;
 }
 
 const AgentDisplay: React.FC<AgentDisplayProps> = ({
     agent,
-    toggleStatusDetails,
     onAgentChange,
 }) => {
     const [agents, setAgents] = useState<{ id: string; name: string; email: string }[]>([]);
