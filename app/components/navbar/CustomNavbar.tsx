@@ -1,12 +1,8 @@
 'use client'
+
 import React, { useState } from "react";
 
-// Define the type for the onStatusChange function prop
-interface CustomNavbarProps {
-  onStatusChange: (status: string) => void;
-}
-
-const CustomNavbar: React.FC<CustomNavbarProps> = ({ onStatusChange }) => {
+const CustomNavbar: React.FC<{ onStatusChange: (status: string) => void }> = ({ onStatusChange }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -16,7 +12,7 @@ const CustomNavbar: React.FC<CustomNavbarProps> = ({ onStatusChange }) => {
   };
 
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+    <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700 fixed w-full z-10 top-0 left-0">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         {/* Mobile Hamburger Icon */}
         <div className="md:hidden flex items-center">
