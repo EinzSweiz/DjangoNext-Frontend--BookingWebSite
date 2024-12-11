@@ -9,7 +9,7 @@ export default function InquiryLayout({ children }: { children: React.ReactNode 
   return (
     <>
       <CustomNavbar onStatusChange={(status) => console.log(status)} />
-      <main className="pt-16">
+      <main className="pt-16 bg-transparent">
         {children}
       </main>
     </>
