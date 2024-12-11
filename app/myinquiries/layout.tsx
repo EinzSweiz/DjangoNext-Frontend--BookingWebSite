@@ -6,12 +6,13 @@ export default function InquiryLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+   // Example to force layout reload by using a key
+    <html lang="en" key={window.location.pathname}>
       <body>
         <CustomNavbar />
         <main>{children}</main>
-        {/* No Footer */}
       </body>
     </html>
+
   );
 }
