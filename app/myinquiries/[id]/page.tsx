@@ -108,7 +108,6 @@ const InquiryPage = ({ params }: { params: Params}) => {
     const toggleStatusDetails = () => {
         setShowStatusDetails((prev) => !prev);
     };
-
     return (
         <div className="p-6 font-sans grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 bg-white dark:bg-gray-900">
             {/* Left Part (Subject & Messages) */}
