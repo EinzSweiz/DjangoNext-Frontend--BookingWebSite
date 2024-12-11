@@ -2,15 +2,16 @@ import React from "react";
 import CustomNavbar from "../components/navbar/CustomNavbar";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+import "../globals.css"; // Correct path to globals.css
 import { ThemeProvider } from "../components/theme-provider";
+// Correct paths to the font files relative to the subdirectory
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+  src: "../fonts/GeistVF.woff", // Relative to `app/myinquiries/`
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
+  src: "../fonts/GeistMonoVF.woff", // Relative to `app/myinquiries/`
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   title: "DiplomaPro",
   description: "We Write, You Graduate",
   icons: {
-    icon: "/favicon.png", // Path to your icon
+    icon: "/favicon.ico", // Path to favicon
   },
 };
 
