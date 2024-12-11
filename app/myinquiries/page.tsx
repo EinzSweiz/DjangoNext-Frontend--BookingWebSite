@@ -40,7 +40,7 @@ const MyInquiries = () => {
                 {inquiries.length === 0 ? (
                     <p className="text-center text-gray-500 dark:text-gray-400">No inquiries found.</p>
                 ) : (
-                    <div className="flex gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                         {inquiries.slice(0, 3).map((inquiry) => (
                             <div
                                 key={inquiry.id}
