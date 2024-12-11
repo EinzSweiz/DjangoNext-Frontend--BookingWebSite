@@ -11,6 +11,7 @@ interface Inquiry {
     status: string;
     created_at: Date;
     updated_at: Date;
+    customer_service: string;
 }
 
 const MyInquiries = () => {
@@ -42,6 +43,8 @@ const MyInquiries = () => {
                             <th className="px-6 py-3">Subject</th>
                             <th className="px-6 py-3">Status</th>
                             <th className="px-6 py-3">Created At</th>
+                            <th className="px-6 py-3">Assigned Agent</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -63,9 +66,9 @@ const MyInquiries = () => {
                                     <td className="px-6 py-4">
                                         <span
                                             className={`px-3 py-1 rounded text-center ${
-                                                inquiry.status.toLowerCase() === 'open'
+                                                inquiry.status.toLowerCase() === 'active'
                                                     ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                                                    : inquiry.status.toLowerCase() === 'in_progress'
+                                                    : inquiry.status.toLowerCase() === 'pending'
                                                     ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
                                                     : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                                             }`}
@@ -76,6 +79,8 @@ const MyInquiries = () => {
                                     <td className="px-6 py-4">
                                         {new Date(inquiry.created_at).toLocaleString()}
                                     </td>
+                                    <td className="px-6 py-4">{inquiry.customer_service}</td>
+
                                 </tr>
                             ))
                         )}
