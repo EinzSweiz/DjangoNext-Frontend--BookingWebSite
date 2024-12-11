@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import apiService from '../services/apiService';
 import { useRouter } from 'next/navigation';
-
 interface Inquiry {
     id: string;
     subject: string;
