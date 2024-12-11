@@ -40,9 +40,9 @@ const StatusDisplay: React.FC<StatusDisplayProps> = ({
                             onChange={handleChangeStatus}
                             className="mt-2 p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300"
                         >
-                            <option value="open">Active</option>
-                            <option value="in_progress">Pending</option>
-                            <option value="closed">Resolved</option>
+                            <option value="active">Active</option>
+                            <option value="pending">Pending</option>
+                            <option value="resolved">Resolved</option>
                         </select>
                     </div>
                 ) : (
