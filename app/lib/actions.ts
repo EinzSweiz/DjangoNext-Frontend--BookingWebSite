@@ -35,13 +35,13 @@ export async function handleRefresh(): Promise<string | undefined> {
                 return json.access; // Return the token
             } else {
                 resetAuthCookies();
-                return undefined; // Explicitly return undefined if no access token
+                return null;
             }
         })
         .catch((error) => {
             console.log('error:', error);
             resetAuthCookies();
-            return undefined; // Return undefined in case of an error
+            return null;
         });
 
     return token;
