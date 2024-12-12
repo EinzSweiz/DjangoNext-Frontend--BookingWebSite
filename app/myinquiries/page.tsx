@@ -1,4 +1,4 @@
-// pages/myinquiries/page.tsx (or page.js)
+'use client'
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomNavbar from '../components/navbar/CustomNavbar';
