@@ -24,7 +24,7 @@ const CustomNavbar: React.FC<{ onInquiriesFetch: (data: any[]) => void }> = ({ o
   };
 
   return (
-    <nav className="bg-white text-black dark:bg-gray-800 dark:text-white fixed w-full relative z-0 shadow-md">
+    <nav className="bg-white text-black dark:bg-gray-800 dark:text-white fixed w-full relative z-0 shadow-md mb-6">
       <div className="max-w-screen-xl flex items-center px-10 py-2 mx-auto">
         <div className="md:hidden flex items-center">
           <button
