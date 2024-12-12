@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Project Documentation
+Overview
 
-## Getting Started
+Djanobnb is a web application built using Next.js, designed to provide a seamless experience for users looking to manage and book accommodations. The application leverages modern web technologies and libraries to ensure a responsive and user-friendly interface. Users can browse available accommodations, manage reservations, and enjoy a dynamic and interactive booking experience.
+Project Structure
 
-First, run the development server:
+    Frontend: Built with Next.js, React, and Tailwind CSS for styling.
+    Backend: Utilizes Django for the API and data handling.
+    Deployment:The Djanobnb application is deployed using a DigitalOcean droplet and hosted on Hostinger. The deployment process involves several steps to ensure the backend and frontend are properly configured, and SSL is enabled for secure         communication.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+    User Authentication: Secure login/signup with social authentication (Google, GitHub) and email/password login.
+    Accommodation Search: Browse and filter available properties based on criteria like location, price, and amenities.
+    Reservation Management: Users can book properties, view reservation details, and manage their bookings.
+    Stripe Integration: Secure payment processing with Stripe, including payment invoices.
+    Real-time Messaging: Users and admins can send and receive messages about bookings or inquiries in real-time.
+    Responsive Design: Fully responsive and mobile-friendly interface built with Tailwind CSS.
+    CRUD Operations: Full CRUD functionality for managing properties and customer inquiries within a small CRM system.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Project Directory
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The project is organized into the following key directories:
 
-## Learn More
+    /app: Contains all the application routes and components like /aboutus, /contact, /myproperties, /myreservations, and others.
+    /components: Houses reusable UI components like the Navbar, Footer, property-related components (PropertyList, ReservationSidebar), modals, and custom UI elements (DropdownMenu, Button, etc.).
+    /services: Includes apiService.ts for API calls.
+    /lib: Contains utility functions for the app, such as utils.ts.
 
-To learn more about Next.js, take a look at the following resources:
+Notable Paths
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The project includes various important paths for managing different features:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    Authentication: The password reset API is located at /app/api/auth/password/reset/confirm/[uid]/[token]/page.tsx.
+    Modals and Components: The modals used for adding properties, login, profile, etc., are stored under /app/components/modals/ such as AddPropertyModal.tsx and LoginModal.tsx.
+    Property Management: For adding and viewing properties, you can find the related components under /app/components/addproperty/ and /app/components/properties/ like Categories.tsx, FavoriteButton.tsx, and PropertyList.tsx.
+    Messaging System: The inbox and conversation details are located at /app/inbox/ with files like Conversation.tsx and ConversationDetail.tsx.
+    Payment Success and Cancelation: These pages are available at /app/payment/success/page.tsx and /app/payment/cancel/page.tsx.
 
-## Deploy on Vercel
+Installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To set up the project locally, follow these steps:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    Clone the repository: git clone <repository-url>
+    Navigate to the project directory: cd djanobnb
+    Install the dependencies: npm install
+
+Scripts
+
+    Development: Start the development server with npm run dev.
+    Build: Create an optimized production build using npm run build.
+    Start: Launch the application in production mode with npm run start.
+    Lint: Check for code quality using npm run lint.
+
+Dependencies
+
+The project relies on several key dependencies, including:
+
+    @radix-ui/react-*: A collection of UI components for building accessible web applications.
+    axios: For making HTTP requests.
+    next-themes: For theme management.
+    react-select: For customizable select components.
+    tailwindcss: For utility-first CSS styling.
+
+Development Dependencies
+
+The project also includes development tools such as:
+
+    @types/node, @types/react, @types/react-dom: TypeScript type definitions.
+    postcss, tailwindcss: For CSS processing and styling.
+    typescript: For static type checking.
+
+Deployment
+
+The recommended way to deploy the application is through the Vercel Platform, which is optimized for Next.js applications. For more details, refer to the Next.js deployment documentation.
+Contribution
+
+Contributions are welcome! Please ensure that any new features or bug fixes are accompanied by appropriate tests and documentation updates.
+License
+
+This project is licensed under the MIT License.
