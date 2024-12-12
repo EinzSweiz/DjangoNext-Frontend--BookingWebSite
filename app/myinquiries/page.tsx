@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomNavbar from '../components/navbar/CustomNavbar';
@@ -47,7 +48,7 @@ const MyInquiries = () => {
                         {inquiries.map((inquiry) => (
                             <div
                                 key={inquiry.id}
-                                className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+                                className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 relative"
                             >
                                 <div className="p-5">
                                     <div className="mb-4 flex justify-center">
@@ -73,7 +74,7 @@ const MyInquiries = () => {
                                                     : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                                             }`}
                                         >
-                                            {inquiry.status}
+                                            Status: {inquiry.status}
                                         </span>
                                     </div>
                                     <div className="mb-3">
@@ -81,12 +82,12 @@ const MyInquiries = () => {
                                             className={`px-3 py-1 rounded ${
                                                 inquiry.severity.toLowerCase() === 'normal'
                                                     ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                                                    : inquiry.status.toLowerCase() === 'high'
+                                                    : inquiry.severity.toLowerCase() === 'high'
                                                     ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
                                                     : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                                             }`}
                                         >
-                                            {inquiry.severity}
+                                            Severity: {inquiry.severity}
                                         </span>
                                     </div>
                                     <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -96,7 +97,7 @@ const MyInquiries = () => {
                                         Assigned Agent: {inquiry.customer_service_name || 'Unassigned'}
                                     </p>
                                     <button
-                                        className="mt-3 w-full inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        className="absolute bottom-5 w-full inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             router.push(`/myinquiries/${inquiry.id}`);
@@ -129,4 +130,4 @@ const MyInquiries = () => {
     );
 };
 
-export default MyInquiries;  // Make sure to add this export
+export default MyInquiries;
