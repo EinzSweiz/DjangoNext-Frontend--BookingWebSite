@@ -46,6 +46,8 @@ const CustomNavbar: React.FC<{ onInquiriesFetch: (data: any[]) => void }> = ({ o
               >
                 All Tickets
               </button>
+            </li>
+            <li>
               <button
                 onClick={() => fetchInquiriesByStatus("active")}
                 className="block py-1 px-3 text-black dark:text-white hover:bg-blue-800 dark:hover:bg-blue-600 md:hover:bg-transparent md:hover:text-blue-500"
