@@ -10,7 +10,7 @@ const CustomNavbar: React.FC<{ onStatusChange: (status: string) => void }> = ({ 
   };
 
   return (
-    <nav className="bg-white text-black dark:bg-gray-800 dark:text-white fixed w-full relative z-0 shadow-md z-50">
+    <nav className="bg-white text-black dark:bg-gray-800 dark:text-white fixed w-full relative z-0 shadow-md">
       <div className="max-w-screen-xl flex items-center px-10 py-2 mx-auto">
         {/* Mobile Hamburger Icon */}
         <div className="md:hidden flex items-center">
