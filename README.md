@@ -70,11 +70,6 @@ The project also includes development tools such as:
     postcss, tailwindcss: For CSS processing and styling.
     typescript: For static type checking.
 
-Deployment
-
-The recommended way to deploy the application is through the Vercel Platform, which is optimized for Next.js applications. For more details, refer to the Next.js deployment documentation.
-Contribution
-
 Contributions are welcome! Please ensure that any new features or bug fixes are accompanied by appropriate tests and documentation updates.
 License
 
