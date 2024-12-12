@@ -65,7 +65,7 @@ const MyInquiries = () => {
                                         {truncateText(inquiry.subject, 25)}
                                     </h5>
                                     <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                                        {truncateText(inquiry.message, 50)}
+                                        {truncateText(inquiry.message, 42)}
                                     </p>
                                     <div className="mb-3">
                                         <span
