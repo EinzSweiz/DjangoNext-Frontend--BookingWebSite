@@ -1,4 +1,4 @@
-'use client';
+// pages/myinquiries/page.tsx (or page.js)
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomNavbar from '../components/navbar/CustomNavbar';
@@ -21,7 +21,6 @@ const MyInquiries = () => {
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
-    // Fetch all inquiries by default on page load
     useEffect(() => {
         const fetchInquiries = async () => {
             try {
@@ -37,13 +36,8 @@ const MyInquiries = () => {
 
     return (
         <div className="p-5 font-sans dark:bg-gray-900 dark:text-gray-200">
-            {/* Render the Navbar */}
             <CustomNavbar onInquiriesFetch={setInquiries} />
-
-            {/* Error Message */}
             {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
-
-            {/* Inquiries List */}
             <div className="flex justify-center items-center bg-gray-100 dark:bg-gray-800 p-5 rounded-lg overflow-x-auto">
                 {inquiries.length === 0 ? (
                     <p className="text-center text-gray-500 dark:text-gray-400">No inquiries found.</p>
@@ -121,4 +115,4 @@ const MyInquiries = () => {
     );
 };
 
-export default MyInquiries;
+export default MyInquiries;  // Make sure to add this export

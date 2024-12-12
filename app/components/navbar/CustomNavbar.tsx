@@ -24,7 +24,7 @@ const CustomNavbar: React.FC<{ onInquiriesFetch: (data: any[]) => void }> = ({ o
   };
 
   return (
-    <nav className="bg-white text-black dark:bg-gray-800 dark:text-white fixed w-full relative z-0 shadow-md mb-6">
+    <nav className="bg-white text-black dark:bg-gray-800 dark:text-white fixed w-full relative z-0 shadow-md">
       <div className="max-w-screen-xl flex items-center px-10 py-2 mx-auto">
         <div className="md:hidden flex items-center">
           <button
@@ -40,6 +40,12 @@ const CustomNavbar: React.FC<{ onInquiriesFetch: (data: any[]) => void }> = ({ o
         <div className={`w-full md:flex md:w-auto ${isMobileMenuOpen ? "block" : "hidden"} md:block`} id="navbar-multi-level">
           <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 md:mt-0 border border-gray-100 rounded-lg md:flex-row md:space-x-8 md:justify-start justify-center items-center">
             <li>
+            <button
+                onClick={() => fetchInquiriesByStatus("")}
+                className="block py-1 px-3 text-black dark:text-white hover:bg-blue-800 dark:hover:bg-blue-600 md:hover:bg-transparent md:hover:text-blue-500"
+              >
+                All Tickets
+              </button>
               <button
                 onClick={() => fetchInquiriesByStatus("active")}
                 className="block py-1 px-3 text-black dark:text-white hover:bg-blue-800 dark:hover:bg-blue-600 md:hover:bg-transparent md:hover:text-blue-500"
