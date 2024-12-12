@@ -86,7 +86,7 @@ const MyInquiries = () => {
                                                     : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                                             }`}
                                         >
-                                            {inquiry.status}
+                                            {inquiry.severity}
                                         </span>
                                     </div>
                                     <p className="text-sm text-gray-600 dark:text-gray-400">
