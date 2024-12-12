@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomNavbar from '../components/navbar/CustomNavbar';
 import apiService from '@/app/services/apiService';
+import { truncate } from 'fs';
 
 interface Inquiry {
     id: string;
@@ -34,6 +35,9 @@ const MyInquiries = () => {
         };
         fetchInquiries();
     }, []);
+    const truncateText = (text: string, maxLength: number) => {
+        return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+    };
 
     return (
         <div className="p-5 font-sans dark:bg-gray-900 dark:text-gray-200">
@@ -58,10 +62,10 @@ const MyInquiries = () => {
                                         />
                                     </div>
                                     <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                        {inquiry.subject}
+                                        {truncateText(inquiry.subject, 50)}
                                     </h5>
                                     <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                                        {inquiry.message}
+                                        {truncateText(inquiry.message, 100)}
                                     </p>
                                     <div className="mb-3">
                                         <span
