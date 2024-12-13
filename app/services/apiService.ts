@@ -7,29 +7,39 @@ const apiService = {
     get: async function (url: string): Promise<any> {
         console.log('GET request to:', url);
         try {
+            // Retrieve the token asynchronously
+            const token = await getAccessToken();
+
+            // Prepare headers, including Authorization if token exists
+            const headers: HeadersInit = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            };
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            // Make the GET request
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
                 method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
+                headers: headers,
             });
 
+            // Check for response status
             if (!response.ok) {
-                // Log raw response for debugging
-                const errorText = await response.text();
+                const errorText = await response.text(); // Log raw response for debugging
                 console.error(`Error ${response.status}: ${errorText}`);
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
-            // Parse JSON if response is OK
+            // Parse and return JSON if response is OK
             return await response.json();
         } catch (error) {
             console.error('Fetch error:', error);
             throw error;
         }
     },
-
     getWithToken: async function (url: string): Promise<any> {
         console.log('GET with token request to:', url);
         try {

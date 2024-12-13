@@ -72,7 +72,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
                 if (urlQuery.length) url += '?' + urlQuery.substring(1);
             }
 
-            const tmpProperties = await apiService.getWithToken(url);
+            const tmpProperties = await apiService.get(url);
             console.log("Favorites Array:", tmpProperties);
 
 
