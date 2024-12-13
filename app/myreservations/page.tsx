@@ -7,6 +7,7 @@ import Link from "next/link";
 interface Property {
     id: string;
     title: string;
+    landlord: { id: string; name: string };  // Assuming landlord is an object
     image_url: string;
 }
 
@@ -25,7 +26,7 @@ export const dynamic = "force-dynamic";
 const MyReservationsPage = async () => {
     const token = getAccessToken();
     let reservations: Reservation[] = [];
-    let isOpen = false
+    let isOpen = false;
 
     try {
         const response = await apiService.getWithToken(`/api/auth/myreservations/`);
@@ -41,7 +42,7 @@ const MyReservationsPage = async () => {
             <h1 className="my-6 text-2xl text-center">My Reservations</h1>
 
             {/* Card Layout for Mobile */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {reservations.length > 0 ? (
                     reservations.map((reservation) => (
                         <div
@@ -73,10 +74,10 @@ const MyReservationsPage = async () => {
                                     <strong>Price:</strong> ${reservation.total_price}
                                 </p>
                                 <Link
-                                    href={`/properties/${reservation.property.id}`}
+                                    href={`/landlords/${reservation.property.landlord.id}`} // Updated link
                                     className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 >
-                                    View Property
+                                    View Landlord
                                     <svg
                                         className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
                                         aria-hidden="true"
