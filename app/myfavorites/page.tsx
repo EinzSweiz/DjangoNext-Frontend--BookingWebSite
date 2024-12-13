@@ -16,7 +16,7 @@ const MyFavoritesPage = async () => {
         <main className="max-w-[2000px] max-auto px-6 py-12">
             <h1 className="my-6 text-xl">My favorites</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <PropertyList favorites={true} />
+                <PropertyList favorites={false} />
             </div>
         </main>
     )

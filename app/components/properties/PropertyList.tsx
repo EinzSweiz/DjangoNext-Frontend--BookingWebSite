@@ -60,7 +60,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
             if (landlord_id) {
                 url += `?landlord_id=${landlord_id}`;
             } else if (favorites) {
-                url += `?is_favorites=false`;
+                url += `?is_favorites=true`;
             } else {
                 let urlQuery = '';
                 if (country) urlQuery += '&country=' + country;
