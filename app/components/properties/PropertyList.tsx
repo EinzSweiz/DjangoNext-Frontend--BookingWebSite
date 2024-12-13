@@ -39,7 +39,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
     const markFavorite = (id: string, is_favorite: boolean) => {
         // Update the favorite state to reflect the change
         setFavoriteIds((prev) =>
-            is_favorite ? [...prev, id] : prev.filter((favoriteId) => favoriteId !== id)
+            is_favorite ? [...prev, id] : prev.filter((favoriteId) => favoriteId == id)
         );
 
         setProperties((prevProperties) =>
