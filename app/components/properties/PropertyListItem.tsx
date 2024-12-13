@@ -26,13 +26,14 @@ const PropertyListItem: React.FC<PropertyProps> = ({
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 33vw"
                 className="hover:scale-110 object-cover transition h-full w-full"
             />
-            {markFavorite && (
+           {markFavorite && (
                 <FavoriteButton
                     id={property.id}
                     is_favorite={property.is_favorite}
-                    markFavorite={(is_favotite) => markFavorite(is_favotite)}
+                    markFavorite={(is_favorite) => markFavorite(is_favorite)}
                 />
             )}
+
         </div>
         <div className="mt-2">
             <p className="text-lg font-bold">{property.title}</p>

@@ -74,6 +74,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
 
             const tmpProperties = await apiService.get(url);
             console.log("Favorites Array:", tmpProperties);
+            
 
             // Set the properties and mark them as favorite if their ID is in `favoriteIds`
             setProperties(
