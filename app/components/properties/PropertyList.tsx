@@ -36,10 +36,12 @@ const PropertyList: React.FC<PropertyListProps> = ({
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);  // Track favorite IDs
 
     // Mark a property as a favorite or remove from favorites
-    const markFavorite = (id: string, is_favorite: boolean) => {
-        // Update the favorite state to reflect the change
+    const markFavorite = async (id: string, is_favorite: boolean) => {
+        // Update the favorite state locally
         setFavoriteIds((prev) =>
-            is_favorite ? [...prev, id] : prev.filter((favoriteId) => favoriteId == id)
+            is_favorite
+                ? [...prev, id]
+                : prev.filter((favoriteId) => favoriteId !== id)
         );
 
         setProperties((prevProperties) =>
@@ -58,7 +60,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
             if (landlord_id) {
                 url += `?landlord_id=${landlord_id}`;
             } else if (favorites) {
-                url += '?is_favorites=true';
+                url += `?is_favorites=true`;
             } else {
                 let urlQuery = '';
                 if (country) urlQuery += '&country=' + country;
@@ -75,10 +77,10 @@ const PropertyList: React.FC<PropertyListProps> = ({
 
             // Set the properties and mark them as favorite if their ID is in `favoriteIds`
             setProperties(
-                tmpProperties.data.map((property: PropertyType) => {
-                    property.is_favorite = favoriteIds.includes(property.id);
-                    return property;
-                })
+                tmpProperties.data.map((property: PropertyType) => ({
+                    ...property,
+                    is_favorite: property.is_favorite || favoriteIds.includes(property.id),
+                }))
             );
         } catch (error) {
             console.error("Error fetching properties:", error);
