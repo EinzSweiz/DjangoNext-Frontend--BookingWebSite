@@ -42,7 +42,7 @@ const MyReservationsPage = async () => {
             <h1 className="my-6 text-2xl text-center">My Reservations</h1>
 
             {/* Card Layout for Mobile */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {reservations.length > 0 ? (
                     reservations.map((reservation) => (
                         <div
