@@ -15,10 +15,11 @@ const apiService = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             };
-
+            
             if (token) {
                 headers['Authorization'] = `Bearer ${token}`;
             }
+            
 
             // Make the GET request
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
