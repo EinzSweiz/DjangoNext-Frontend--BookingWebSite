@@ -4,6 +4,7 @@ import { error } from 'console';
 import { tr } from 'date-fns/locale';
 import { cookies } from 'next/headers';
 import { json } from 'stream/consumers';
+import jwt, {JwtPayload} from 'jsonwebtoken';
 
 export async function handleRefresh(): Promise<string | undefined> {
     console.log('handleRefresh');
@@ -47,7 +48,19 @@ export async function handleRefresh(): Promise<string | undefined> {
     return token;
 }
 
-
+export async function isTokenExpired(token: string): Promise<boolean> {
+    try {
+        // Decode the token
+        const decoded = jwt.decode(token) as JwtPayload | null; // Cast to JwtPayload or null
+        const now = Math.floor(Date.now() / 1000);
+        
+        // Ensure that the decoded token exists and has the 'exp' field
+        return decoded ? decoded.exp ? decoded.exp < now : false : false;
+    } catch (error) {
+        console.error('Error decoding token:', error);
+        return false;  // Ensure that the function returns a boolean
+    }
+}
 export async function handleLogin(userId: string, accessToken: string, refreshToken: string) {
     const cookieStore = await cookies(); // Await cookies() call
     cookieStore.set('session_userid', userId, {
@@ -91,14 +104,21 @@ export async function getUserId() {
     return userId ? userId : null;
 }
 
-export async function getAccessToken() {
-    const cookieStore = await cookies()
-    let tokenAccess = cookieStore.get('session_access_token')?.value
-    
+export async function getAccessToken(): Promise<string | undefined> {
+    const cookieStore = await cookies();
+    let tokenAccess = cookieStore.get('session_access_token')?.value;
+
     if (!tokenAccess) {
-        tokenAccess = await handleRefresh()
+        tokenAccess = await handleRefresh(); // If no token, refresh it
     }
-    return tokenAccess
+
+    // If token exists, check if it's expired
+    if (tokenAccess && await isTokenExpired(tokenAccess)) {
+        console.log('Access token expired, refreshing...');
+        tokenAccess = await handleRefresh();  // Refresh the token if expired
+    }
+
+    return tokenAccess; // Return the access token (new or refreshed)
 }
 
 export async function getRefreshToken() {
