@@ -16,7 +16,7 @@ export type PropertyType = {
 
 interface PropertyListProps {
     landlord_id?: string | null;
-    favorites?: boolean | null;
+    favorites?: boolean | false;
 }
 
 const PropertyList: React.FC<PropertyListProps> = ({
@@ -72,9 +72,9 @@ const PropertyList: React.FC<PropertyListProps> = ({
                 if (urlQuery.length) url += '?' + urlQuery.substring(1);
             }
 
-            const tmpProperties = await apiService.get(url);
+            const tmpProperties = await apiService.getWithToken(url);
             console.log("Favorites Array:", tmpProperties);
-            
+
 
             // Set the properties and mark them as favorite if their ID is in `favoriteIds`
             setProperties(
