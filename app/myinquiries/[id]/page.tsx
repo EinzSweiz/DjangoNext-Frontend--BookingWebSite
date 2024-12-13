@@ -132,11 +132,11 @@ const InquiryPage = ({ params }: { params: Params}) => {
                             createdAt={inquiry.created_at}
                             updatedAt={inquiry.updated_at}
                             userRole="customer_service"
-                            onStatusChange={(newStatus) => setInquiry((prev) => prev ? { ...prev, status: newStatus } : null)}
+                            onStatusChange={handleStatusChange}
                         />
                         <AgentDisplay
                             agent={inquiry.customer_service}
-                            onAgentChange={(newAgent) => setInquiry((prev) => prev ? { ...prev, customer_service: newAgent } : null)}
+                            onAgentChange={handleAssignAgent}
                         />
                     </div>
     
