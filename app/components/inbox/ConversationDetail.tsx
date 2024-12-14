@@ -9,6 +9,7 @@ import { UserType } from "@/app/inbox/page";
 import { FiSend } from 'react-icons/fi';
 import Image from "next/image";
 
+
 interface ConversationDetailProps {
     conversation: ConversationType;
     token: string;
@@ -23,8 +24,8 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     messages,
 }) => {
     const [newMessage, setNewMessage] = useState('');
-    const myUser = conversation.users?.find((user) => user.id == userId);
-    const otherUser = conversation.users?.find((user) => user.id != userId);
+    const myUser = conversation.users?.find((user) => user.id === userId);
+    const otherUser = conversation.users?.find((user) => user.id !== userId);
     const messageDiv = useRef<HTMLDivElement>(null);
     const [realtimeMessages, setRealTimeMessages] = useState<MessageType[]>([]);
 
@@ -46,27 +47,38 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
             lastJsonMessage &&
             typeof lastJsonMessage === 'object' &&
             'name' in lastJsonMessage &&
-            'body' in lastJsonMessage
+            'body' in lastJsonMessage &&
+            'created_at' in lastJsonMessage
         ) {
             if (!myUser || !otherUser) {
                 console.error("User information is missing.");
-                return;  // Early exit if users are missing
+                return; // Early exit if users are missing
             }
-
+    
             const isSentByCurrentUser = lastJsonMessage.name === myUser.name;
-
+    
+            // Safely cast `lastJsonMessage` to a specific type
+            const safeMessage = lastJsonMessage as {
+                name: string;
+                body: string;
+                created_at: string | number | Date;
+            };
+    
             const message: MessageType = {
-                id: '',  // Assign a unique ID if needed
-                name: lastJsonMessage.name as string,
-                body: lastJsonMessage.body as string,
-                sent_to: isSentByCurrentUser ? otherUser : myUser,  // Set the recipient
+                id: '', // TODO: Assign a unique ID if needed
+                name: safeMessage.name,
+                body: safeMessage.body,
+                sent_to: isSentByCurrentUser ? otherUser : myUser, // Set the recipient
+                created_at: new Date(safeMessage.created_at), // Safely create a Date object
                 created_by: isSentByCurrentUser ? myUser : otherUser, // Set the sender
                 conversationId: conversation.id,
             };
+    
             setRealTimeMessages((prev) => [...prev, message]);
         }
         scrollToBottom();
     }, [lastJsonMessage, myUser, otherUser]);
+    
 
     const sendMessage = () => {
         if (newMessage.trim()) {
@@ -126,7 +138,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                                     {message.created_by.name}
                                 </span>
                                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                    {new Date(Date.now()).toLocaleTimeString()} {/* Displays the current time */}
+                                    {message.created_at.toLocaleString()}
                                 </span>
                             </div>
                             <p className="text-sm font-normal py-2.5">
