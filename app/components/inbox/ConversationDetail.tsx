@@ -138,8 +138,9 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                                     {message.created_by.name}
                                 </span>
                                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                    {message.created_at.toLocaleString()}
+                                    {new Date(message.created_at).toISOString().split('T')[0]} 00:00
                                 </span>
+
                             </div>
                             <p className="text-sm font-normal py-2.5">
                                 {message.body}
