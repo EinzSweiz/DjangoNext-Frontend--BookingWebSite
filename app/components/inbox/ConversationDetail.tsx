@@ -110,7 +110,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                             src={message.created_by.avatar_url || '/images.jpeg'}
                             alt={`${message.created_by.name} avatar`}
                             width={32} // Equivalent to w-12 (12 * 4px)
-                            height={16} // Equivalent to h-12 (12 * 4px)
+                            height={10} // Equivalent to h-12 (12 * 4px)
                             className="rounded-full object-cover"
                         />
                         {/* Message Content */}
