@@ -11,7 +11,6 @@ export type MessageType = {
     conversationId: string;
     sent_to: UserType;
     created_by: UserType;
-    created_at: Date
 }
 
 type Params = Promise<{ id: string }>
