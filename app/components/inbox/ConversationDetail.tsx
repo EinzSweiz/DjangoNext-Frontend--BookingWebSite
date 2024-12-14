@@ -84,7 +84,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
 
     return (
         <div className="flex flex-col space-y-4">
-            <div ref={messageDiv} className="flex-1 overflow-auto p-4  bg-[url('/bg.jpg')] rounded-lg shadow-md max-h-[70vh]">
+            <div ref={messageDiv} className="flex-1 overflow-auto p-4 bg-[url('/bg.jpg')] rounded-lg shadow-md max-h-[70vh]">
                 {messages.concat(realtimeMessages).map((message, index) => (
                     <div
                         key={index}
@@ -92,15 +92,15 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                             message.created_by.name === myUser?.name ? 'flex-row-reverse' : ''
                         }`}
                     >
-                        {/* Profile Picture */}
+                        {/* Profile Picture with responsive sizing */}
                         <img
                             src={message.created_by.avatar_url || '/images.jpeg'}
                             alt={`${message.created_by.name} avatar`}
-                            className="w-12 h-12 rounded-full"
+                            className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full"
                         />
-                        {/* Message Content */}
+                        {/* Message Content with responsive sizes */}
                         <div
-                            className={`flex flex-col w-full max-w-[320px] leading-1.5 p-4 ${
+                            className={`flex flex-col w-full max-w-[320px] sm:max-w-[400px] md:max-w-[500px] leading-1.5 p-4 ${
                                 message.created_by.name === myUser?.name
                                     ? 'bg-blue-500 text-white rounded-s-xl rounded-se-xl dark:bg-blue-700'
                                     : 'bg-gray-100 text-black rounded-e-xl rounded-es-xl dark:bg-gray-700'
@@ -111,7 +111,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                                     {message.created_by.name}
                                 </span>
                                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                    {new Date(Date.now()).toLocaleTimeString()} {/* Displays the current time */}
+                                    {new Date(Date.now()).toLocaleTimeString()}
                                 </span>
                             </div>
                             <p className="text-sm font-normal py-2.5">
@@ -136,7 +136,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         placeholder="Type a message..."
                         className="w-full p-3 pl-4 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-white dark:border-gray-600 dark:bg-gray-700 placeholder-gray-400"
                     />
-                    {/* Add a subtle icon inside the input field */}
+                    {/* Send Icon */}
                     <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500">
                         <FiSend />
                     </span>
@@ -151,7 +151,6 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                     />
                 </div>
             </div>
-
         </div>
     );
 };
