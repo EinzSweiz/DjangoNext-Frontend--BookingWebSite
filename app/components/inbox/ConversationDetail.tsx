@@ -7,6 +7,7 @@ import useWebSocket from "react-use-websocket";
 import { MessageType } from "@/app/inbox/[id]/page";
 import { UserType } from "@/app/inbox/page";
 import { FiSend } from 'react-icons/fi';
+import Image from "next/image";
 
 interface ConversationDetailProps {
     conversation: ConversationType;
@@ -93,10 +94,12 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         }`}
                     >
                         {/* Profile Picture */}
-                        <img
+                        <Image
                             src={message.created_by.avatar_url || '/images.jpeg'}
                             alt={`${message.created_by.name} avatar`}
-                            className="w-12 h-12 rounded-full"
+                            width={48}  // Equivalent to w-12 (12 * 4px)
+                            height={48} // Equivalent to h-12 (12 * 4px)
+                            className="rounded-full max-w-full h-auto"
                         />
                         {/* Message Content */}
                         <div
