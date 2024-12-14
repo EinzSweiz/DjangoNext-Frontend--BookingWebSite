@@ -1,5 +1,5 @@
 import apiService from '@/app/services/apiService';
-
+import Image from 'next/image';
 interface PaymentSuccessPageProps {
   paymentData: any;
 }
@@ -41,9 +41,11 @@ const PaymentSuccessPage = async ({ searchParams }: { searchParams: Params }) =>
             <h3 className="mt-6 text-lg font-semibold">Property Information</h3>
             <p><strong>Name:</strong> {paymentData.reservation.property.name}</p>
             <p><strong>Address:</strong> {paymentData.reservation.property.address}</p>
-            <img 
+            <Image 
               src={paymentData.reservation.property.image_url} 
               alt={paymentData.reservation.property.name} 
+              width={600}  // You can adjust the width and height
+              height={400}  // to fit your needs
               className="w-full h-auto rounded-lg mt-2"
             />
             <h3 className="mt-6 text-lg font-semibold">Customer Information</h3>

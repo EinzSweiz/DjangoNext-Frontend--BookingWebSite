@@ -99,7 +99,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                             alt={`${message.created_by.name} avatar`}
                             width={48}  // Equivalent to w-12 (12 * 4px)
                             height={48} // Equivalent to h-12 (12 * 4px)
-                            className="rounded-full max-w-full h-auto"
+                            className="rounded-full object-cover"
                         />
                         {/* Message Content */}
                         <div
