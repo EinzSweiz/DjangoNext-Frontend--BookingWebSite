@@ -48,27 +48,39 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
             'name' in lastJsonMessage &&
             'body' in lastJsonMessage
         ) {
+            if (!myUser || !otherUser) {
+                console.error("User information is missing.");
+                return;  // Early exit if users are missing
+            }
+
+            const isSentByCurrentUser = lastJsonMessage.name === myUser.name;
+
             const message: MessageType = {
-                id: '',
+                id: '',  // Assign a unique ID if needed
                 name: lastJsonMessage.name as string,
                 body: lastJsonMessage.body as string,
-                sent_to: otherUser as UserType,
-                created_by: myUser as UserType,
+                sent_to: isSentByCurrentUser ? otherUser : myUser,  // Set the recipient
+                created_by: isSentByCurrentUser ? myUser : otherUser, // Set the sender
                 conversationId: conversation.id,
             };
             setRealTimeMessages((prev) => [...prev, message]);
         }
         scrollToBottom();
-    }, [lastJsonMessage]);
+    }, [lastJsonMessage, myUser, otherUser]);
 
     const sendMessage = () => {
         if (newMessage.trim()) {
+            if (!myUser || !otherUser) {
+                console.error("User information is missing.");
+                return;
+            }
+
             sendJsonMessage({
                 event: 'chat_message',
                 data: {
                     body: newMessage,
-                    name: myUser?.name,
-                    sent_to_id: otherUser?.id,
+                    name: myUser.name,
+                    sent_to_id: otherUser.id,
                     conversation_id: conversation.id,
                 },
             });
@@ -85,7 +97,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
 
     return (
         <div className="flex flex-col space-y-4">
-            <div ref={messageDiv} className="flex-1 overflow-auto p-4  bg-[url('/bg.jpg')] rounded-lg shadow-md max-h-[70vh]">
+            <div ref={messageDiv} className="flex-1 overflow-auto p-4 bg-[url('/bg.jpg')] rounded-lg shadow-md max-h-[70vh]">
                 {messages.concat(realtimeMessages).map((message, index) => (
                     <div
                         key={index}
@@ -97,7 +109,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         <Image
                             src={message.created_by.avatar_url || '/images.jpeg'}
                             alt={`${message.created_by.name} avatar`}
-                            width={48}  // Equivalent to w-12 (12 * 4px)
+                            width={48} // Equivalent to w-12 (12 * 4px)
                             height={48} // Equivalent to h-12 (12 * 4px)
                             className="rounded-full object-cover"
                         />
