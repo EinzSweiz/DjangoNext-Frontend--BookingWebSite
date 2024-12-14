@@ -96,11 +96,11 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         <img
                             src={message.created_by.avatar_url || '/images.jpeg'}
                             alt={`${message.created_by.name} avatar`}
-                            className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full"
+                            className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-full"
                         />
                         {/* Message Content with responsive sizes */}
                         <div
-                            className={`flex flex-col w-full max-w-[320px] sm:max-w-[400px] md:max-w-[500px] leading-1.5 p-4 ${
+                            className={`flex flex-col w-full max-w-[320px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[600px] leading-1.5 p-4 ${
                                 message.created_by.name === myUser?.name
                                     ? 'bg-blue-500 text-white rounded-s-xl rounded-se-xl dark:bg-blue-700'
                                     : 'bg-gray-100 text-black rounded-e-xl rounded-es-xl dark:bg-gray-700'
