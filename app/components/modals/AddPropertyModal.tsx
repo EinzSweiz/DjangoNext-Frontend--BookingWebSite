@@ -31,8 +31,16 @@ const AddPropertyModal = () => {
 
     const setImage = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-            const tmpImage = event.target.files[0]
-            setDataImage(tmpImage)
+            const tmpImage = event.target.files[0];
+            
+            // Allow images up to 40MB
+            const maxSize = 30 * 1024 * 1024; // 40MB
+            if (tmpImage.size > maxSize) {
+                setErrors((prevErrors) => [...prevErrors, 'Image size exceeds 30MB limit.']);
+                return;
+            }
+    
+            setDataImage(tmpImage);
         }
     }
 
