@@ -97,83 +97,78 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
 
     return (
         <div className="flex flex-col space-y-4">
-            {/* Chat Container */}
-            <div
-                ref={messageDiv}
-                className="flex-1 overflow-auto p-4 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg max-h-[70vh] bg-[url('/bg.jpg')] bg-cover"
-            >
+            <div ref={messageDiv} className="flex-1 overflow-auto p-4 bg-[url('/bg.jpg')] rounded-lg shadow-md max-h-[70vh]">
                 {messages.concat(realtimeMessages).map((message, index) => (
                     <div
                         key={index}
-                        className={`flex items-start gap-3 mb-4 transition-opacity duration-300 ${
-                            message.created_by.name === myUser?.name
-                                ? 'flex-row-reverse'
-                                : ''
+                        className={`flex items-start gap-2.5 mb-4 ${
+                            message.created_by.name === myUser?.name ? 'flex-row-reverse' : ''
                         }`}
                     >
                         {/* Profile Picture */}
                         <Image
                             src={message.created_by.avatar_url || '/images.jpeg'}
                             alt={`${message.created_by.name} avatar`}
-                            width={40}
-                            height={40}
-                            className="rounded-full object-cover shadow-md"
+                            width={32} // Equivalent to w-12 (12 * 4px)
+                            height={10} // Equivalent to h-12 (12 * 4px)
+                            className="rounded-full object-cover"
                         />
                         {/* Message Content */}
                         <div
-                            className={`flex flex-col w-fit max-w-[320px] leading-1.5 p-4 text-sm ${
+                            className={`flex flex-col w-full max-w-[320px] leading-1.5 p-4 ${
                                 message.created_by.name === myUser?.name
-                                    ? 'bg-blue-600 text-white rounded-2xl rounded-br-none'
-                                    : 'bg-gray-200 text-gray-800 rounded-2xl rounded-bl-none dark:bg-gray-700 dark:text-white'
-                            } shadow-md`}
+                                    ? 'bg-blue-500 text-white rounded-s-xl rounded-se-xl dark:bg-blue-700'
+                                    : 'bg-gray-100 text-black rounded-e-xl rounded-es-xl dark:bg-gray-700'
+                            }`}
                         >
-                            <div className="flex items-center justify-between">
-                                <span className="font-semibold">
+                            <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                                <span className="text-sm font-semibold text-gray-900 dark:text-white">
                                     {message.created_by.name}
                                 </span>
-                                <span className="text-xs text-gray-400 dark:text-gray-300">
-                                    {new Date(Date.now()).toLocaleTimeString([], {
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                    })}
+                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                    {new Date(Date.now()).toLocaleTimeString()} {/* Displays the current time */}
                                 </span>
                             </div>
-                            <p className="py-1">{message.body}</p>
+                            <p className="text-sm font-normal py-2.5">
+                                {message.body}
+                            </p>
+                            <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                Delivered
+                            </span>
                         </div>
                     </div>
                 ))}
             </div>
-    
+
             {/* Message Input Section */}
-            <div className="flex items-center gap-4 bg-white dark:bg-gray-800 p-3 rounded-xl shadow-md">
+            <div className="flex items-center gap-4 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg shadow-md">
+                {/* Input Field */}
                 <div className="flex-1 relative">
                     <input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         type="text"
-                        placeholder="Type your message..."
-                        className="w-full p-3 pl-5 pr-12 text-gray-800 dark:text-white border rounded-full focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 placeholder-gray-400"
+                        placeholder="Type a message..."
+                        className="w-full p-3 pl-4 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-white dark:border-gray-600 dark:bg-gray-700 placeholder-gray-400"
                     />
-                    {/* Send Icon */}
-                    <button
-                        onClick={sendMessage}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-700 transition-all"
-                    >
-                        <FiSend size={20} />
-                    </button>
+                    {/* Add a subtle icon inside the input field */}
+                    <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500">
+                        <FiSend />
+                    </span>
                 </div>
+
                 {/* Send Button */}
-                <div>
+                <div className="flex-shrink-0">
                     <CustomButton
                         label="Send"
                         onClick={sendMessage}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2.5 rounded-full font-medium shadow-md transition-transform duration-200 hover:scale-105 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-medium shadow-lg transition-all duration-200 transform hover:scale-105 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
                 </div>
             </div>
+
         </div>
     );
-    
 };
 
 export default ConversationDetail;

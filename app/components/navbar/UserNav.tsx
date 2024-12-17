@@ -22,9 +22,10 @@ const UserNav: React.FC<UserNavProps> = ({ userId }) => {
   const router = useRouter();
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   
   const handleOutsideClick = (e: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node) && buttonRef.current && !buttonRef.current.contains(e.target as Node)) {
       setIsOpen(false);
     }
   };
@@ -46,6 +47,7 @@ const UserNav: React.FC<UserNavProps> = ({ userId }) => {
     <div className="p-2 relative inline-block border rounded-full dark:bg-gray-800 dark:border-gray-700">
       <button
         className="flex items-center"
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
       >
         {/* Hamburger Menu Icon */}
