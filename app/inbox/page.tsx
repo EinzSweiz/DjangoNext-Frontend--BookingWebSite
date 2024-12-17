@@ -14,6 +14,7 @@ export type UserType = {
 export type ConversationType = {
     id: string
     users: UserType[]
+    modified_at: string
 }
 
 const InboxPage = () => {
