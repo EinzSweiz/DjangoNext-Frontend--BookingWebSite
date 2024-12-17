@@ -9,7 +9,7 @@ import StatusDisplay from "@/app/components/inquiry/StatusDisplay";
 import AgentDisplay from "@/app/components/inquiry/AssignAgentButton";
 import UserInfoDisplay from "@/app/components/inquiry/UserInfoDisplay";
 import { format } from 'date-fns';
-
+import { getUserId } from "@/app/lib/actions";
 interface Inquiry {
     id: string;
     subject: string;
@@ -38,7 +38,7 @@ const InquiryPage = ({ params }: { params: Params}) => {
     const [showStatusDetails, setShowStatusDetails] = useState(false);
     const [response, setResponse] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    
+    const userId = getUserId()
 
     const userRole: 'user' | 'customer_service' = 'customer_service';
     const resolvedParams = React.use(params);

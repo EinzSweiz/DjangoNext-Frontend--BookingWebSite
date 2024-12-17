@@ -47,7 +47,8 @@ const SignupModal = () => {
     }
   
       const response = await apiService.postWithoutToken('/api/auth/register/', formData, true);
-  
+      console.log(response)
+      console.log(response.data)
       // Check if the response contains access, meaning the signup was successful
       if (response.detail) {
         signupModal.close();
