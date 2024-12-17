@@ -63,7 +63,7 @@ const LoginModal = () => {
         }
     };
 
-    
+
     const submitLogin = async () => {
         const formData = {
             email: email,

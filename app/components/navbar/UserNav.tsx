@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import MenuLink from "./MenuLink";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useSignupModal from "@/app/hooks/useSignupModal";
@@ -21,6 +21,27 @@ const UserNav: React.FC<UserNavProps> = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const handleOutsideClick = (e: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener when the menu is open
+    if (isOpen) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    } else {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    }
+
+    // Cleanup listener when component unmounts or menu state changes
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [isOpen]);
+
+  
   return (
     <div className="p-2 relative inline-block border rounded-full dark:bg-gray-800 dark:border-gray-700">
       <button
@@ -57,7 +78,7 @@ const UserNav: React.FC<UserNavProps> = ({ userId }) => {
         </svg>
       </button>
       {isOpen && (
-        <div className="w-[220px] absolute top-[40px] right-0 bg-white border rounded-xl shadow-md flex flex-col cursor-pointer dark:bg-gray-800 dark:border-gray-700">
+        <div className="w-[220px] absolute top-[40px] right-0 bg-white border rounded-xl shadow-md flex flex-col cursor-pointer dark:bg-gray-800 dark:border-gray-700" ref={dropdownRef}>
           {userId ? (
             <>
               <MenuLink
