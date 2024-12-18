@@ -5,7 +5,7 @@ const TermsConditions = () => {
         <div className="max-w-4xl mx-auto my-8 px-4 sm:px-6 lg:px-8">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Terms & Conditions</h1>
             <p className="mt-4 text-gray-600 dark:text-gray-300">
-                Welcome to YourCompany. By using our website or services, you agree to the following terms and conditions. 
+                Welcome to <span className="text-base font-semibold text-gray-900 dark:text-white">Diploma Genius</span>. By using our website or services, you agree to the following terms and conditions. 
                 Please read them carefully.
             </p>
             
@@ -23,7 +23,7 @@ const TermsConditions = () => {
             
             <h2 className="mt-6 text-xl font-semibold text-gray-900 dark:text-white">3. Intellectual Property</h2>
             <p className="mt-2 text-gray-600 dark:text-gray-300">
-                All content, trademarks, and intellectual property on this site are the property of <strong>Diplom Genius</strong> unless otherwise 
+                All content, trademarks, and intellectual property on this site are the property of <span className="text-base font-semibold text-gray-900 dark:text-white">Diploma Genius</span> unless otherwise 
                 stated. You may not reproduce or redistribute our content without permission.
             </p>
             
