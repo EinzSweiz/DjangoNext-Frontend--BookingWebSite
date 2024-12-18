@@ -21,18 +21,20 @@ const StatusDisplay: React.FC<StatusDisplayProps> = ({
     userRole,
     onStatusChange,
 }) => {
-    console.log('Status:', status); // Add this line to log the status
+    console.log("Rendering StatusDisplay component");
+    console.log(`Current status: ${status}`);
+    console.log(`User role: ${userRole}`);
     const [editableStatus, setEditableStatus] = useState<string>(status);
     const handleChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = e.target.value;
         setEditableStatus(newStatus);
         onStatusChange(newStatus);
     };
-
+    
     return (
         <div className="flex flex-col space-y-4">
             <div className="flex justify-between items-center">
-                {userRole === 'customer_service' ? (
+                {['customer_service', 'admin'].includes(userRole) ? (
                     <div>
                         <p className="font-semibold"><strong>Status:</strong></p>
                         <select

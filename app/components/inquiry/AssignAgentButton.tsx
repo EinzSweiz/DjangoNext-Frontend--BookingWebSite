@@ -36,6 +36,8 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
         setSelectedAgent(newAgent);
         onAgentChange(newAgent);
     };
+    // Debugging user role
+    console.log("User role:", userRole);
 
     return (
         <div className="flex flex-col space-y-4">
