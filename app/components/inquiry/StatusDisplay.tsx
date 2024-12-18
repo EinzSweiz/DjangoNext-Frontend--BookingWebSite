@@ -8,7 +8,7 @@ interface StatusDisplayProps {
     toggleStatusDetails: () => void;
     createdAt: Date;
     updatedAt: Date;
-    userRole: 'user' | 'customer_service';
+    userRole: string;
     onStatusChange: (newStatus: string) => void;
 }
 

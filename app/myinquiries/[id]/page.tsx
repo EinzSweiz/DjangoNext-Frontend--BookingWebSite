@@ -8,8 +8,7 @@ import MessageBubble from "@/app/components/inquiry/MessageBubble";
 import StatusDisplay from "@/app/components/inquiry/StatusDisplay";
 import AgentDisplay from "@/app/components/inquiry/AssignAgentButton";
 import UserInfoDisplay from "@/app/components/inquiry/UserInfoDisplay";
-import { format } from 'date-fns';
-import { getUserId } from "@/app/lib/actions";
+
 interface Inquiry {
     id: string;
     subject: string;
@@ -21,6 +20,7 @@ interface Inquiry {
     user_name: string;
     user_email: string;
     customer_service: string;
+    user_role: string;
 }
 
 interface Message {
@@ -37,10 +37,8 @@ const InquiryPage = ({ params }: { params: Params}) => {
     const [error, setError] = useState<string | null>(null);
     const [showStatusDetails, setShowStatusDetails] = useState(false);
     const [response, setResponse] = useState("");
-    const [userId, setUserId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const userRole: 'user' | 'customer_service' = 'customer_service';
     const resolvedParams = React.use(params);
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -52,10 +50,6 @@ const InquiryPage = ({ params }: { params: Params}) => {
             const fetchInquiry = async () => {
                 try {
                     const response = await apiService.getWithToken(`/api/inquiries/get/${resolvedParams.id}`);
-                    const userId = await getUserId()
-                    if (userId) {
-                        setUserId(userId)
-                    }
                     console.log(response); // Add this line to inspect the inquiry data
                     setInquiry(response);
                 } catch (error) {
@@ -91,9 +85,9 @@ const InquiryPage = ({ params }: { params: Params}) => {
         if (!response) return;
         setIsLoading(true); // Show spinner
         try {
-            await apiService.postWithoutImages(`/api/inquiries/add-message/${inquiry?.id}/`, { message: response, sender: userRole });
+            await apiService.postWithoutImages(`/api/inquiries/add-message/${inquiry?.id}/`, { message: response, sender: inquiry?.user_role });
             setResponse('');
-            setInquiry((prev) => prev && { ...prev, messages: [...prev.messages, { sender: userRole, message: response, timestamp: new Date().toISOString() }] });
+            setInquiry((prev: any) => prev && { ...prev, messages: [...prev.messages, { sender: inquiry?.user_role, message: response, timestamp: new Date().toISOString() }] });
         } catch (error) {
             console.error('Error saving response:', error);
         } finally {
@@ -135,12 +129,13 @@ const InquiryPage = ({ params }: { params: Params}) => {
                             toggleStatusDetails={toggleStatusDetails}
                             createdAt={inquiry.created_at}
                             updatedAt={inquiry.updated_at}
-                            userRole="customer_service"
+                            userRole={inquiry.user_role}
                             onStatusChange={handleStatusChange}
                         />
                         <AgentDisplay
                             agent={inquiry.customer_service}
                             onAgentChange={handleAssignAgent}
+                            userRole={inquiry.user_role}
                         />
                     </div>
     
