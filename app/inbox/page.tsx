@@ -49,7 +49,9 @@ const InboxPage = () => {
 
     return (
         <main className="max-w-[2000px] mx-auto px-6 pb-6">
-            <h1 className="my-6 text-2xl">Inbox</h1>
+            <div className="flex items-center justify-center h-32">
+                <h1 className="text-2xl">Inbox</h1>
+            </div>
             {conversations.map((conversation: ConversationType) => {
                 return (
                     <Conversation

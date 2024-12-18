@@ -10,7 +10,14 @@ export async function handleRefresh(): Promise<string | undefined> {
     console.log('handleRefresh');
     const CookiesStore = await cookies();
 
+
     const refreshToken = await getRefreshToken();
+    
+    if (!refreshToken) {
+        console.log('No refresh token found. Resetting cookies.');
+        resetAuthCookies();
+        return undefined; // Exit if no refresh token
+    }
 
     const token = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/auth/token/refresh/`, {
         method: 'POST',
@@ -109,6 +116,11 @@ export async function getAccessToken(): Promise<string | undefined> {
     let tokenAccess = cookieStore.get('session_access_token')?.value;
 
     if (!tokenAccess) {
+        const refreshToken = await getRefreshToken()
+        if (!refreshToken) { 
+            console.log('No refresh token available. Cannot refresh expired access token.');
+            return undefined
+        }
         tokenAccess = await handleRefresh(); // If no token, refresh it
     }
 

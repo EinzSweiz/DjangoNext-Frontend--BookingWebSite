@@ -37,8 +37,8 @@ const InquiryPage = ({ params }: { params: Params}) => {
     const [error, setError] = useState<string | null>(null);
     const [showStatusDetails, setShowStatusDetails] = useState(false);
     const [response, setResponse] = useState("");
+    const [userId, setUserId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const userId = getUserId()
 
     const userRole: 'user' | 'customer_service' = 'customer_service';
     const resolvedParams = React.use(params);
@@ -52,6 +52,10 @@ const InquiryPage = ({ params }: { params: Params}) => {
             const fetchInquiry = async () => {
                 try {
                     const response = await apiService.getWithToken(`/api/inquiries/get/${resolvedParams.id}`);
+                    const userId = await getUserId()
+                    if (userId) {
+                        setUserId(userId)
+                    }
                     console.log(response); // Add this line to inspect the inquiry data
                     setInquiry(response);
                 } catch (error) {
