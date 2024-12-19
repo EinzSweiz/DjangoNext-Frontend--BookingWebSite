@@ -40,7 +40,6 @@ const FavoriteButton: React.FC<FavoriteProps> = ({
         e.stopPropagation();
         try {
             const response = await apiService.post(`/api/properties/${id}/toggle_favorite/`, null); 
-            console.log('API Response:', response); 
             
             if (typeof response.is_favorited === 'boolean') {
                 // Update UI with the new state

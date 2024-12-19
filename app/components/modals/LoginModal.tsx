@@ -73,8 +73,6 @@ const LoginModal = () => {
             const response = await apiService.postWithoutToken('/api/auth/login/', JSON.stringify(formData))
             if (response.access) {
                 loginModal.close()
-                console.log('API Response:', response)
-                console.log('User ID:', response.user.pk)
                 handleLogin(response.user.pk, response.access, response.refresh)
                 router.push('/')
                 setTimeout(() => {

@@ -5,7 +5,6 @@ import { json } from "stream/consumers"
 import { getAccessToken, getRefreshToken } from "../lib/actions"
 const apiService = {
     get: async function (url: string): Promise<any> {
-        console.log('GET request to:', url);
         try {
             // Retrieve the token asynchronously
             const token = await getAccessToken();
@@ -42,7 +41,6 @@ const apiService = {
         }
     },
     getWithToken: async function (url: string): Promise<any> {
-        console.log('GET with token request to:', url);
         try {
             let token = await getAccessToken();
             if (!token) {
@@ -75,7 +73,6 @@ const apiService = {
     },
 
     postWithoutToken: async function (url: string, data: any, isFormData = false): Promise<any> {
-        console.log('post', url, data)
     
         return new Promise((resolve, reject) => {
             // Set default headers
@@ -111,11 +108,8 @@ const apiService = {
     
     
     post: async function (url:string, data:any): Promise<any> {
-        console.log('post', url, data)
-        console.log('DATA:', data)
         return new Promise(async (resolve, reject) => {
             let token = await getAccessToken();
-            console.log('Token:', token)
         
             if (!token) {
                 reject("Unauthorized: No valid token");
@@ -139,13 +133,11 @@ const apiService = {
         })
     },
     postWithoutImages: async function (url: string, data: any): Promise<any> {
-        console.log('post', url, data);
         
         try {
             // Retrieve the token
             let token = await getAccessToken();
-            console.log('Token:', token);
-    
+
             // Check if token exists
             if (!token) {
                 throw new Error("Unauthorized: No valid token");
@@ -178,7 +170,6 @@ const apiService = {
     
 
     put: async function (url: string, data:any): Promise<any> {
-        console.log('put', url, data)
         return new Promise(async (resolve, reject) => {
             let token = await getAccessToken()
 
@@ -205,7 +196,6 @@ const apiService = {
         })
     },
     putWithoutImage: async function (url: string, data:any): Promise<any> {
-        console.log('put', url, data)
         return new Promise(async (resolve, reject) => {
             let token = await getAccessToken()
 

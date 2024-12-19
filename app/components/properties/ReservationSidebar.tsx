@@ -48,7 +48,6 @@ const ReservationSidebar: React.FC<ReservationSidebarProps> = ({
                 formData.append('total_price', totalPrice.toString())
     
                 const response = await apiService.post(`/api/properties/${property.id}/book/`, formData)
-                console.log(response)
                 if (response) {
                     // Redirect to the Stripe checkout page
                     window.location.href = response.url
@@ -76,10 +75,8 @@ const ReservationSidebar: React.FC<ReservationSidebarProps> = ({
     const getReservations = async () => {
         try {
             const reservations = await apiService.get(`/api/properties/${property.id}/reservations/`);
-            console.log('Reservations:', reservations); // Log the full response
             let dates: Date[] = [];
             reservations.forEach((reservation: any) => {
-                console.log('Reservation:', reservation); // Log each reservation to inspect the structure
                 const range = eachDayOfInterval({
                     start: new Date(reservation.start_date),
                     end: new Date(reservation.end_date)

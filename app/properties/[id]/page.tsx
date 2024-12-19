@@ -13,8 +13,6 @@ const PropertyDetailPage = async ({params}: { params: Params }) => {
     const property = await apiService.get(`/api/properties/${id}`);
     const userId = await getUserId();
 
-    console.log('userId', userId);
-
     return (
         <main className="max-w-[1500px] mx-auto px-6 pb-6">
             <div className="w-full h-[64vh] mb-4 overflow-hidden rounded-xl relative">

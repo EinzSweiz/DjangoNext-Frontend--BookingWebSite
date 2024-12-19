@@ -20,8 +20,6 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
         const fetchAgents = async () => {
             try {
                 const response = await apiService.getWithToken("/api/inquiries/customer-service-agents/");
-                console.log("Full response:", response);  // Log the full response object
-                console.log("Agents fetched:", response.data);  // Check if the data is available here
                 setAgents(response || []);  // Fallback to an empty array if data is undefined
             } catch (error) {
                 console.error("Failed to fetch customer service agents:", error);
@@ -36,8 +34,6 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({
         setSelectedAgent(newAgent);
         onAgentChange(newAgent);
     };
-    // Debugging user role
-    console.log("User role:", userRole);
 
     return (
         <div className="flex flex-col space-y-4">

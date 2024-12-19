@@ -6,8 +6,6 @@ const EmailConfirmation = () => {
   const searchParams = useSearchParams();
   const uid = searchParams.get('uid');
   const token = searchParams.get('token');
-  console.log(uid);
-  console.log(token);
 
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);

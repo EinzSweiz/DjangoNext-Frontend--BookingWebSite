@@ -17,7 +17,6 @@ const PaymentSuccessPage = async ({ searchParams }: { searchParams: Params }) =>
   let paymentData = null;
   try {
     const response = await apiService.getWithToken(`/api/stripe/payment/success/?session_id=${session_id}`);
-    console.log('Response:', response);
     paymentData = response;  // Payment data is directly obtained from the response
   } catch (error) {
     console.error('Error fetching payment data:', error);

@@ -27,7 +27,7 @@ const Footer = () => {
                                     <a 
                                         href="#" 
                                         className="hover:underline" 
-                                        onClick={(e) => { e.preventDefault(); console.log('Clicked'); contactModal.open() }}  // Trigger the modal
+                                        onClick={(e) => { e.preventDefault(); contactModal.open() }}  // Trigger the modal
                                     >
                                         Contact
                                     </a>

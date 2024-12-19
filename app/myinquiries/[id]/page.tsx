@@ -50,7 +50,6 @@ const InquiryPage = ({ params }: { params: Params}) => {
             const fetchInquiry = async () => {
                 try {
                     const response = await apiService.getWithToken(`/api/inquiries/get/${resolvedParams.id}`);
-                    console.log(response); // Add this line to inspect the inquiry data
                     setInquiry(response);
                 } catch (error) {
                     setError('Error loading inquiry details.');

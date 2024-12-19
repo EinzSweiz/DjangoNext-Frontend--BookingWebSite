@@ -7,14 +7,12 @@ import { json } from 'stream/consumers';
 import jwt, {JwtPayload} from 'jsonwebtoken';
 
 export async function handleRefresh(): Promise<string | undefined> {
-    console.log('handleRefresh');
     const CookiesStore = await cookies();
 
 
     const refreshToken = await getRefreshToken();
     
     if (!refreshToken) {
-        console.log('No refresh token found. Resetting cookies.');
         resetAuthCookies();
         return undefined; // Exit if no refresh token
     }
@@ -31,7 +29,6 @@ export async function handleRefresh(): Promise<string | undefined> {
     })
         .then((response) => response.json())
         .then((json) => {
-            console.log('Response-Refresh', json);
             if (json.access) {
                 CookiesStore.set('session_access_token', json.access, {
                     httpOnly: true,

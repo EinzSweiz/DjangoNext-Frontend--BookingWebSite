@@ -21,9 +21,6 @@ const StatusDisplay: React.FC<StatusDisplayProps> = ({
     userRole,
     onStatusChange,
 }) => {
-    console.log("Rendering StatusDisplay component");
-    console.log(`Current status: ${status}`);
-    console.log(`User role: ${userRole}`);
     const [editableStatus, setEditableStatus] = useState<string>(status);
     const handleChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = e.target.value;
