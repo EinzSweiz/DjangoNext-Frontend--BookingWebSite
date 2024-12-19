@@ -44,7 +44,7 @@ const InquiryPage = ({ params }: { params: Params}) => {
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setResponse(e.target.value);
     };
-
+    
     useEffect(() => {
         if (resolvedParams.id) {
             const fetchInquiry = async () => {
@@ -142,6 +142,13 @@ const InquiryPage = ({ params }: { params: Params}) => {
                     {/* Messages Card */}
                     <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white dark:bg-gray-800 p-5 rounded-lg shadow-md">
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Messages</h3>
+                        <div className="p-4 mb-4 rounded-lg bg-yellow-100 text-yellow-800 shadow">
+                            <h4 className="font-bold">Initial Inquiry</h4>
+                            <p className="text-lg">{inquiry.message}</p>
+                            <span className="text-xs text-gray-500">
+                                {new Date(inquiry.created_at).toLocaleString()}
+                            </span>
+                        </div>
                         {inquiry.messages.map((msg, index) => (
                             <MessageBubble
                                 key={index}
