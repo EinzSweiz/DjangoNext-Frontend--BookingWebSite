@@ -72,16 +72,21 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
                                 }}
                             >
-                                <div style={{ marginRight: "15px", flexShrink: 0, width: "40px", height: "40px", overflow: "hidden", borderRadius: "50%" }}>
-                                    <Image
-                                        fill
-                                        src={review.user.avatar_url || "/default-avatar.png"}
-                                        alt={review.user.name}
-                                        className="object-cover"
-                                    />
+                                <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
+                                    {/* Avatar */}
+                                    <div style={{ marginRight: "15px", flexShrink: 0, width: "40px", height: "40px", overflow: "hidden", borderRadius: "50%" }}>
+                                        <Image
+                                            fill
+                                            src={review.user.avatar_url || "/default-avatar.png"}
+                                            alt={review.user.name}
+                                            className="object-cover"
+                                        />
+                                    </div>
+
+                                    {/* Name */}
+                                    <p style={{ margin: 0, fontSize: "14px", fontWeight: "bold" }}>{review.user.name}</p>
                                 </div>
                                 <div>
-                                    <p style={{ fontWeight: "bold", margin: "0 0 5px" }}>{review.user.name}</p>
                                     <p style={{ margin: "0", color: "#DDD" }}>{review.text}</p>
                                     <small style={{ fontSize: "12px", color: "#888" }}>
                                         {new Date(review.created_at).toLocaleString()}
