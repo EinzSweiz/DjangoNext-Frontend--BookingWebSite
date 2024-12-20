@@ -4,9 +4,15 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import apiService from "@/app/services/apiService";
 
+interface User {
+    id: string;
+    name: string;
+    avatar_url: string;
+}
+
 interface Review {
   id: string;
-  user: string;
+  user: User;
   text: string;
   created_at: string;
 }
@@ -65,7 +71,7 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                 }}
               >
                 <p>
-                  <strong>{review.user}</strong>: {review.text}
+                  <strong>{review.user.name}</strong>: {review.text}
                 </p>
                 <small>{new Date(review.created_at).toLocaleString()}</small>
               </motion.li>
