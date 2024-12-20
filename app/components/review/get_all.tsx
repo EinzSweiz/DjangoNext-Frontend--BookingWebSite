@@ -72,15 +72,13 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
                                 }}
                             >
-                                <div style={{ marginRight: "15px", flexShrink: 0 }}>
-                                    <Image
+                                <Image
                                         fill
                                         src={review.user.avatar_url || "/default-avatar.png"}
                                         alt={review.user.name}
-                                        className="w-full h-full object-cover rounded-full"
+                                        className="object-cover rounded-full"
                                         sizes="(max-width: 768px) 100vw, 50vw"
                                     />
-                                </div>
                                 <div>
                                     <p style={{ fontWeight: "bold", margin: "0 0 5px" }}>{review.user.name}</p>
                                     <p style={{ margin: "0", color: "#DDD" }}>{review.text}</p>
