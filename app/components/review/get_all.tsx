@@ -72,13 +72,12 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
                                 }}
                             >
-                                <div style={{ marginRight: "15px", flexShrink: 0 }}>
+                                <div style={{ marginRight: "15px", flexShrink: 0, width: "40px", height: "40px", overflow: "hidden", borderRadius: "50%" }}>
                                     <Image
                                         fill
                                         src={review.user.avatar_url || "/default-avatar.png"}
                                         alt={review.user.name}
-                                         className="w-full h-full object-cover rounded-full"
-                                        sizes="(max-width: 40px) 100vw, 50vw"
+                                        className="object-cover"
                                     />
                                 </div>
                                 <div>
