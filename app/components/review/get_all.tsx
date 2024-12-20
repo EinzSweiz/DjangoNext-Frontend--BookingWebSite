@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import apiService from "@/app/services/apiService";
 
 interface User {
@@ -71,16 +72,15 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
                                 }}
                             >
-                                <img
-                                    src={review.user.avatar_url || "/default-avatar.png"}
-                                    alt={review.user.name}
-                                    style={{
-                                        width: "40px",
-                                        height: "40px",
-                                        borderRadius: "50%",
-                                        marginRight: "15px",
-                                    }}
-                                />
+                                <div style={{ marginRight: "15px", flexShrink: 0 }}>
+                                    <Image
+                                        src={review.user.avatar_url || "/default-avatar.png"}
+                                        alt={review.user.name}
+                                        width={40}
+                                        height={40}
+                                        style={{ borderRadius: "50%" }}
+                                    />
+                                </div>
                                 <div>
                                     <p style={{ fontWeight: "bold", margin: "0 0 5px" }}>{review.user.name}</p>
                                     <p style={{ margin: "0", color: "#DDD" }}>{review.text}</p>
