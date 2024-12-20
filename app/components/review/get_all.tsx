@@ -74,11 +74,11 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                             >
                                 <div style={{ marginRight: "15px", flexShrink: 0 }}>
                                     <Image
+                                        fill
                                         src={review.user.avatar_url || "/default-avatar.png"}
                                         alt={review.user.name}
-                                        width={40}
-                                        height={40}
-                                        style={{ borderRadius: "50%" }}
+                                        className="w-full h-full object-cover rounded-full"
+                                        sizes="(max-width: 768px) 100vw, 50vw"
                                     />
                                 </div>
                                 <div>
