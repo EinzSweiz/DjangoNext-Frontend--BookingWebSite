@@ -14,7 +14,7 @@ const CreateReview = ({ propertyId }: { propertyId: string }) => {
         { text }
       );
 
-      if (response.ok) {
+      if (response) {
         setMessage("Review created successfully!");
         setText(""); // Clear the input field after successful submission
       } else {

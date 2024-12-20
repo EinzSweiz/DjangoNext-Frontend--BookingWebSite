@@ -1,5 +1,7 @@
-'use client'
+'use client';
+
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import apiService from "@/app/services/apiService";
 
 interface Review {
@@ -45,14 +47,29 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
         <p>No reviews yet.</p>
       ) : (
         <ul>
-          {reviews.map((review) => (
-            <li key={review.id}>
-              <p>
-                <strong>{review.user}</strong>: {review.text}
-              </p>
-              <small>{new Date(review.created_at).toLocaleString()}</small>
-            </li>
-          ))}
+          <AnimatePresence>
+            {reviews.map((review) => (
+              <motion.li
+                key={review.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                style={{
+                  backgroundColor: "#f9f9f9",
+                  margin: "10px 0",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)"
+                }}
+              >
+                <p>
+                  <strong>{review.user}</strong>: {review.text}
+                </p>
+                <small>{new Date(review.created_at).toLocaleString()}</small>
+              </motion.li>
+            ))}
+          </AnimatePresence>
         </ul>
       )}
     </div>
