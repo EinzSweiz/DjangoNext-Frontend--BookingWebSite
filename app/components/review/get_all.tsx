@@ -72,26 +72,45 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
                                 }}
                             >
-                                <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
-                                    {/* Avatar */}
-                                    <div style={{ marginRight: "15px", flexShrink: 0, width: "40px", height: "40px", overflow: "hidden", borderRadius: "50%" }}>
-                                        <Image
-                                            fill
-                                            src={review.user.avatar_url || "/default-avatar.png"}
-                                            alt={review.user.name}
-                                            className="object-cover"
-                                        />
-                                    </div>
-
-                                    {/* Name */}
-                                    <p style={{ margin: 0, fontSize: "14px", fontWeight: "bold" }}>{review.user.name}</p>
+                                <div style={{ marginRight: "15px", flexShrink: 0, width: "40px", height: "40px", overflow: "hidden", borderRadius: "50%" }}>
+                                    <Image
+                                        src={review.user.avatar_url || "/default-avatar.png"}
+                                        alt={review.user.name}
+                                        width={40}
+                                        height={40}
+                                        style={{
+                                            objectFit: "cover", // Ensures the image fills the circle and crops excess
+                                            width: "100%",     // Ensures the image matches the div width
+                                            height: "100%",    // Ensures the image matches the div height
+                                        }}
+                                    />
                                 </div>
                                 <div>
-                                    <p style={{ margin: "0", color: "#DDD" }}>{review.text}</p>
-                                    <small style={{ fontSize: "12px", color: "#888" }}>
+                                    <p style={{ 
+                                        fontWeight: "bold", 
+                                        margin: "0 0 5px", 
+                                        fontSize: "16px", 
+                                        color: "#333"  // Darker color for the name
+                                    }}>
+                                        {review.user.name}
+                                    </p>
+                                    <p style={{ 
+                                        margin: "0 0 5px", 
+                                        color: "#555",  // Slightly lighter color for the text
+                                        fontSize: "14px", 
+                                        lineHeight: "1.4"  // Better spacing for readability
+                                    }}>
+                                        {review.text}
+                                    </p>
+                                    <small style={{ 
+                                        fontSize: "12px", 
+                                        color: "#888", 
+                                        fontStyle: "italic"  // Italicized for a subtle touch
+                                    }}>
                                         {new Date(review.created_at).toLocaleString()}
                                     </small>
                                 </div>
+
                             </motion.li>
                         ))}
                     </AnimatePresence>
