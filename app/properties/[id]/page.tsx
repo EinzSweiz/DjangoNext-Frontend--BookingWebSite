@@ -4,6 +4,8 @@ import ReservationSidebar from "@/app/components/properties/ReservationSidebar";
 
 import apiService from "@/app/services/apiService";
 import { getUserId } from "@/app/lib/actions";
+import GetAllReviews from "@/app/components/review/get_all";
+import CreateReview from "@/app/components/review/create_review";
 
 type Params = Promise<{ id: string }>
 
@@ -23,6 +25,8 @@ const PropertyDetailPage = async ({params}: { params: Params }) => {
                     alt="Beach house"
                 />
             </div>
+            <GetAllReviews propertyId={property.id} />
+            <CreateReview propertyId={property.id} />
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="py-6 pr-6 col-span-3">
