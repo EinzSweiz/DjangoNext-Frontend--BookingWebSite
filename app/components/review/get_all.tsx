@@ -21,6 +21,7 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
       try {
         setLoading(true);
         const data = await apiService.get(`/api/reviews/all/${propertyId}`);
+        console.log(data)
         setReviews(data);
       } catch (err: any) {
         setError("Failed to fetch reviews.");
