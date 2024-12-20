@@ -95,7 +95,7 @@ const UserNav: React.FC<UserNavProps> = ({ userId }) => {
                 }}
               />
                 <MenuLink
-                label="Your Inquiries"
+                label="My Inquiries"
                 icon={
                   <img width="32" height="32" src="https://img.icons8.com/color/48/why-us-male--v1.png" alt="why-us-male--v1"/>
                   

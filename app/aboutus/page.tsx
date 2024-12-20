@@ -1,5 +1,13 @@
+'use client'
+
+import dynamic from "next/dynamic";
+
+const MyPlace = dynamic(() => import("../components/MyPlace"), { ssr: false });
+
+import { useState } from "react";
 const AboutUs = () => {
-    return (
+  const [showMap, setShowMap] = useState(false)
+     return (
       <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
           <div className="mx-auto max-w-5xl">
@@ -55,7 +63,17 @@ const AboutUs = () => {
               </p>
             </div>
             <div className="text-center">
-              <a href="#" className="mb-2 mr-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Learn More About Our Services</a>
+            <a
+              onClick={() => setShowMap(!showMap)}
+              className="mb-2 mr-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 cursor-pointer"
+            >
+              {showMap ? "Hide Map" : "See our Place"}
+            </a>
+            {showMap && (
+            <div className="mt-8">
+              <MyPlace height="400px" />
+            </div>
+            )}
             </div>
           </div>
         </div>
