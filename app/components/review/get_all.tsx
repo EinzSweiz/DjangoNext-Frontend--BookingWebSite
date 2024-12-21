@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import apiService from "@/app/services/apiService";
+import ReviewModal from "../modals/ReviewModal";
 
 interface User {
     id: string;
@@ -102,6 +103,7 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                     {review.text}
                                 </p>
                                 </div>
+                                <ReviewModal />
                             </motion.li>
                         ))}
                     </AnimatePresence>
