@@ -122,7 +122,7 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                         onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#45A049")}
                         onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4CAF50")}
                     >
-                        Load More
+                        See More
                     </button>
                 </div>
             )}
