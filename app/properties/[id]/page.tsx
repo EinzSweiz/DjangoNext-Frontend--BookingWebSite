@@ -1,3 +1,4 @@
+'use client'
 import Image from "next/image";
 import Link from "next/link";
 import ReservationSidebar from "@/app/components/properties/ReservationSidebar";
