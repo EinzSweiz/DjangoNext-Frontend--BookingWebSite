@@ -26,7 +26,11 @@ const PropertyDetailPage = async ({params}: { params: Params }) => {
                 />
             </div>
             <GetAllReviews propertyId={property.id} />
-            <CreateReview propertyId={property.id} />
+            {userId ? (
+                <CreateReview propertyId={property.id} />
+                ) : (
+                <p className="text-gray-500">Log in to write a review.</p>
+                )}
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="py-6 pr-6 col-span-3">

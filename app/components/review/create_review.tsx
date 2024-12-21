@@ -17,6 +17,9 @@ const CreateReview = ({ propertyId }: { propertyId: string }) => {
       if (response) {
         setMessage("Review created successfully!");
         setText(""); // Clear the input field after successful submission
+        setTimeout(() => {
+            window.location.reload()
+        }, 1000)
       } else {
         const errorData = await response.json();
         setMessage(`Error: ${errorData.error || "Unable to create review"}`);
