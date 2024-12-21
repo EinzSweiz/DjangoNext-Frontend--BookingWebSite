@@ -108,20 +108,23 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
             )}
             {loading && <p>Loading more reviews...</p>}
             {currentPage < totalPages && !loading && (
-                <button
-                    onClick={loadMore}
-                    style={{
-                        marginTop: "20px",
-                        padding: "10px 20px",
-                        backgroundColor: "#4CAF50",
-                        color: "#FFF",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                    }}
-                >
-                    Load More
-                </button>
+                <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+                    <button
+                        onClick={loadMore}
+                        style={{
+                            padding: "10px 20px",
+                            backgroundColor: "#4CAF50",
+                            color: "#FFF",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                        }}
+                        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#45A049")}
+                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4CAF50")}
+                    >
+                        Load More
+                    </button>
+                </div>
             )}
         </div>
     );
