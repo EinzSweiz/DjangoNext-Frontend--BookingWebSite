@@ -91,15 +91,16 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                     />
                                 </div>
                                 <div>
-                                    <p style={{ fontWeight: "bold", margin: "0 0 5px", fontSize: "16px", color: "#FFF" }}>
-                                        {review.user.name}
-                                    </p>
-                                    <p style={{ margin: "0 0 5px", color: "#AAA", fontSize: "14px", lineHeight: "1.4" }}>
-                                        {review.text}
-                                    </p>
+                                <p style={{ display: "flex", alignItems: "center", margin: "0 0 5px", fontSize: "16px", color: "#FFF" }}>
+                                    <span style={{ fontWeight: "bold" }}>{review.user.name}</span>
+                                    <span style={{ margin: "0 5px", color: "#888" }}>•</span> {/* Dot separator */}
                                     <small style={{ fontSize: "12px", color: "#888", fontStyle: "italic" }}>
                                         {new Date(review.created_at).toLocaleString()}
                                     </small>
+                                </p>
+                                <p style={{ margin: "0 0 5px", color: "#AAA", fontSize: "14px", lineHeight: "1.4" }}>
+                                    {review.text}
+                                </p>
                                 </div>
                             </motion.li>
                         ))}
