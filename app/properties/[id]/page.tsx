@@ -1,4 +1,3 @@
-'use client'
 import Image from "next/image";
 import Link from "next/link";
 import ReservationSidebar from "@/app/components/properties/ReservationSidebar";
@@ -7,7 +6,7 @@ import apiService from "@/app/services/apiService";
 import { getUserId } from "@/app/lib/actions";
 import GetAllReviews from "@/app/components/review/get_all";
 import CreateReview from "@/app/components/review/create_review";
-import useLoginModal from "@/app/hooks/useLoginModal";
+import LoginPrompt from "@/app/components/review/LoginPrompt";
 
 type Params = Promise<{ id: string }>
 
@@ -16,7 +15,6 @@ const PropertyDetailPage = async ({params}: { params: Params }) => {
     const { id } = resolvedParams
     const property = await apiService.get(`/api/properties/${id}`);
     const userId = await getUserId();
-    const loginModal = useLoginModal()
     return (
         <main className="max-w-[1500px] mx-auto px-6 pb-6">
             <div className="w-full h-[64vh] mb-4 overflow-hidden rounded-xl relative">
@@ -31,14 +29,7 @@ const PropertyDetailPage = async ({params}: { params: Params }) => {
             {userId ? (
                 <CreateReview propertyId={property.id} />
                 ) : (
-                <div className="bg-black text-white p-4 rounded-lg text-center">
-                    <a 
-                        onClick={() => loginModal.open()} 
-                        className="text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
-                    >
-                        Log in to write a review.
-                    </a>
-                </div>
+                <LoginPrompt/>
                 
                 )}
 
