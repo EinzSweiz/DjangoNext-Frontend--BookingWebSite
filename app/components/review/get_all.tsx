@@ -20,28 +20,33 @@ interface Review {
 
 const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
     const [reviews, setReviews] = useState<Review[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    const fetchReviews = async (page: number) => {
+        try {
+            setLoading(true);
+            const data = await apiService.get(`/api/reviews/all/${propertyId}?page=${page}&page_size=5`);
+            setReviews((prevReviews) => (page === 1 ? data.reviews : [...prevReviews, ...data.reviews]));
+            setTotalPages(data.total_pages);
+        } catch (err) {
+            setError("Failed to fetch reviews.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchReviews = async () => {
-            try {
-                setLoading(true);
-                const data = await apiService.get(`/api/reviews/all/${propertyId}`);
-                setReviews(data);
-            } catch (err: any) {
-                setError("Failed to fetch reviews.");
-            } finally {
-                setLoading(false);
-            }
-        };
+        fetchReviews(currentPage);
+    }, [propertyId, currentPage]);
 
-        fetchReviews();
-    }, [propertyId]);
-
-    if (loading) {
-        return <p>Loading reviews...</p>;
-    }
+    const loadMore = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage((prevPage) => prevPage + 1);
+        }
+    };
 
     if (error) {
         return <p>{error}</p>;
@@ -50,7 +55,7 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
     return (
         <div style={{ backgroundColor: "#1E1E1E", padding: "20px", borderRadius: "10px", color: "#FFF" }}>
             <h2 style={{ borderBottom: "1px solid #555", paddingBottom: "10px", marginBottom: "20px" }}>Reviews</h2>
-            {reviews.length === 0 ? (
+            {reviews.length === 0 && !loading ? (
                 <p>No reviews yet.</p>
             ) : (
                 <ul>
@@ -79,43 +84,44 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                         width={40}
                                         height={40}
                                         style={{
-                                            objectFit: "cover", // Ensures the image fills the circle and crops excess
-                                            width: "100%",     // Ensures the image matches the div width
-                                            height: "100%",    // Ensures the image matches the div height
+                                            objectFit: "cover",
+                                            width: "100%",
+                                            height: "100%",
                                         }}
                                     />
                                 </div>
                                 <div>
-                                    <p style={{ 
-                                        fontWeight: "bold", 
-                                        margin: "0 0 5px", 
-                                        fontSize: "16px", 
-                                        color: "#FFF" // Bright white for better contrast
-                                    }}>
+                                    <p style={{ fontWeight: "bold", margin: "0 0 5px", fontSize: "16px", color: "#FFF" }}>
                                         {review.user.name}
                                     </p>
-                                    <p style={{ 
-                                        margin: "0 0 5px", 
-                                        color: "#AAA", // Lighter gray for secondary text
-                                        fontSize: "14px", 
-                                        lineHeight: "1.4"
-                                    }}>
+                                    <p style={{ margin: "0 0 5px", color: "#AAA", fontSize: "14px", lineHeight: "1.4" }}>
                                         {review.text}
                                     </p>
-                                    <small style={{ 
-                                        fontSize: "12px", 
-                                        color: "#888", 
-                                        fontStyle: "italic"
-                                    }}>
+                                    <small style={{ fontSize: "12px", color: "#888", fontStyle: "italic" }}>
                                         {new Date(review.created_at).toLocaleString()}
                                     </small>
-
                                 </div>
-
                             </motion.li>
                         ))}
                     </AnimatePresence>
                 </ul>
+            )}
+            {loading && <p>Loading more reviews...</p>}
+            {currentPage < totalPages && !loading && (
+                <button
+                    onClick={loadMore}
+                    style={{
+                        marginTop: "20px",
+                        padding: "10px 20px",
+                        backgroundColor: "#4CAF50",
+                        color: "#FFF",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                    }}
+                >
+                    Load More
+                </button>
             )}
         </div>
     );
