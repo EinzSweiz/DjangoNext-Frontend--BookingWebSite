@@ -14,6 +14,7 @@ const ReviewModal = () => {
     const { isOpen, review } = reviewModal; // Access modal state and selected review
     const [reason, setReason] = useState<string>("");
     const [feedbackMessage, setFeedbackMessage] = useState<string>(""); // Success/Failure message
+    const [error, setError] = useState<string>('')
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // Submission state
     const [userId, setUserId] = useState<string | null>(null);
     const loginModal = useLoginModal()
@@ -27,25 +28,26 @@ const ReviewModal = () => {
 
     const handleSubmit = async () => {
         if (!review) {
-            setFeedbackMessage("No review selected.");
+            setError("No review selected.");
             return;
         }
         if (!userId) {
-            setFeedbackMessage("You need to be logged in to create a report.");
+            setError("You need to be logged in to create a report.");
             setTimeout(() => {
                 reviewModal.close();
                 loginModal.open();
-            }, 1000); // Redirect to login modal after 1 second
+            }, 2000); // Redirect to login modal after 1 second
             return;
         }
 
         if (!reason.trim()) {
-            setFeedbackMessage("Reason cannot be empty.");
+            setError("Reason cannot be empty.");
             return;
         }
 
         setIsSubmitting(true); // Start submission
         setFeedbackMessage(""); // Clear any previous messages
+        setError('');
 
         try {
             await apiService.postWithoutImages(
@@ -62,7 +64,7 @@ const ReviewModal = () => {
             }, 3000);
         } catch (error) {
             console.error("Failed to submit the report.", error);
-            setFeedbackMessage("Failed to send the report. Please try again.");
+            setError("Failed to send the report. Please try again.");
         } finally {
             setIsSubmitting(false); // End submission
         }
@@ -72,11 +74,9 @@ const ReviewModal = () => {
         <Card className="w-full h-full p-6 max-w-4xl mx-auto bg-gray-900 text-gray-100 rounded-lg shadow-lg">
             <CardHeader>
                 <CardDescription className="text-center mt-2 text-2xl text-gray-300">
-                    {feedbackMessage ? (
-                        <span className="text-green-400">{feedbackMessage}</span>
-                    ) : (
-                        "Please provide a reason for reporting this review."
-                    )}
+                    {error && <span className="text-red-400">{error}</span>}
+                    {feedbackMessage && <span className="text-green-400">{feedbackMessage}</span>}
+                    {!error && !feedbackMessage && "Please provide a reason for reporting this review."}
                 </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col justify-center items-center space-y-4">
@@ -103,7 +103,7 @@ const ReviewModal = () => {
                 </div>
             </CardContent>
         </Card>
-    );
+    );    
 
     return (
         <Modal
