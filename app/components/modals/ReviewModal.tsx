@@ -32,7 +32,7 @@ const ReviewModal = () => {
                     className="w-full max-w-lg"
                     required
                 />
-                <div className="flex justify-center space-x-10 w-full max-w-lg">
+                <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
                     <Button
                         type="button"
                         className="bg-gray-600 text-white hover:bg-gray-700"
