@@ -128,19 +128,17 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                             />
                         </div>
                         {/* Message Content */}
-                        <div
-                            className={`flex flex-col w-full max-w-[320px] leading-1.5 p-4 ${
-                                message.created_by.name === myUser?.name
-                                    ? 'bg-black text-white rounded-s-xl rounded-se-xl dark:bg-gray-900'
-                                    : 'bg-white text-black rounded-e-xl rounded-es-xl dark:bg-gray-800'
-                            }`}
-                        >
+                        <div className={`flex flex-col w-full max-w-[320px] leading-1.5 p-4 ${
+                            message.created_by.name === myUser?.name
+                                ? 'bg-black text-white rounded-s-xl rounded-se-xl dark:bg-gray-900'
+                                : 'bg-white text-black rounded-e-xl rounded-es-xl dark:bg-gray-800'
+                        }`}>
                             <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                                <span className="text-sm font-semibold text-white">
+                                <span className="text-sm font-semibold">
                                     {message.created_by.name}
                                 </span>
                                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                    {new Date(Date.now()).toLocaleTimeString()} {/* Displays the current time */}
+                                    {new Date(Date.now()).toLocaleTimeString()}
                                 </span>
                             </div>
                             <p className="text-sm font-normal py-2.5">
@@ -150,6 +148,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                                 Delivered
                             </span>
                         </div>
+
                     </div>
                 ))}
             </div>
