@@ -69,7 +69,7 @@ const ReviewModal = () => {
                     <Button
                         type="button"
                         className={`w-full max-w-md py-3 text-lg font-bold rounded-lg ${
-                            isSubmitting ? "bg-gray-700" : "bg-red-600 hover:bg-red-700"
+                            isSubmitting ? "bg-green-700" : "bg-black hover:bg-gray-800"
                         } text-white`}
                         onClick={handleSubmit}
                         disabled={isSubmitting} // Disable button while submitting

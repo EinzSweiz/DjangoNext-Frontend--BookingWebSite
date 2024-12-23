@@ -106,13 +106,27 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         }`}
                     >
                         {/* Profile Picture */}
-                        <Image
-                            src={message.created_by.avatar_url || '/images.jpeg'}
-                            alt={`${message.created_by.name} avatar`}
-                            width={32} // Equivalent to w-12 (12 * 4px)
-                            height={10} // Equivalent to h-12 (12 * 4px)
-                            className="rounded-full object-cover"
-                        />
+                        <div
+                            style={{
+                                width: "32px", // Matches the width specified
+                                height: "32px", // Matches the height specified
+                                overflow: "hidden",
+                                borderRadius: "50%",
+                                flexShrink: 0,
+                            }}
+                        >
+                            <Image
+                                src={message.created_by.avatar_url || "/images.jpeg"}
+                                alt={`${message.created_by.name} avatar`}
+                                width={32}
+                                height={32}
+                                style={{
+                                    objectFit: "cover",
+                                    width: "100%",
+                                    height: "100%",
+                                }}
+                            />
+                        </div>
                         {/* Message Content */}
                         <div
                             className={`flex flex-col w-full max-w-[320px] leading-1.5 p-4 ${
