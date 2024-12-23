@@ -20,7 +20,7 @@ const ReviewModal = () => {
 
         try {
             await apiService.postWithoutImages(
-                `/api/reviews/report/create/${review.id}`,
+                `/api/reviews/report/create/${review.id}/`,
                 { reason }
             );
             console.log("Report submitted successfully.");
@@ -49,7 +49,7 @@ const ReviewModal = () => {
                 <div className="flex justify-center w-full mt-6">
                     <Button
                         type="button"
-                        className="w-full max-w-md bg-red-600 text-white hover:bg-red-700 py-3 text-lg font-bold rounded-lg"
+                        className="w-full max-w-md bg-black text-white hover:bg-gray-800 py-3 text-lg font-bold rounded-lg"
                         onClick={handleSubmit}
                     >
                         Report
