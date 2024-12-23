@@ -20,7 +20,7 @@ const ReviewModal = () => {
 
         try {
             await apiService.postWithoutImages(
-                `api/reviews/report/create/${review.id}`,
+                `/api/reviews/report/create/${review.id}`,
                 { reason }
             );
             console.log("Report submitted successfully.");
