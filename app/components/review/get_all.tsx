@@ -6,7 +6,7 @@ import Image from "next/image";
 import apiService from "@/app/services/apiService";
 import ReviewDropdown from "./DropDown";
 import useReviewModal from "@/app/hooks/useReviewModal";
-
+import { useRouter } from "next/navigation";
 interface User {
     id: string;
     name: string;
@@ -26,7 +26,9 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const router = useRouter()
     const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+
     const reviewModal = useReviewModal();
 
     const fetchReviews = async (page: number) => {
@@ -81,7 +83,9 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
                                 }}
                             >
-                                <div style={{ marginRight: "15px", flexShrink: 0, width: "40px", height: "40px", overflow: "hidden", borderRadius: "50%" }}>
+                                <div style={{ marginRight: "15px", flexShrink: 0, width: "40px", height: "40px", overflow: "hidden", borderRadius: "50%", cursor: "pointer" }}
+                                onClick={() => router.push(`/landlords/${review.user.id}`)}
+                                >
                                     <Image
                                         src={review.user.avatar_url || "/default-avatar.png"}
                                         alt={review.user.name}
