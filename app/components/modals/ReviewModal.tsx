@@ -34,7 +34,9 @@ const ReviewModal = () => {
         if (!userId) {
             setError("You need to be logged in to create a report.");
             setTimeout(() => {
+                setReason('')
                 reviewModal.close();
+                setError('')
                 loginModal.open();
             }, 2000); // Redirect to login modal after 1 second
             return;
