@@ -52,11 +52,6 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
         }
     };
 
-    const handleOpenModal = (review: Review) => {
-        setSelectedReview(review);
-        reviewModal.open(review);
-    };
-
     if (error) {
         return <p>{error}</p>;
     }
