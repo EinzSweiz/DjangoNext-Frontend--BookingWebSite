@@ -111,7 +111,7 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                         {review.text}
                                     </p>
                                 </div>
-                                <ReviewDropdown onReport={() => handleOpenModal(review)} />
+                                <ReviewDropdown onReport={() => reviewModal.open()} />
                             </motion.li>
                         ))}
                     </AnimatePresence>
