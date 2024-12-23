@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import apiService from "@/app/services/apiService";
 import ReviewModal from "../modals/ReviewModal";
+import useReviewModal from "@/app/hooks/useReviewModal";
 
 interface User {
     id: string;
@@ -25,6 +26,8 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+    const reviewModal = useReviewModal();
 
     const fetchReviews = async (page: number) => {
         try {
@@ -47,6 +50,11 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
         if (currentPage < totalPages) {
             setCurrentPage((prevPage) => prevPage + 1);
         }
+    };
+
+    const handleOpenModal = (review: Review) => {
+        setSelectedReview(review);
+        reviewModal.open();
     };
 
     if (error) {
@@ -91,19 +99,30 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                         }}
                                     />
                                 </div>
-                                <div>
-                                <p style={{ display: "flex", alignItems: "center", margin: "0 0 5px", fontSize: "16px", color: "#FFF" }}>
-                                    <span style={{ fontWeight: "bold" }}>{review.user.name}</span>
-                                    <span style={{ margin: "0 5px", color: "#888" }}>•</span> {/* Dot separator */}
-                                    <small style={{ fontSize: "12px", color: "#888", fontStyle: "italic" }}>
-                                        {new Date(review.created_at).toLocaleString()}
-                                    </small>
-                                </p>
-                                <p style={{ margin: "0 0 5px", color: "#AAA", fontSize: "14px", lineHeight: "1.4" }}>
-                                    {review.text}
-                                </p>
+                                <div style={{ flex: 1 }}>
+                                    <p style={{ display: "flex", alignItems: "center", margin: "0 0 5px", fontSize: "16px", color: "#FFF" }}>
+                                        <span style={{ fontWeight: "bold" }}>{review.user.name}</span>
+                                        <span style={{ margin: "0 5px", color: "#888" }}>•</span> {/* Dot separator */}
+                                        <small style={{ fontSize: "12px", color: "#888", fontStyle: "italic" }}>
+                                            {new Date(review.created_at).toLocaleString()}
+                                        </small>
+                                    </p>
+                                    <p style={{ margin: "0 0 5px", color: "#AAA", fontSize: "14px", lineHeight: "1.4" }}>
+                                        {review.text}
+                                    </p>
                                 </div>
-                                <ReviewModal />
+                                <button
+                                    onClick={() => handleOpenModal(review)}
+                                    style={{
+                                        background: "none",
+                                        border: "none",
+                                        color: "#FFF",
+                                        fontSize: "20px",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    &#x22EE; {/* Vertical ellipsis */}
+                                </button>
                             </motion.li>
                         ))}
                     </AnimatePresence>
@@ -129,6 +148,32 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                     </button>
                 </div>
             )}
+            <ReviewModal
+                isOpen={reviewModal.isOpen}
+                close={reviewModal.close}
+                label="Review Options"
+                content={
+                    selectedReview ? (
+                        <div>
+                            <p>Review ID: {selectedReview.id}</p>
+                            <p>User: {selectedReview.user.name}</p>
+                            <textarea
+                                className="w-full border rounded-lg p-2"
+                                placeholder="Enter your reason for reporting..."
+                                rows={4}
+                            ></textarea>
+                            <button
+                                onClick={() => console.log("Reported:", selectedReview.id)}
+                                className="bg-red-500 text-white px-4 py-2 mt-4 rounded-lg hover:bg-red-600"
+                            >
+                                Submit Report
+                            </button>
+                        </div>
+                    ) : (
+                        <p>Loading...</p>
+                    )
+                }
+            />
         </div>
     );
 };
