@@ -32,22 +32,16 @@ const ReviewModal = () => {
                     className="w-full max-w-lg"
                     required
                 />
-                <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+               <div className="flex justify-center w-full mt-6">
                     <Button
                         type="button"
-                        className="bg-gray-600 text-white hover:bg-gray-700"
-                        onClick={reviewModal.close}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        type="button"
-                        className="bg-red-600 text-white hover:bg-red-700"
+                        className="w-full max-w-md bg-red-600 text-white hover:bg-red-700 py-3 text-lg font-bold rounded-lg"
                         onClick={handleSubmit}
                     >
-                        Submit
+                        Report
                     </Button>
                 </div>
+
             </CardContent>
         </Card>
     );
