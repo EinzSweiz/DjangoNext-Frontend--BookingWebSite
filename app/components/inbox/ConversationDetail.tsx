@@ -131,8 +131,8 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         <div
                             className={`flex flex-col w-full max-w-[320px] leading-1.5 p-4 ${
                                 message.created_by.name === myUser?.name
-                                    ? 'bg-blue-500 text-white rounded-s-xl rounded-se-xl dark:bg-blue-700'
-                                    : 'bg-gray-100 text-black rounded-e-xl rounded-es-xl dark:bg-gray-700'
+                                    ? 'bg-black text-white rounded-s-xl rounded-se-xl dark:bg-gray-900'
+                                    : 'bg-white text-black rounded-e-xl rounded-es-xl dark:bg-gray-800'
                             }`}
                         >
                             <div className="flex items-center space-x-2 rtl:space-x-reverse">
