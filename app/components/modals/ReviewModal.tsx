@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import useReviewModal from '@/app/hooks/useReviewModal';
+import apiService from '@/app/services/apiService';
 import Modal from './Modal';
 
 const ReviewModal = () => {
@@ -31,7 +32,7 @@ const ReviewModal = () => {
                     className="w-full max-w-lg"
                     required
                 />
-                <div className="flex justify-end space-x-10 w-full max-w-lg">
+                <div className="flex justify-center space-x-10 w-full max-w-lg">
                     <Button
                         type="button"
                         className="bg-gray-600 text-white hover:bg-gray-700"
