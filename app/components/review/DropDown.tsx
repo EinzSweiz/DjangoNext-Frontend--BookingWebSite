@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { FaFlag } from "react-icons/fa"; // Import a flag icon
 
 interface ReviewDropdownProps {
   onReport: () => void;
@@ -34,16 +35,17 @@ const ReviewDropdown: React.FC<ReviewDropdownProps> = ({ onReport }) => {
 
   return (
     <div className="relative">
+      {/* Vertical Ellipsis Button */}
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="text-white text-lg p-1"
+        className="text-gray-400 hover:text-gray-200 p-1"
       >
-        &#x22EE; {/* Vertical Ellipsis */}
+        &#x22EE;
       </button>
       {isOpen && (
         <div
-          className="absolute right-0 mt-2 w-40 bg-gray-800 text-white rounded-lg shadow-lg"
+          className="absolute right-0 mt-2 w-48 bg-gray-800 text-white rounded-lg shadow-lg z-50"
           ref={dropdownRef}
         >
           <button
@@ -51,9 +53,10 @@ const ReviewDropdown: React.FC<ReviewDropdownProps> = ({ onReport }) => {
               setIsOpen(false);
               onReport();
             }}
-            className="block w-full text-left px-4 py-2 hover:bg-gray-700"
+            className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-700"
           >
-            Report
+            <FaFlag className="mr-2 text-gray-400" /> {/* Flag icon */}
+            <span>Report</span>
           </button>
         </div>
       )}
