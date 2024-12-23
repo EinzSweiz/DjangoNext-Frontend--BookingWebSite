@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardDescription } from '@/components/ui/card';
@@ -17,23 +15,22 @@ const ReviewModal = () => {
     };
 
     const content = (
-        <Card className="mx-full max-w-full">
+        <Card className="w-full h-full p-6 max-w-4xl mx-auto">
             <CardHeader>
-                <h2 className="text-lg font-bold text-center">Report</h2>
-                <CardDescription className="text-center mt-2">
+                <CardDescription className="text-center mt-2 text-2xl">
                     Please provide a reason for reporting this review.
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col justify-center items-center space-y-4">
                 <Input
                     id="reason"
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                     placeholder="Reason for reporting"
-                    className="w-full mb-4"
+                    className="w-full max-w-lg"
                     required
                 />
-                <div className="flex justify-end space-x-10">
+                <div className="flex justify-end space-x-10 w-full max-w-lg">
                     <Button
                         type="button"
                         className="bg-gray-600 text-white hover:bg-gray-700"
@@ -57,7 +54,7 @@ const ReviewModal = () => {
         <Modal
             isOpen={reviewModal.isOpen}
             close={reviewModal.close}
-            label="Report Review"
+            label="Report"
             content={content}
         />
     );
