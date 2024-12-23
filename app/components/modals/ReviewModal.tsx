@@ -31,10 +31,14 @@ const ReviewModal = () => {
             return;
         }
         if (!userId) {
-            reviewModal.close()
-            loginModal.open()
+            setFeedbackMessage("You need to be logged in to create a report.");
+            setTimeout(() => {
+                reviewModal.close();
+                loginModal.open();
+            }, 1000); // Redirect to login modal after 1 second
+            return;
         }
-        
+
         if (!reason.trim()) {
             setFeedbackMessage("Reason cannot be empty.");
             return;
