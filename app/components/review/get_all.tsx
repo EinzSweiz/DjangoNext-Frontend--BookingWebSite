@@ -6,7 +6,6 @@ import Image from "next/image";
 import apiService from "@/app/services/apiService";
 import ReviewDropdown from "./DropDown";
 import useReviewModal from "@/app/hooks/useReviewModal";
-import { getUserId } from "@/app/lib/actions";
 import { useRouter } from "next/navigation";
 interface User {
     id: string;
@@ -28,18 +27,9 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const router = useRouter()
-    const [userId, setUserId] = useState<string | null>(null);
     const [selectedReview, setSelectedReview] = useState<Review | null>(null);
 
     const reviewModal = useReviewModal();
-
-    useEffect(() => {
-        const fetchUserId = async () => {
-            const id = await getUserId()
-            setUserId(id)
-        }
-        fetchUserId()
-    }, [])
 
     const fetchReviews = async (page: number) => {
         try {
@@ -120,7 +110,7 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                         {review.text}
                                     </p>
                                 </div>
-                                {userId && <ReviewDropdown onReport={() => reviewModal.open(review)} />}
+                                <ReviewDropdown onReport={() => reviewModal.open(review)} />
                             </motion.li>
                         ))}
                     </AnimatePresence>

@@ -1,11 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import useReviewModal from "@/app/hooks/useReviewModal";
 import Modal from "./Modal";
 import apiService from "@/app/services/apiService";
+import { getUserId } from "@/app/lib/actions";
+import useLoginModal from "@/app/hooks/useLoginModal";
 
 const ReviewModal = () => {
     const reviewModal = useReviewModal();
@@ -13,10 +15,28 @@ const ReviewModal = () => {
     const [reason, setReason] = useState<string>("");
     const [feedbackMessage, setFeedbackMessage] = useState<string>(""); // Success/Failure message
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // Submission state
+    const [userId, setUserId] = useState<string | null>(null);
+    const loginModal = useLoginModal()
+    useEffect(() => {
+        const fetchUserId = async () => {
+            const id = await getUserId()
+            setUserId(id)
+        }
+        fetchUserId()
+    }, [])
 
     const handleSubmit = async () => {
         if (!review) {
             setFeedbackMessage("No review selected.");
+            return;
+        }
+        if (!userId) {
+            reviewModal.close()
+            loginModal.open()
+        }
+        
+        if (!reason.trim()) {
+            setFeedbackMessage("Reason cannot be empty.");
             return;
         }
 
