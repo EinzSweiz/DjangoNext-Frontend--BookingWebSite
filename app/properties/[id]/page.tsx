@@ -48,20 +48,35 @@ const PropertyDetailPage = async ({params}: { params: Params }) => {
                         className="py-6 flex items-center space-x-4"
                     >
                         {property.landlord.avatar_url && (
-                            <Image
-                                src={property.landlord.avatar_url}
-                                width={50}
-                                height={50}
-                                className="rounded-full"
-                                alt="The user name"
-                            />
+                            <div 
+                                style={{ 
+                                    marginRight: "15px", 
+                                    flexShrink: 0, 
+                                    width: "50px", 
+                                    height: "50px", 
+                                    overflow: "hidden", 
+                                    borderRadius: "50%" 
+                                }}
+                            >
+                                <Image
+                                    src={property.landlord.avatar_url}
+                                    width={50}
+                                    height={50}
+                                    alt={`${property.landlord.name}'s avatar`}
+                                    style={{
+                                        objectFit: "cover",
+                                        width: "100%",
+                                        height: "100%",
+                                    }}
+                                />
+                            </div>
                         )}
 
-                        <p><strong>{property.landlord.name}</strong> is your host</p>
+                        <p>
+                            <strong>{property.landlord.name}</strong> is your host
+                        </p>
                     </Link>
-
                     <hr />
-
                     <p className="mt-6 text-lg">
                         {property.description}
                     </p>
