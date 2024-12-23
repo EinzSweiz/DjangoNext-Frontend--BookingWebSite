@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import apiService from "@/app/services/apiService";
-import ReviewModal from "../modals/ReviewModal";
 import ReviewDropdown from "./DropDown";
 import useReviewModal from "@/app/hooks/useReviewModal";
 

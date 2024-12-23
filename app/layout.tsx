@@ -53,6 +53,7 @@ export default function RootLayout({
           <div className="pt-32">{children}</div>
           <ProfileModal />
           <LoginModal />
+          <ReviewModal />
           <SearchModal />
           <SignupModal />
           <AddPropertyModal />
