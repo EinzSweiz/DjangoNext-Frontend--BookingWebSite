@@ -7,7 +7,6 @@ import apiService from "@/app/services/apiService";
 import ReviewModal from "../modals/ReviewModal";
 import ReviewDropdown from "./DropDown";
 import useReviewModal from "@/app/hooks/useReviewModal";
-import MenuLink from "../navbar/MenuLink";
 
 interface User {
     id: string;
@@ -139,28 +138,6 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                     </button>
                 </div>
             )}
-            <ReviewModal
-                isOpen={reviewModal.isOpen}
-                close={reviewModal.close}
-                label="Report Review"
-                content={
-                    selectedReview ? (
-                        <div>
-                            <p className="mb-4">Report review by {selectedReview.user.name}</p>
-                            <textarea
-                                className="w-full p-2 border rounded-lg"
-                                rows={4}
-                                placeholder="Describe the issue..."
-                            ></textarea>
-                            <button className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-                                Submit Report
-                            </button>
-                        </div>
-                    ) : (
-                        <p>Loading...</p>
-                    )
-                }
-            />
         </div>
     );
 };
