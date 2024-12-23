@@ -1,19 +1,32 @@
-'use client';
-
-import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import useReviewModal from '@/app/hooks/useReviewModal';
-import Modal from './Modal';
+import React, { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import useReviewModal from "@/app/hooks/useReviewModal";
+import Modal from "./Modal";
+import apiService from "@/app/services/apiService";
 
 const ReviewModal = () => {
     const reviewModal = useReviewModal();
-    const [reason, setReason] = useState<string>('');
+    const { isOpen, review } = reviewModal; // Access modal state and selected review
+    const [reason, setReason] = useState<string>("");
 
-    const handleSubmit = () => {
-        console.log(`Reported Review ID: ${reviewModal}, Reason: ${reason}`);
-        reviewModal.close(); // Close the modal after submission
+    const handleSubmit = async () => {
+        if (!review) {
+            console.error("No review selected.");
+            return;
+        }
+
+        try {
+            await apiService.postWithoutImages(
+                `api/reviews/report/create/${review.id}`,
+                { reason }
+            );
+            console.log("Report submitted successfully.");
+            reviewModal.close();
+        } catch (error) {
+            console.error("Failed to submit the report.", error);
+        }
     };
 
     const content = (
@@ -47,7 +60,7 @@ const ReviewModal = () => {
 
     return (
         <Modal
-            isOpen={reviewModal.isOpen}
+            isOpen={isOpen}
             close={reviewModal.close}
             label="Report"
             content={content}

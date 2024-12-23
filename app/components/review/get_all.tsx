@@ -54,7 +54,7 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
 
     const handleOpenModal = (review: Review) => {
         setSelectedReview(review);
-        reviewModal.open();
+        reviewModal.open(review);
     };
 
     if (error) {
@@ -111,7 +111,7 @@ const GetAllReviews = ({ propertyId }: { propertyId: string }) => {
                                         {review.text}
                                     </p>
                                 </div>
-                                <ReviewDropdown onReport={() => reviewModal.open()} />
+                                <ReviewDropdown onReport={() => reviewModal.open(review)} />
                             </motion.li>
                         ))}
                     </AnimatePresence>
