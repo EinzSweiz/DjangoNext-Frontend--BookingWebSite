@@ -124,7 +124,7 @@ const ChatBotModal: React.FC = () => {
           </>
         )}
         {activeQuestion && (
-          <p className="text-xs font-semibold text-center">
+          <p className="text-sm font-semibold text-center">
             <span className="text-blue-400">Question:</span> {activeQuestion}
           </p>
         )}
@@ -134,7 +134,7 @@ const ChatBotModal: React.FC = () => {
             <span className="mt-2 text-xs text-white">🤖 Thinking...</span>
           </div>
         ) : (
-          <p className="text-xs text-center">
+          <p className="text-sm text-center">
             <span className="text-green-400 font-semibold">Answer:</span> {answer}
           </p>
         )}
