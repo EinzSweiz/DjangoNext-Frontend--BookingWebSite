@@ -45,7 +45,7 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
       )}
       {/* Modal */}
       <div
-        className={`fixed bottom-0 right-0 h-[30%] max-w-sm w-full bg-white border-l border-gray-200 rounded-t-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 ${
+        className={`fixed bottom-4 right-4 max-w-sm w-full bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 ${
           isOpen ? "translate-y-0" : "translate-y-[100%]"
         }`}
       >
@@ -58,7 +58,7 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
             ×
           </button>
         </div>
-        <div className="p-4">{content}</div>
+        <div className="p-4 overflow-y-auto max-h-[80vh]">{content}</div>
       </div>
     </div>
   );

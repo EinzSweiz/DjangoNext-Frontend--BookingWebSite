@@ -11,9 +11,8 @@ const ChatBotModal: React.FC = () => {
   }, []);
 
   const content = (
-    <div className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div className="flex flex-col items-center pb-6 px-4">
-        {/* Replace this src with your bot image path */}
         <img
           className="w-16 h-16 mb-2 rounded-full shadow-lg"
           src="/bot_image.jpg"
