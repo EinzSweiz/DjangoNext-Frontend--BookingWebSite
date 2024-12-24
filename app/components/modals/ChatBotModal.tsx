@@ -16,6 +16,7 @@ const ChatBotModal: React.FC = () => {
   const handleSubmit = async (q: string) => {
     setLoading(true);
     try {
+      console.log('Question:', q)
       const response = await apiService.postWithoutToken("/api/chatbot/", { question: q });
   
       // Add the question and response to the conversation
