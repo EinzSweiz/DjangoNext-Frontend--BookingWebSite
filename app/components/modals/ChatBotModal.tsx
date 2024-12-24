@@ -4,6 +4,9 @@ import useChatBotModal from "@/app/hooks/useChatBotModal";
 import RightBottomModal from "./RightBottomModal";
 import apiService from "@/app/services/apiService";
 import { getUserId } from "@/app/lib/actions"; // Mock function to get the user ID
+import useContactModal from "@/app/hooks/useContactModal";
+import useLoginModal from "@/app/hooks/useLoginModal";
+import useProfileModal from "@/app/hooks/useProfileModal";
 
 const ChatBotModal: React.FC = () => {
   const chatbotModal = useChatBotModal();
@@ -12,6 +15,9 @@ const ChatBotModal: React.FC = () => {
   const [activeQuestion, setActiveQuestion] = useState<string | null>(null); // Tracks the current question
   const [showGif, setShowGif] = useState<string | null>(null); // Tracks success GIF visibility
   const [userName, setUserName] = useState<string>("Dear Guest"); // Stores the user name or ID
+  const contactModal = useContactModal()
+  const loginModal = useLoginModal()
+  const profileModal = useProfileModal()
 
   useEffect(() => {
     chatbotModal.open(); // Automatically open on app start
@@ -45,7 +51,16 @@ const ChatBotModal: React.FC = () => {
         JSON.stringify({ question: q }),
         false
       );
-      console.log("Response:", response);
+      
+      if (response.redirect) {
+        window.location.href = response.redirect;
+      }
+
+      if (response.action) {
+        if (response.action === "open_contact_modal") {
+                contactModal.open();
+            }
+      }
 
       // Simulate a delay before displaying the answer
       setTimeout(() => {
@@ -78,9 +93,11 @@ const ChatBotModal: React.FC = () => {
               alt="Processing"
               className="w-20 h-20 border rounded-full"
             />
-            <p className="text-sm font-semibold text-center">
+            {loading && <p className="text-sm font-semibold text-center">
               I am working on your issue, <span className="text-blue-400">{userName}</span>.
             </p>
+            }
+            
           </>
         )}
         {activeQuestion && (
