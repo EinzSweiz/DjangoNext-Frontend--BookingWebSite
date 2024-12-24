@@ -57,27 +57,27 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
         >
           {/* Modal */}
           <div
-            className={`max-w-sm w-full bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 transform ${
+            className={`w-full sm:max-w-sm max-w-[50%] bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 transform ${
               showModal ? "translate-y-0" : "translate-y-[100%]"
             }`}
           >
-            <div className="flex flex-col items-center border-b p-4">
+            <div className="flex flex-col items-center border-b p-2 sm:p-4">
               <div className="flex flex-col items-center">
-                <span className="text-2xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
+                <span className="text-sm sm:text-xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
                   👋 Hello!
                 </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
                   Welcome to the ChatBot!
                 </span>
               </div>
               <button
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 focus:outline-none"
+                className="absolute top-1 sm:top-2 right-1 sm:right-2 text-gray-500 hover:text-gray-800 focus:outline-none"
                 onClick={handleToggle}
               >
                 ×
               </button>
             </div>
-            <div className="p-4 overflow-y-auto max-h-[80vh]">{content}</div>
+            <div className="p-2 sm:p-4 overflow-y-auto max-h-[30vh] sm:max-h-[40vh]">{content}</div>
           </div>
         </div>
       )}
