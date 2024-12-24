@@ -36,7 +36,7 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full max-w-sm bg-white border-l border-gray-200 rounded-l-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 ${
+      className={`fixed top-[35%] right-0 h-[30%] max-w-sm bg-white border-l border-gray-200 rounded-l-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
