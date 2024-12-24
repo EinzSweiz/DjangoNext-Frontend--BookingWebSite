@@ -58,16 +58,16 @@ const ChatBotModal: React.FC = () => {
       );
 
       if (response.redirect) {
-        setTimeout(() => window.location.href = response.redirect, 2000);
+        setTimeout(() => window.location.href = response.redirect, 5000);
 
       }
 
       
       if (response.action) {
         if (response.action === "open_contact_modal") {
-          setTimeout(() => contactModal.open(), 2000);
+          setTimeout(() => contactModal.open(), 5000);
         } else if (response.action === "open_profile_modal") {
-          setTimeout(() => profileModal.open(), 2000);
+          setTimeout(() => profileModal.open(), 5000);
         }
       }
 
