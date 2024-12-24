@@ -17,9 +17,10 @@ const ChatBotModal: React.FC = () => {
   const [userName, setUserName] = useState<string>("Dear Guest"); // Stores the user name or ID
   const contactModal = useContactModal();
   const profileModal = useProfileModal();
-  
+
   useEffect(() => {
     chatbotModal.open(); // Automatically open on app start
+
     const fetchUserId = async () => {
       try {
         const userId = await getUserId();
@@ -89,11 +90,11 @@ const ChatBotModal: React.FC = () => {
   };
 
   const content = (
-    <div className="w-full max-w-sm max-h-screen bg-black text-white border border-gray-700 rounded-lg shadow-lg dark:bg-gray-900">
-      <div className="flex flex-col items-center py-6 px-4 space-y-6">
+    <div className="w-full max-w-sm h-[80vh] md:h-auto bg-black text-white border border-gray-700 rounded-lg shadow-lg dark:bg-gray-900 flex flex-col">
+      <div className="flex-1 flex flex-col items-center py-6 px-4 space-y-4 overflow-y-auto">
         {showGif && (
           <>
-            <img src={showGif} alt="Processing" className="w-16 h-16 border rounded-full" />
+            <img src={showGif} alt="Processing" className="w-20 h-20 border rounded-full" />
             {loading && (
               <p className="text-sm font-semibold text-center">
                 I am working on your issue, <span className="text-blue-400">{userName}</span>.
@@ -112,25 +113,27 @@ const ChatBotModal: React.FC = () => {
             <span className="mt-4 text-lg text-white">🤖 Thinking...</span>
           </div>
         ) : (
-          <>
-            <p className="text-base text-center">
-              <span className="text-green-400 font-semibold text-lg">Answer:</span> {answer}
-            </p>
-            <button
-              onClick={resetToInitial}
-              className="mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white text-sm font-medium rounded-full shadow-lg hover:from-blue-500 hover:via-blue-600 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 dark:focus:ring-blue-300 transform hover:scale-105 transition-transform duration-300"
-            >
-              🔄 Ask More Questions
-            </button>
-          </>
+          <p className="text-base text-center">
+            <span className="text-green-400 font-semibold text-lg">Answer:</span> {answer}
+          </p>
         )}
       </div>
+      {!loading && (
+        <div className="sticky bottom-0 w-full bg-black py-3 px-4">
+          <button
+            onClick={resetToInitial}
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white text-sm font-medium rounded-full shadow-lg hover:from-blue-500 hover:via-blue-600 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 dark:focus:ring-blue-300 transform hover:scale-105 transition-transform duration-300"
+          >
+            🔄 Ask More Questions
+          </button>
+        </div>
+      )}
     </div>
   );
 
   const initialContent = (
-    <div className="w-full max-w-sm max-h-screen bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
-      <div className="flex flex-col items-center pb-3 px-3 sm:pb-4 sm:px-4">
+    <div className="w-full max-w-sm h-[80vh] bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 flex flex-col">
+      <div className="flex-1 flex flex-col items-center pb-3 px-3 sm:pb-4 sm:px-4 overflow-y-auto">
         <img className="w-16 h-16 mb-2 rounded-full shadow-lg" src="/bot_image.jpg" alt="ChatBot" />
         <h5 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">ChatBot</h5>
         <span className="text-sm text-gray-500 dark:text-gray-400 text-center">
