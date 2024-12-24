@@ -30,39 +30,26 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
     setShowModal(false);
   }, [close]);
 
-  const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      handleClose();
-    }
-  };
-
   if (!showModal && !isOpen) {
     return null;
   }
 
   return (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-50 flex items-end ${
-        isOpen ? "opacity-100" : "opacity-0"
-      } transition-opacity duration-300`}
-      onClick={handleOutsideClick}
+      className={`fixed top-0 right-0 h-full max-w-sm bg-white border-l border-gray-200 rounded-l-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 ${
+        isOpen ? "translate-x-0" : "translate-x-full"
+      }`}
     >
-      <div
-        className={`w-full max-w-md bg-white rounded-t-lg shadow-lg p-4 transform ${
-          isOpen ? "translate-y-0" : "translate-y-full"
-        } transition-transform duration-300`}
-      >
-        <div className="flex justify-between items-center border-b pb-2">
-          <span className="text-lg font-bold">{label}</span>
-          <button
-            className="text-gray-500 hover:text-gray-800"
-            onClick={handleClose}
-          >
-            ×
-          </button>
-        </div>
-        <div className="mt-4">{content}</div>
+      <div className="flex justify-between items-center border-b p-4">
+        <span className="text-lg font-bold">{label}</span>
+        <button
+          className="text-gray-500 hover:text-gray-800 focus:outline-none"
+          onClick={handleClose}
+        >
+          ×
+        </button>
       </div>
+      <div className="p-4">{content}</div>
     </div>
   );
 };
