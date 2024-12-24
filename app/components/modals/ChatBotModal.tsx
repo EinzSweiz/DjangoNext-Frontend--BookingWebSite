@@ -17,14 +17,14 @@ const ChatBotModal: React.FC = () => {
   const [userName, setUserName] = useState<string>("Dear Guest"); // Stores the user name or ID
   const contactModal = useContactModal();
   const profileModal = useProfileModal();
-
+  
   useEffect(() => {
     chatbotModal.open(); // Automatically open on app start
-
     const fetchUserId = async () => {
       try {
         const userId = await getUserId();
-        setUserName(userId || "Dear Guest");
+        const response = await apiService.getWithToken(`/api/auth/profile/${userId}/`);
+        setUserName(response.name || "Dear Guest");
       } catch (error) {
         console.error("Failed to fetch user ID:", error);
       }
@@ -89,11 +89,11 @@ const ChatBotModal: React.FC = () => {
   };
 
   const content = (
-    <div className="w-full max-w-sm bg-black text-white border border-gray-700 rounded-lg shadow-lg dark:bg-gray-900">
+    <div className="w-full max-w-sm max-h-screen bg-black text-white border border-gray-700 rounded-lg shadow-lg dark:bg-gray-900">
       <div className="flex flex-col items-center py-6 px-4 space-y-6">
         {showGif && (
           <>
-            <img src={showGif} alt="Processing" className="w-20 h-20 border rounded-full" />
+            <img src={showGif} alt="Processing" className="w-16 h-16 border rounded-full" />
             {loading && (
               <p className="text-sm font-semibold text-center">
                 I am working on your issue, <span className="text-blue-400">{userName}</span>.
@@ -129,7 +129,7 @@ const ChatBotModal: React.FC = () => {
   );
 
   const initialContent = (
-    <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-full max-w-sm max-h-screen bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
       <div className="flex flex-col items-center pb-3 px-3 sm:pb-4 sm:px-4">
         <img className="w-16 h-16 mb-2 rounded-full shadow-lg" src="/bot_image.jpg" alt="ChatBot" />
         <h5 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">ChatBot</h5>
