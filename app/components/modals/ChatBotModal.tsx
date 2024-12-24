@@ -8,49 +8,85 @@ const ChatBotModal: React.FC = () => {
   const chatbotModal = useChatBotModal();
   const [conversation, setConversation] = useState<{ question: string; answer: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [typingResponse, setTypingResponse] = useState<string>("");
+  const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
 
   useEffect(() => {
     chatbotModal.open(); // Automatically open on app start
   }, []);
 
+  const simulateTypingEffect = (text: string) => {
+    let currentText = "";
+    const typingSpeed = 50; // Typing speed in milliseconds
+
+    const interval = setInterval(() => {
+      if (currentText.length < text.length) {
+        currentText += text[currentText.length];
+        setTypingResponse(currentText);
+      } else {
+        clearInterval(interval);
+      }
+    }, typingSpeed);
+  };
+
   const handleSubmit = async (q: string) => {
     setLoading(true);
+    setTypingResponse(""); // Clear previous response
+    setActiveQuestion(q); // Set the active question to hide other content
     try {
-        console.log('Question:', q);
-        
-        // Stringify the payload here
-        const payload = JSON.stringify({ question: q });
-        console.log("Payload sent to API:", payload);
+      console.log("Question:", q);
 
-        // Send the request
-        const response = await apiService.postWithoutToken("/api/chatbot/", payload, false);
-        console.log("Response:", response);
+      // Send the request
+      const response = await apiService.postWithoutToken("/api/chatbot/", JSON.stringify({ question: q }), false);
+      console.log("Response:", response);
 
-        // Add the question and response to the conversation
-        setConversation((prev) => [
-            ...prev,
-            { question: q, answer: response.response },
-        ]);
+      // Simulate the typing effect for the answer
+      setConversation((prev) => [...prev, { question: q, answer: "" }]);
+      simulateTypingEffect(response.response);
 
-        // Handle redirects
-        if (response.redirect) {
-            window.location.href = response.redirect;
-        }
+      // Handle redirects
+      if (response.redirect) {
+        window.location.href = response.redirect;
+      }
     } catch (error) {
-        console.error("Failed to fetch chatbot response:", error);
-        setConversation((prev) => [
-            ...prev,
-            { question: q, answer: "Sorry, something went wrong!" },
-        ]);
+      console.error("Failed to fetch chatbot response:", error);
+      setConversation((prev) => [
+        ...prev,
+        { question: q, answer: "Sorry, something went wrong!" },
+      ]);
     } finally {
-        setLoading(false);
+      setLoading(false);
+      setActiveQuestion(null); // Reset the active question once the answer is displayed
     }
-};
+  };
 
+  const renderConversation = () => (
+    <div className="mt-4 w-full">
+      {conversation.map((item, index) => (
+        <div key={index} className="mb-2">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
+            <strong>Q:</strong> {item.question}
+          </p>
+          <p className="text-sm text-gray-900 dark:text-gray-100">
+            <strong>A:</strong> {item.answer}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
 
-  
-
-  const content = (
+  const content = activeQuestion ? (
+    <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <div className="flex flex-col items-center py-8 px-4">
+        {loading && <div className="text-lg text-gray-500">🤖 Thinking...</div>}
+        {!loading && typingResponse && (
+          <p className="text-sm text-gray-900 dark:text-gray-100">
+            <strong>A:</strong> {typingResponse}
+          </p>
+        )}
+      </div>
+    </div>
+  ) : (
     <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div className="flex flex-col items-center pb-3 px-3 sm:pb-4 sm:px-4">
         <img
@@ -84,19 +120,7 @@ const ChatBotModal: React.FC = () => {
             Show me available properties
           </button>
         </div>
-        {loading && <p className="mt-4 text-sm text-gray-500">Loading...</p>}
-        <div className="mt-4 w-full">
-          {conversation.map((item, index) => (
-            <div key={index} className="mb-2">
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                <strong>Q:</strong> {item.question}
-              </p>
-              <p className="text-sm text-gray-900 dark:text-gray-100">
-                <strong>A:</strong> {item.answer}
-              </p>
-            </div>
-          ))}
-        </div>
+        {renderConversation()}
       </div>
     </div>
   );

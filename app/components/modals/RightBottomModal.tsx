@@ -42,11 +42,13 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
       {/* Black arrow button to toggle the modal */}
       {!showModal && (
         <button
-          onClick={handleToggle}
-          className="fixed bottom-1/2 right-0 translate-y-1/2 bg-black text-white p-3 rounded-l-full shadow-lg focus:outline-none hover:bg-gray-700"
-        >
-          ▶
-        </button>
+        onClick={handleToggle}
+        className="fixed bottom-1/2 right-0 translate-y-1/2 bg-black text-white p-1 sm:p-2 text-xs sm:text-sm rounded-l-full shadow-sm focus:outline-none hover:bg-gray-700"
+      >
+        ▶
+      </button>
+      
+
       )}
 
       {/* Wrapper for outside click */}
