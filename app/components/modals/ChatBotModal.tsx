@@ -5,6 +5,7 @@ import RightBottomModal from "./RightBottomModal";
 import apiService from "@/app/services/apiService";
 import { getUserId } from "@/app/lib/actions";
 import useContactModal from "@/app/hooks/useContactModal";
+import useLoginModal from "@/app/hooks/useLoginModal";
 import useProfileModal from "@/app/hooks/useProfileModal";
 
 const ChatBotModal: React.FC = () => {
@@ -14,9 +15,11 @@ const ChatBotModal: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [activeQuestion, setActiveQuestion] = useState<string | null>(null); // Tracks the current question
   const [showGif, setShowGif] = useState<string | null>(null); // Tracks success GIF visibility
-  const [userName, setUserName] = useState<string>("Dear Guest"); // Stores the user name or ID
+  const [userName, setUserName] = useState<string>("Dear Guest"); // Stores the user name
+  const [userid, setUserId] = useState<string>('');
   const contactModal = useContactModal();
   const profileModal = useProfileModal();
+  const loginModal = useLoginModal()
 
   useEffect(() => {
     chatbotModal.open(); // Automatically open on app start
@@ -24,6 +27,9 @@ const ChatBotModal: React.FC = () => {
     const fetchUserId = async () => {
       try {
         const userId = await getUserId();
+        if (userId) {
+            setUserId(userId)
+        }
         const response = await apiService.getWithToken(`/api/auth/profile/${userId}/`);
         setUserName(response.name || "Dear Guest");
       } catch (error) {
@@ -58,16 +64,29 @@ const ChatBotModal: React.FC = () => {
       );
 
       if (response.redirect) {
-        setTimeout(() => window.location.href = response.redirect, 5000);
+        if (userid){
+            setTimeout(() => window.location.href = response.redirect, 5000);
+        } else {
+            setTimeout(() => loginModal.open(), 5000);
+        }
+        
 
       }
 
       
       if (response.action) {
         if (response.action === "open_contact_modal") {
-          setTimeout(() => contactModal.open(), 5000);
+            if (userid){
+                setTimeout(() => contactModal.open(), 5000);
+        } else {
+            setTimeout(() => loginModal.open(), 5000);
+        }
         } else if (response.action === "open_profile_modal") {
-          setTimeout(() => profileModal.open(), 5000);
+            if (userid){
+                setTimeout(() => profileModal.open(), 5000);
+        } else {
+            setTimeout(() => loginModal.open(), 5000);
+        }
         }
       }
 
