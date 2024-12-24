@@ -65,7 +65,7 @@ const ChatBotModal: React.FC = () => {
 
       if (response.redirect) {
         if (userid){
-            setTimeout(() => window.location.href = response.redirect, 5000);
+            setTimeout(() => window.location.href = response.redirect, 7500);
         } else {
             setTimeout(() => loginModal.open(), 7500);
         }
