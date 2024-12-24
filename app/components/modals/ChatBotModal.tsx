@@ -139,18 +139,18 @@ const ChatBotModal: React.FC = () => {
         <img className="w-12 h-12 mb-2 rounded-full shadow-lg" src="/bot_image.jpg" alt="ChatBot" />
         <h5 className="mb-2 text-xs font-medium text-gray-900 dark:text-white">ChatBot</h5>
         <span className="text-xs text-gray-500 dark:text-gray-400 text-center">
-          How can I assist you today?
+        <span className="text-blue-400">{userName.charAt(0).toUpperCase() + userName.slice(1)}</span> how can I assist you today?
         </span>
         <div className="flex flex-col mt-2 space-y-2 w-full max-h-60 overflow-y-auto">
-          {questions.map((question, index) => (
+        {questions.map((question, index) => (
             <button
-              key={index}
-              onClick={() => handleSubmit(question)}
-              className="w-full px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                key={index}
+                onClick={() => handleSubmit(question)}
+                className="w-full px-4 py-3 text-sm font-semibold text-center text-white bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-lg shadow-md hover:shadow-lg hover:from-purple-600 hover:via-blue-500 hover:to-blue-400 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-600 transform transition-all duration-200 hover:scale-105 active:scale-95"
             >
-              {question}
+                {question}
             </button>
-          ))}
+        ))}
         </div>
       </div>
     </div>
