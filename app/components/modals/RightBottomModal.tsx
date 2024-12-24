@@ -79,7 +79,7 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
                 ×
               </button>
             </div>
-            <div className="p-2 sm:p-4 overflow-y-auto max-h-[30vh] sm:max-h-[40vh]">{content}</div>
+            <div className="p-2 sm:p-4 overflow-y-auto max-h-[40vh] sm:max-h-[50vh]">{content}</div>
           </div>
         </div>
       )}
