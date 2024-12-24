@@ -23,7 +23,7 @@ const ChatBotModal: React.FC = () => {
         console.log("Payload sent to API:", payload);
 
         // Send the request
-        const response = await apiService.postWithoutToken("/api/chatbot/", payload);
+        const response = await apiService.postWithoutToken("/api/chatbot/", payload, false);
         console.log("Response:", response);
 
         // Add the question and response to the conversation
