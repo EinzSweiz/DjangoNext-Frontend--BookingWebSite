@@ -16,29 +16,31 @@ const ChatBotModal: React.FC = () => {
   const handleSubmit = async (q: string) => {
     setLoading(true);
     try {
-      console.log('Question:', q)
-      const response = await apiService.postWithoutToken("/api/chatbot/", { question: q });
-      console.log("Response:", response);
-      // Add the question and response to the conversation
-      setConversation((prev) => [
-        ...prev,
-        { question: q, answer: response.data.response },
-      ]);
-  
-      // Handle redirects
-      if (response.data.redirect) {
-        window.location.href = response.data.redirect; // Redirect to the given URL
-      }
+        console.log('Question:', q);
+        const response = await apiService.postWithoutToken("/api/chatbot/", { question: q });
+        console.log("Response:", response);
+        console.log("Payload sent to API:", JSON.stringify({ question: q }));
+        // Add the question and response to the conversation
+        setConversation((prev) => [
+            ...prev,
+            { question: q, answer: response.response },
+        ]);
+
+        // Handle redirects
+        if (response.redirect) {
+            window.location.href = response.redirect;
+        }
     } catch (error) {
-      console.error("Failed to fetch chatbot response:", error);
-      setConversation((prev) => [
-        ...prev,
-        { question: q, answer: "Sorry, something went wrong!" },
-      ]);
+        console.error("Failed to fetch chatbot response:", error);
+        setConversation((prev) => [
+            ...prev,
+            { question: q, answer: "Sorry, something went wrong!" },
+        ]);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
   
 
   const content = (
