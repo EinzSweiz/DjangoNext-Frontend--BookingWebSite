@@ -67,7 +67,7 @@ const ChatBotModal: React.FC = () => {
         if (userid){
             setTimeout(() => window.location.href = response.redirect, 5000);
         } else {
-            setTimeout(() => loginModal.open(), 5000);
+            setTimeout(() => loginModal.open(), 7500);
         }
         
 
@@ -77,15 +77,15 @@ const ChatBotModal: React.FC = () => {
       if (response.action) {
         if (response.action === "open_contact_modal") {
             if (userid){
-                setTimeout(() => contactModal.open(), 5000);
+                setTimeout(() => contactModal.open(), 7500);
         } else {
-            setTimeout(() => loginModal.open(), 5000);
+            setTimeout(() => loginModal.open(), 7500);
         }
         } else if (response.action === "open_profile_modal") {
             if (userid){
-                setTimeout(() => profileModal.open(), 5000);
+                setTimeout(() => profileModal.open(), 7500);
         } else {
-            setTimeout(() => loginModal.open(), 5000);
+            setTimeout(() => loginModal.open(), 7500);
         }
         }
       }
