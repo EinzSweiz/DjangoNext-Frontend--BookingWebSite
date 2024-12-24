@@ -2,14 +2,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 
 interface RightBottomModalProps {
-  label: string;
   isOpen: boolean;
   content: React.ReactElement;
   close: () => void;
 }
 
 const RightBottomModal: React.FC<RightBottomModalProps> = ({
-  label,
   content,
   isOpen,
   close,
@@ -52,7 +50,7 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
         }`}
       >
         <div className="flex justify-between items-center border-b p-4">
-          <span className="text-lg font-bold">{label}</span>
+          <span className="text-lg font-bold text-center">Hello!</span>
           <button
             className="text-gray-500 hover:text-gray-800 focus:outline-none"
             onClick={handleToggle}
