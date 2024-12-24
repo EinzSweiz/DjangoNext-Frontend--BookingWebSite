@@ -1,14 +1,44 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import useChatBotModal from "@/app/hooks/useChatBotModal";
 import RightBottomModal from "./RightBottomModal";
+import apiService from "@/app/services/apiService";
 
 const ChatBotModal: React.FC = () => {
   const chatbotModal = useChatBotModal();
+  const [conversation, setConversation] = useState<{ question: string; answer: string }[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     chatbotModal.open(); // Automatically open on app start
   }, []);
+
+  const handleSubmit = async (q: string) => {
+    setLoading(true);
+    try {
+      const response = await apiService.postWithoutToken("/api/chatbot/", { question: q });
+  
+      // Add the question and response to the conversation
+      setConversation((prev) => [
+        ...prev,
+        { question: q, answer: response.data.response },
+      ]);
+  
+      // Handle redirects
+      if (response.data.redirect) {
+        window.location.href = response.data.redirect; // Redirect to the given URL
+      }
+    } catch (error) {
+      console.error("Failed to fetch chatbot response:", error);
+      setConversation((prev) => [
+        ...prev,
+        { question: q, answer: "Sorry, something went wrong!" },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   const content = (
     <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -26,23 +56,36 @@ const ChatBotModal: React.FC = () => {
         </span>
         <div className="flex flex-col mt-2 sm:mt-3 space-y-1 sm:space-y-2 w-full">
           <button
-            onClick={() => console.log("Question 1 clicked")}
+            onClick={() => handleSubmit("What is this website about?")}
             className="w-full px-2 sm:px-4 py-1 sm:py-2 text-[10px] sm:text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             What is this website about?
           </button>
           <button
-            onClick={() => console.log("Question 2 clicked")}
+            onClick={() => handleSubmit("How do I contact support?")}
             className="w-full px-2 sm:px-4 py-1 sm:py-2 text-[10px] sm:text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             How do I contact support?
           </button>
           <button
-            onClick={() => console.log("Question 3 clicked")}
+            onClick={() => handleSubmit("Show me available properties")}
             className="w-full px-2 sm:px-4 py-1 sm:py-2 text-[10px] sm:text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Show me available properties
           </button>
+        </div>
+        {loading && <p className="mt-4 text-sm text-gray-500">Loading...</p>}
+        <div className="mt-4 w-full">
+          {conversation.map((item, index) => (
+            <div key={index} className="mb-2">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                <strong>Q:</strong> {item.question}
+              </p>
+              <p className="text-sm text-gray-900 dark:text-gray-100">
+                <strong>A:</strong> {item.answer}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
