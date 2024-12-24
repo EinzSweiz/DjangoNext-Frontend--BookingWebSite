@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import apiService from "@/app/services/apiService";
 import useChatBotModal from "@/app/hooks/useChatBotModal";
 import RightBottomModal from "./RightBottomModal";
@@ -16,6 +16,11 @@ const ChatBotModal: React.FC = () => {
     "How do I contact support?",
     "Show me available properties",
   ];
+  
+  useEffect(() => {
+    chatbotModal.open(); // Open the modal on app load
+  }, []); // Empty dependency array ensures this runs only once
+
 
   const handleQuestionClick = async (question: string) => {
     setMessages((prev) => [...prev, { text: question, type: "user" }]);
