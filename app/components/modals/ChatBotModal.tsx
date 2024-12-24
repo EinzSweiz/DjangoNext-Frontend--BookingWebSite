@@ -17,9 +17,15 @@ const ChatBotModal: React.FC = () => {
     setLoading(true);
     try {
         console.log('Question:', q);
-        const response = await apiService.postWithoutToken("/api/chatbot/", { question: q });
+        
+        // Stringify the payload here
+        const payload = JSON.stringify({ question: q });
+        console.log("Payload sent to API:", payload);
+
+        // Send the request
+        const response = await apiService.postWithoutToken("/api/chatbot/", payload);
         console.log("Response:", response);
-        console.log("Payload sent to API:", JSON.stringify({ question: q }));
+
         // Add the question and response to the conversation
         setConversation((prev) => [
             ...prev,
@@ -40,6 +46,7 @@ const ChatBotModal: React.FC = () => {
         setLoading(false);
     }
 };
+
 
   
 
