@@ -6,6 +6,7 @@ import Modal from "./components/modals/Modal";
 import LoginModal from "./components/modals/LoginModal";
 import SignupModal from "./components/modals/SignupModal";
 import ReviewModal from "./components/modals/ReviewModal";
+import ChatBotModal from "./components/modals/ChatBotModal";
 import AddPropertyModal from "./components/modals/AddPropertyModal";
 import SearchModal from "./components/modals/SearchModal";
 import ContactModal from "./contact/page";
@@ -58,8 +59,9 @@ export default function RootLayout({
           <SignupModal />
           <AddPropertyModal />
           <ContactModal />
+          <ChatBotModal />
           <Footer />
-        </ThemeProvider>
+        </ThemeProvider>  
       </body>
     </html>
   );
