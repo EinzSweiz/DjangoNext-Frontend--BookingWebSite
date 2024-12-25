@@ -76,7 +76,6 @@ const ImageZoom = ({ images }: { images: string[] }) => {
                         >
                             &#8250;
                         </button>
-
                     </>
                 )}
             </div>
@@ -91,6 +90,30 @@ const ImageZoom = ({ images }: { images: string[] }) => {
                         }
                     }}
                 >
+                    {/* Close Button */}
+                        <button
+                            onClick={handleCloseModal}
+                            className="absolute top-3 right-3 bg-gray-800 bg-opacity-60 text-white p-2 rounded-full shadow-md text-sm hover:bg-opacity-90 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
+                            aria-label="Close"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                                stroke="currentColor"
+                                className="w-5 h-5"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+
+
+
                     <div
                         className="relative w-11/12 max-w-4xl h-5/6"
                         onClick={(e) => e.stopPropagation()} // Prevent closing modal when clicking on the image
@@ -118,7 +141,7 @@ const ImageZoom = ({ images }: { images: string[] }) => {
                                 }}
                                 className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full md:left-8"
                             >
-                                &lt;
+                                &#8249;
                             </button>
                             <button
                                 onClick={(e) => {
@@ -127,23 +150,13 @@ const ImageZoom = ({ images }: { images: string[] }) => {
                                 }}
                                 className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full md:right-8"
                             >
-                                &gt;
+                                &#8250;
                             </button>
                         </>
                     )}
 
                     {/* Zoom Controls */}
-                    <div
-                        className="absolute gap-4 flex"
-                        style={{
-                            bottom: "2rem", // Default for laptops
-                            left: "50%",
-                            transform: "translate(-50%, 0)",
-                            ...(window.innerWidth <= 768 && { // Closer for mobile
-                                bottom: "0.5rem",
-                            }),
-                        }}
-                    >
+                    <div className="absolute bottom-8 flex gap-4">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation(); // Prevent modal closure when clicking button
