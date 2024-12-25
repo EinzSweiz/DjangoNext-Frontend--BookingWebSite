@@ -8,7 +8,7 @@ import Categories from "../addproperty/Categories";
 import SelectCountry, { SelectCountryValue } from "@/app/forms/SelectCountry";
 import apiService from "@/app/services/apiService";
 import { useRouter } from "next/navigation";
-import { error } from "console";
+import { useEffect } from "react";
 
 const AddPropertyModal = () => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -23,8 +23,20 @@ const AddPropertyModal = () => {
     const [errors, setErrors] = useState<String[]>([])
     const [dataCountry, setDataCountry] = useState<SelectCountryValue>()
     const [dataImage, setDataImage] = useState<File | null>(null)
+    const [showErrors, setShowErrors] = useState(true);
     const [extraImages, setExtraImages] = useState<File[]>([]); // Handle extra images
     const router = useRouter()
+
+    useEffect(() => {
+        if (errors.length > 0) {
+            const timer = setTimeout(() => {
+                setErrors([]); // Clear errors
+            }, 4000);
+
+            return () => clearTimeout(timer); // Cleanup timer on unmount
+        }
+    }, [errors]);
+
 
     const setCategory = (category: string) => {
         setDataCategory(category);
@@ -44,22 +56,6 @@ const AddPropertyModal = () => {
             setDataImage(tmpImage);
         }
     }
-     const setExtraImageFiles = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-            const files = Array.from(event.target.files);
-            const maxSize = 30 * 1024 * 1024; // 30MB
-            const validFiles = files.filter((file) => file.size <= maxSize);
-
-            if (validFiles.length < files.length) {
-                setErrors((prevErrors) => [
-                    ...prevErrors,
-                    "Some extra images exceed the 30MB limit and were not added.",
-                ]);
-            }
-
-            setExtraImages(validFiles);
-        }
-    };
 
 const submitForm = async () => {
     if (dataCategory &&
@@ -84,7 +80,7 @@ const submitForm = async () => {
         extraImages.forEach((image) => {
             formData.append("extra_images", image);
         });
-        
+
         try {
             const response = await apiService.post('/api/properties/create/', formData);
             if (response.success) {
@@ -104,6 +100,15 @@ const submitForm = async () => {
 
     const content = (
         <>
+           {errors.length > 0 && (
+                <div className="mb-4">
+                    {errors.map((error, index) => (
+                        <p key={index} className="text-red-500 text-sm font-medium text-center">
+                            {error}
+                        </p>
+                    ))}
+                </div>
+            )}
             {currentStep === 1 ? (
                 <>
                     <Categories dataCategory={dataCategory} setCategory={(category) => setCategory(category)} />
@@ -188,11 +193,15 @@ const submitForm = async () => {
                 </>
             ) : (
                 <>
-                <h2 className="mb-6 text-2xl font-semibold text-black  dark:text-gray-100 text-center">Upload Images</h2>
-                <div className="pt-3 pb-6 space-y-6">
+               <h2 className="mb-6 text-2xl font-semibold text-black dark:text-gray-100 text-center">
+                    Upload Images
+                </h2>
+                <div className="pt-1 pb-6 space-y-6">
                     {/* Main Image Upload */}
-                    <div className="border border-gray-600 rounded-lg p-6 bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
-                        <label className="block text-lg font-medium text-gray-200 mb-2 text-center">Main Image</label>
+                    <div className="border border-gray-600 rounded-lg p-4 bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <label className="block text-lg font-medium text-gray-200 mb-4 text-center">
+                            Main Image
+                        </label>
                         <input
                             type="file"
                             accept="image/*"
@@ -200,9 +209,8 @@ const submitForm = async () => {
                             onChange={setImage}
                         />
                         {dataImage && (
-                            <div className="mt-4">
-                                <h3 className="text-gray-400 text-sm font-medium mb-2">Preview:</h3>
-                                <div className="relative w-[200px] h-[150px] border border-gray-600 rounded-lg overflow-hidden shadow-md">
+                            <div className="mt-4 flex justify-center">
+                                <div className="relative w-[150px] h-[100px] border border-gray-600 rounded-lg overflow-hidden shadow-md">
                                     <Image
                                         fill
                                         alt="Uploaded main image"
@@ -215,23 +223,40 @@ const submitForm = async () => {
                     </div>
 
                     {/* Extra Images Upload */}
-                    <div className="border border-gray-600 rounded-lg p-6 bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
-                        <label className="block text-lg font-medium text-gray-200 mb-2 text-center">Extra Images</label>
+                    <div className="border border-gray-600 rounded-lg p-4 bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <label className="block text-lg font-medium text-gray-200 mb-4 text-center">
+                            Extra Images (Max: 4)
+                        </label>
                         <input
                             type="file"
                             multiple
                             accept="image/*"
                             className="block w-full text-sm text-gray-300 border border-gray-600 rounded-lg cursor-pointer bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            onChange={setExtraImageFiles}
+                            onChange={(event) => {
+                                if (event.target.files) {
+                                    const files = Array.from(event.target.files);
+                                    const maxFiles = 4;
+                                    if (files.length + extraImages.length > maxFiles) {
+                                        setErrors((prevErrors) => [
+                                            ...prevErrors,
+                                            `You can only upload a maximum of ${maxFiles} images.`,
+                                        ]);
+                                        return;
+                                    }
+                                    setExtraImages([...extraImages, ...files.slice(0, maxFiles - extraImages.length)]);
+                                }
+                            }}
                         />
                         {extraImages.length > 0 && (
                             <div className="mt-4">
-                                <h3 className="text-gray-400 text-sm font-medium mb-2">Previews:</h3>
-                                <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
+                                <h3 className="text-gray-400 text-sm font-medium mb-4 text-center">
+                                    Previews
+                                </h3>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                     {extraImages.map((file, index) => (
                                         <div
                                             key={index}
-                                            className="relative w-[100px] h-[100px] border border-gray-600 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                                            className="relative w-[100px] h-[100px] border border-gray-600 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 mx-auto"
                                         >
                                             <Image
                                                 fill
@@ -244,18 +269,13 @@ const submitForm = async () => {
                                 </div>
                             </div>
                         )}
+                        {extraImages.length === 4 && (
+                            <p className="text-green-400 text-sm font-medium mt-2 text-center">
+                                Maximum of 4 images uploaded.
+                            </p>
+                        )}
                     </div>
                 </div>
-
-
-                {errors.map((error, index) => {
-                    return (
-                        <div key={index} className="p-5 mb-4 bg-airbnb text-white rounded-xl opacity-80">
-                            {JSON.stringify(error)}  {/* Convert the entire error object to a string */}
-                        </div>
-                    );
-                })}
-
                 <div className="flex justify-between">
                         <CustomButton className="mx-3 bg-black hover:bg-gray-800" label="Previous" onClick={() => setCurrentStep(4)} />
                         <CustomButton className="bg-green-500 hover:bg-green-700" label="Submit" onClick={submitForm} />
