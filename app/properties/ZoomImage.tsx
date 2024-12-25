@@ -41,7 +41,7 @@ const ImageZoom = ({ images }: { images: string[] }) => {
         <>
             {/* Image Container */}
             <div
-                className="relative w-full mb-4 rounded-xl cursor-pointer"
+                className="relative w-full mb-4 mt-4 rounded-xl cursor-pointer"
                 style={{ aspectRatio: "16 / 9", overflow: "hidden" }}
                 onClick={handleImageClick}
             >
@@ -63,19 +63,20 @@ const ImageZoom = ({ images }: { images: string[] }) => {
                                 e.stopPropagation();
                                 handlePreviousImage();
                             }}
-                            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white text-black p-3 rounded-full text-xl md:left-8"
+                            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full text-xl md:left-4 active:bg-opacity-100 active:scale-105 hover:bg-opacity-100 hover:scale-105 transition-all duration-300 ease-in-out"
                         >
-                            &lt;
+                            &#8249;
                         </button>
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 handleNextImage();
                             }}
-                            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white text-black p-3 rounded-full text-xl md:right-8"
+                            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full text-xl md:right-4 active:bg-opacity-100 active:scale-105 hover:bg-opacity-100 hover:scale-105 transition-all duration-300 ease-in-out"
                         >
-                            &gt;
+                            &#8250;
                         </button>
+
                     </>
                 )}
             </div>
