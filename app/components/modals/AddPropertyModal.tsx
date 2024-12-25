@@ -23,6 +23,7 @@ const AddPropertyModal = () => {
     const [errors, setErrors] = useState<String[]>([])
     const [dataCountry, setDataCountry] = useState<SelectCountryValue>()
     const [dataImage, setDataImage] = useState<File | null>(null)
+    const [extraImages, setExtraImages] = useState<File[]>([]); // Handle extra images
     const router = useRouter()
 
     const setCategory = (category: string) => {
@@ -43,6 +44,22 @@ const AddPropertyModal = () => {
             setDataImage(tmpImage);
         }
     }
+     const setExtraImageFiles = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            const files = Array.from(event.target.files);
+            const maxSize = 30 * 1024 * 1024; // 30MB
+            const validFiles = files.filter((file) => file.size <= maxSize);
+
+            if (validFiles.length < files.length) {
+                setErrors((prevErrors) => [
+                    ...prevErrors,
+                    "Some extra images exceed the 30MB limit and were not added.",
+                ]);
+            }
+
+            setExtraImages(validFiles);
+        }
+    };
 
 const submitForm = async () => {
     if (dataCategory &&
@@ -64,6 +81,9 @@ const submitForm = async () => {
         formData.append('country', dataCountry.label);
         formData.append('country_code', dataCountry.value);
         formData.append('image', dataImage);
+        extraImages.forEach((image) => {
+            formData.append("extra_images", image);
+        });
         
         try {
             const response = await apiService.post('/api/properties/create/', formData);
@@ -87,14 +107,14 @@ const submitForm = async () => {
             {currentStep === 1 ? (
                 <>
                     <Categories dataCategory={dataCategory} setCategory={(category) => setCategory(category)} />
-                    <h2 className="mb-6 text-xl">Choose Category</h2>
+                    <h2 className="mb-6 text-xl text-center">Choose Category</h2>
                     <div className="flex justify-end">
                         <CustomButton className="bg-green-500 hover:bg-green-700" label="Next" onClick={() => setCurrentStep(2)} />
                     </div>
                 </>
             ) : currentStep === 2 ? (
                 <>
-                    <h2 className="text-xl mb-6">Describe Your Place</h2>
+                    <h2 className="text-xl mb-6 text-center">Describe Your Place</h2>
                     <div className="pt-3 pb-6 space-y-4">
                         <div className="flex flex-col space-y-2">
                             <label>Title</label>
@@ -119,7 +139,7 @@ const submitForm = async () => {
             ) : currentStep === 3 ?(
 
                 <>
-                    <h1 className="text-xl mb-6">Details</h1>
+                    <h1 className="text-xl mb-6 text-center">Details</h1>
                     <div className="pt-3 pb-6 space-y-4">
                         <div className="flex flex-col space-y-2">
                             <label>Price per night</label>
@@ -157,7 +177,7 @@ const submitForm = async () => {
                 </>
             ) : currentStep === 4 ?(
                 <>
-                    <h2 className="mb-4 text-xl">Location</h2>
+                    <h2 className="mb-4 text-xl text-center">Location</h2>
                     <div className="pt-3 pb-6 space-y-4">
                         <SelectCountry value={dataCountry} onChange={(value) => setDataCountry(value as SelectCountryValue)} />
                     </div>
@@ -168,23 +188,66 @@ const submitForm = async () => {
                 </>
             ) : (
                 <>
-                <h2 className="mb-6 text-2xl">
-                    Image
-                </h2>
-                <div className="pt-3 pb-6 space-y-4">
-                    <div className="py-4 px-6 bg-black text-white rounded-xl">
-                        <input type="file" accept="image/*" onChange={setImage}/>
+                <h2 className="mb-6 text-2xl font-semibold text-black  dark:text-gray-100 text-center">Upload Images</h2>
+                <div className="pt-3 pb-6 space-y-6">
+                    {/* Main Image Upload */}
+                    <div className="border border-gray-600 rounded-lg p-6 bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <label className="block text-lg font-medium text-gray-200 mb-2 text-center">Main Image</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="block w-full text-sm text-gray-300 border border-gray-600 rounded-lg cursor-pointer bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            onChange={setImage}
+                        />
+                        {dataImage && (
+                            <div className="mt-4">
+                                <h3 className="text-gray-400 text-sm font-medium mb-2">Preview:</h3>
+                                <div className="relative w-[200px] h-[150px] border border-gray-600 rounded-lg overflow-hidden shadow-md">
+                                    <Image
+                                        fill
+                                        alt="Uploaded main image"
+                                        src={URL.createObjectURL(dataImage)}
+                                        className="object-cover"
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
-                    {dataImage && (
-                        <div className="w-[200px] h-[150px] relative">
-                            <Image fill 
-                                alt="Upload image" 
-                                src={URL.createObjectURL(dataImage)}
-                                className="w-full h-full object-cover rounded-xl"
-                            />
-                        </div>
-                    )}
+
+                    {/* Extra Images Upload */}
+                    <div className="border border-gray-600 rounded-lg p-6 bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <label className="block text-lg font-medium text-gray-200 mb-2 text-center">Extra Images</label>
+                        <input
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            className="block w-full text-sm text-gray-300 border border-gray-600 rounded-lg cursor-pointer bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            onChange={setExtraImageFiles}
+                        />
+                        {extraImages.length > 0 && (
+                            <div className="mt-4">
+                                <h3 className="text-gray-400 text-sm font-medium mb-2">Previews:</h3>
+                                <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
+                                    {extraImages.map((file, index) => (
+                                        <div
+                                            key={index}
+                                            className="relative w-[100px] h-[100px] border border-gray-600 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                                        >
+                                            <Image
+                                                fill
+                                                alt={`Extra Image ${index + 1}`}
+                                                src={URL.createObjectURL(file)}
+                                                className="object-cover"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
+
+
                 {errors.map((error, index) => {
                     return (
                         <div key={index} className="p-5 mb-4 bg-airbnb text-white rounded-xl opacity-80">
