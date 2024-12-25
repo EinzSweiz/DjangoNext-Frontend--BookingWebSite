@@ -193,92 +193,77 @@ const submitForm = async () => {
                 </>
             ) : (
                 <>
-               <h2 className="mb-6 text-2xl font-semibold text-black dark:text-gray-100 text-center">
-                    Upload Images
-                </h2>
-                <div className="pt-1 pb-6 space-y-6">
-                    {/* Main Image Upload */}
-                    <div className="border border-gray-600 rounded-lg p-4 bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
-                        <label className="block text-lg font-medium text-gray-200 mb-4 text-center">
-                            Main Image
-                        </label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="block w-full text-sm text-gray-300 border border-gray-600 rounded-lg cursor-pointer bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            onChange={setImage}
-                        />
-                        {dataImage && (
-                            <div className="mt-4 flex justify-center">
-                                <div className="relative w-[150px] h-[100px] border border-gray-600 rounded-lg overflow-hidden shadow-md">
-                                    <Image
-                                        fill
-                                        alt="Uploaded main image"
-                                        src={URL.createObjectURL(dataImage)}
-                                        className="object-cover"
-                                    />
+                  <h2 className="mb-4 text-lg font-semibold text-center">Upload Images</h2>
+                    <div className="space-y-6">
+                        {/* Main Image Upload */}
+                        <div className="border border-gray-600 rounded-lg p-4 bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
+                            <label className="block text-base text-gray-200 mb-4 text-center">Main Image</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                className="block w-full text-sm text-gray-300 border border-gray-600 rounded-lg bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                onChange={setImage}
+                            />
+                            {dataImage && (
+                                <div className="mt-4 flex justify-center">
+                                    <div className="relative w-[120px] h-[80px] sm:w-[150px] sm:h-[100px] border border-gray-600 rounded-lg overflow-hidden shadow-md">
+                                        <Image fill alt="Uploaded main image" src={URL.createObjectURL(dataImage)} className="object-cover" />
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
 
-                    {/* Extra Images Upload */}
-                    <div className="border border-gray-600 rounded-lg p-4 bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
-                        <label className="block text-lg font-medium text-gray-200 mb-4 text-center">
-                            Extra Images (Max: 4)
-                        </label>
-                        <input
-                            type="file"
-                            multiple
-                            accept="image/*"
-                            className="block w-full text-sm text-gray-300 border border-gray-600 rounded-lg cursor-pointer bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            onChange={(event) => {
-                                if (event.target.files) {
-                                    const files = Array.from(event.target.files);
-                                    const maxFiles = 4;
-                                    if (files.length + extraImages.length > maxFiles) {
-                                        setErrors((prevErrors) => [
-                                            ...prevErrors,
-                                            `You can only upload a maximum of ${maxFiles} images.`,
-                                        ]);
-                                        return;
+                        {/* Extra Images Upload */}
+                        <div className="border border-gray-600 rounded-lg p-4 bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
+                            <label className="block text-base text-gray-200 mb-4 text-center">Extra Images (Max: 4)</label>
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                className="block w-full text-sm text-gray-300 border border-gray-600 rounded-lg bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                onChange={(event) => {
+                                    if (event.target.files) {
+                                        const files = Array.from(event.target.files);
+                                        const maxFiles = 4;
+                                        if (files.length + extraImages.length > maxFiles) {
+                                            setErrors((prevErrors) => [
+                                                ...prevErrors,
+                                                `You can only upload a maximum of ${maxFiles} images.`,
+                                            ]);
+                                            return;
+                                        }
+                                        setExtraImages([...extraImages, ...files.slice(0, maxFiles - extraImages.length)]);
                                     }
-                                    setExtraImages([...extraImages, ...files.slice(0, maxFiles - extraImages.length)]);
-                                }
-                            }}
-                        />
-                        {extraImages.length > 0 && (
-                            <div className="mt-4">
-                                <h3 className="text-gray-400 text-sm font-medium mb-4 text-center">
-                                    Previews
-                                </h3>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                    {extraImages.map((file, index) => (
-                                        <div
-                                            key={index}
-                                            className="relative w-[100px] h-[100px] border border-gray-600 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 mx-auto"
-                                        >
-                                            <Image
-                                                fill
-                                                alt={`Extra Image ${index + 1}`}
-                                                src={URL.createObjectURL(file)}
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                    ))}
+                                }}
+                            />
+                            {extraImages.length > 0 && (
+                                <div className="mt-4">
+                                    <h3 className="text-gray-400 text-sm text-center mb-4">Previews</h3>
+                                    <div className="grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3">
+                                        {extraImages.map((file, index) => (
+                                            <div
+                                                key={index}
+                                                className="relative w-[90px] h-[90px] sm:w-[100px] sm:h-[100px] border border-gray-600 rounded-lg overflow-hidden shadow-md mx-auto"
+                                            >
+                                                <Image
+                                                    fill
+                                                    alt={`Extra Image ${index + 1}`}
+                                                    src={URL.createObjectURL(file)}
+                                                    className="object-cover"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                        {extraImages.length === 4 && (
-                            <p className="text-green-400 text-sm font-medium mt-2 text-center">
-                                Maximum of 4 images uploaded.
-                            </p>
-                        )}
+                            )}
+                            {extraImages.length === 4 && (
+                                <p className="text-green-400 text-center text-sm mt-2">Maximum of 4 images uploaded.</p>
+                            )}
+                        </div>
                     </div>
-                </div>
-                <div className="flex justify-between">
-                        <CustomButton className="mx-3 bg-black hover:bg-gray-800" label="Previous" onClick={() => setCurrentStep(4)} />
-                        <CustomButton className="bg-green-500 hover:bg-green-700" label="Submit" onClick={submitForm} />
+                    <div className="flex justify-between mt-6">
+                    <CustomButton className="mx-3 bg-black hover:bg-gray-800" label="Previous" onClick={() => setCurrentStep(4)} />
+                    <CustomButton className="bg-green-500 hover:bg-green-700" label="Submit" onClick={submitForm} />
                     </div>
                 </>
             )}
