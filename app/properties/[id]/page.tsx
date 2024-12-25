@@ -7,31 +7,35 @@ import { getUserId } from "@/app/lib/actions";
 import GetAllReviews from "@/app/components/review/get_all";
 import CreateReview from "@/app/components/review/create_review";
 import LoginPrompt from "@/app/components/review/LoginPrompt";
+import ImageZoom from "../ZoomImage";
 
-type Params = Promise<{ id: string }>
+type Params = Promise<{ id: string }>;
 
-const PropertyDetailPage = async ({params}: { params: Params }) => {
-    const resolvedParams = await params
-    const { id } = resolvedParams
+const PropertyDetailPage = async ({ params }: { params: Params }) => {
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
     const property = await apiService.get(`/api/properties/${id}`);
+    console.log('All data:',property)
+    console.log('Property data:', property.data)
     const userId = await getUserId();
+
+    // Combine main image with extra images for ImageZoom
+    const images = [
+        property.image_url, 
+        ...(property.extra_images ? property.extra_images.map((img: any) => img.image_url) : [])
+    ];
+
     return (
         <main className="max-w-[1500px] mx-auto px-6 pb-6">
-            <div className="w-full h-[64vh] mb-4 overflow-hidden rounded-xl relative">
-                <Image
-                    fill
-                    src={property.image_url}
-                    className="object-cover w-full h-full"
-                    alt="Beach house"
-                />
-            </div>
+            {/* Pass combined images to ImageZoom */}
+            <ImageZoom images={images} />
+
             <GetAllReviews propertyId={property.id} />
             {userId ? (
                 <CreateReview propertyId={property.id} />
-                ) : (
-                <LoginPrompt/>
-                
-                )}
+            ) : (
+                <LoginPrompt />
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="py-6 pr-6 col-span-3">
@@ -88,7 +92,7 @@ const PropertyDetailPage = async ({params}: { params: Params }) => {
                 />
             </div>
         </main>
-    )
-}
+    );
+};
 
 export default PropertyDetailPage;
