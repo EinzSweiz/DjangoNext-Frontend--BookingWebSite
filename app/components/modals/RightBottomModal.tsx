@@ -1,6 +1,18 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 
+const closeNotificationSound = () => {
+  const audio = new Audio("/sounds/notification-off-269282.mp3");
+  audio
+    .play()
+    .catch((err) => console.error("Failed to play close notification sound:", err));
+};
+
+const playNotificationSound = () => {
+  const audio = new Audio("/sounds/notification-2-269292.mp3");
+  audio.play().catch((err) => console.error("Failed to play sound:", err));
+};
+
 interface RightBottomModalProps {
   isOpen: boolean;
   content: React.ReactElement;
@@ -22,6 +34,7 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
   // Close the modal when clicking outside
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
+      closeNotificationSound(); // Play the sound
       close();
       setShowModal(false);
     }
@@ -30,9 +43,11 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
   // Toggle the modal state
   const handleToggle = useCallback(() => {
     if (showModal) {
+      closeNotificationSound(); // Play the sound
       close();
       setShowModal(false);
     } else {
+      playNotificationSound()
       setShowModal(true);
     }
   }, [showModal, close]);
@@ -42,13 +57,11 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
       {/* Black arrow button to toggle the modal */}
       {!showModal && (
         <button
-        onClick={handleToggle}
-        className="fixed bottom-1/2 right-0 translate-y-1/2 bg-black text-white p-1 sm:p-2 text-xs sm:text-sm rounded-l-full shadow-sm focus:outline-none hover:bg-gray-700"
-      >
-        ▶
-      </button>
-      
-
+          onClick={handleToggle}
+          className="fixed bottom-1/2 right-0 translate-y-1/2 bg-black text-white p-1 sm:p-2 text-xs sm:text-sm rounded-l-full shadow-sm focus:outline-none hover:bg-gray-700"
+        >
+          ▶
+        </button>
       )}
 
       {/* Wrapper for outside click */}
@@ -79,7 +92,9 @@ const RightBottomModal: React.FC<RightBottomModalProps> = ({
                 ×
               </button>
             </div>
-            <div className="p-2 sm:p-4 overflow-y-auto max-h-[40vh] sm:max-h-[50vh]">{content}</div>
+            <div className="p-2 sm:p-4 overflow-y-auto max-h-[40vh] sm:max-h-[50vh]">
+              {content}
+            </div>
           </div>
         </div>
       )}
