@@ -171,9 +171,8 @@ const ChatBotModal = () => {
 
   const initialContent = (
     <div
-    className="w-full max-w-[90vw] sm:max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 flex flex-col h-full"
-    style={{ overflowX: "hidden" }}
-  >
+      className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 flex flex-col h-full"
+    >
       <div className="flex-1 flex flex-col items-center pb-3 px-3 sm:pb-4 sm:px-4 overflow-y-auto">
         <img className="w-12 h-12 mb-2 rounded-full shadow-lg" src="/bot_image.jpg" alt="ChatBot" />
         <h5 className="mb-2 text-xs font-medium text-gray-900 dark:text-white">ChatBot</h5>
