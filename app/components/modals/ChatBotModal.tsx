@@ -171,7 +171,8 @@ const ChatBotModal = () => {
 
   const initialContent = (
     <div
-      className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 flex flex-col h-full"
+      className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 flex flex-col"
+      style={{ height: "85%" }}
     >
       <div className="flex-1 flex flex-col items-center pb-3 px-3 sm:pb-4 sm:px-4 overflow-y-auto">
         <img className="w-12 h-12 mb-2 rounded-full shadow-lg" src="/bot_image.jpg" alt="ChatBot" />
@@ -180,7 +181,6 @@ const ChatBotModal = () => {
           <span className="text-blue-400">{userName.charAt(0).toUpperCase() + userName.slice(1)}</span>{" "}
           how can I assist you today?
         </span>
-        {/* Questions List */}
         <div className="flex flex-col mt-2 space-y-2 w-full max-h-60 overflow-y-auto">
           {questions.map((question, index) => (
             <button
@@ -194,9 +194,7 @@ const ChatBotModal = () => {
         </div>
       </div>
     </div>
-);
-
-  
+  );
 
   return (
     <RightBottomModal
