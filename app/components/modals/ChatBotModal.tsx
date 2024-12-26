@@ -186,7 +186,8 @@ const ChatBotModal = () => {
             <button
               key={index}
               onClick={() => handleSubmit(question)}
-              className="w-full max-w-[90%] mx-auto px-3 py-2 text-sm font-semibold text-center text-white bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-lg shadow-md hover:shadow-lg focus:outline-none transform transition-all duration-200 hover:scale-105 active:scale-95"            >
+              className="w-full px-4 py-3 text-sm font-semibold text-center text-white bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-lg shadow-md hover:shadow-lg hover:from-purple-600 hover:via-blue-500 hover:to-blue-400 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-600 transform transition-all duration-200 hover:scale-105 active:scale-95"
+            >
               {question}
             </button>
           ))}
