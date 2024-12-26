@@ -187,19 +187,24 @@ const ChatBotModal = () => {
           how can I assist you today?
         </span>
         <div className="flex flex-col mt-2 space-y-2 w-full max-h-60 overflow-y-auto">
-          {questions.map((question, index) => (
-            <button
-              key={index}
-              className="w-full max-w-[90%] mx-auto px-3 py-2 text-sm font-semibold text-center text-white bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-lg shadow-md hover:shadow-lg focus:outline-none transform transition-all duration-200 hover:scale-105 active:scale-95"
-            >
-              {question}
-            </button>
-          ))}
+          {questions.length > 0 ? (
+            questions.map((question, index) => (
+              <button
+                key={index}
+                onClick={() => handleSubmit(question)}
+                className="w-full max-w-[90%] mx-auto px-3 py-2 text-sm font-semibold text-center text-white bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-lg shadow-md hover:shadow-lg focus:outline-none transform transition-all duration-200 hover:scale-105 active:scale-95"
+              >
+                {question}
+              </button>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 dark:text-gray-400">No questions available</p>
+          )}
         </div>
       </div>
     </div>
   );
-
+  
 
   return (
     <RightBottomModal
