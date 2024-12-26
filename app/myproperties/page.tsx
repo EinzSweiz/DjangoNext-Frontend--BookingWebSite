@@ -15,7 +15,7 @@ const MyPropertiesPage = async () => {
         </CardHeader>
         <CardContent>
           {/* Displaying the list of properties inside a responsive grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {/* Loop over the properties (assuming PropertyList returns the list) */}
             <PropertyList favorites={true} landlord_id={user_id} />
           </div>
