@@ -171,11 +171,16 @@ const ChatBotModal = () => {
 
   const initialContent = (
     <div
-      className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 flex flex-col"
-      style={{ height: "85%" }}
+      className="w-full max-w-[90vw] sm:max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 flex flex-col h-full"
+      style={{ overflowX: "hidden" }}
     >
       <div className="flex-1 flex flex-col items-center pb-3 px-3 sm:pb-4 sm:px-4 overflow-y-auto">
-        <img className="w-12 h-12 mb-2 rounded-full shadow-lg" src="/bot_image.jpg" alt="ChatBot" />
+        <img
+          className="w-12 h-12 mb-2 rounded-full shadow-lg"
+          src="/bot_image.jpg"
+          alt="ChatBot"
+          style={{ maxWidth: "100%", height: "auto" }}
+        />
         <h5 className="mb-2 text-xs font-medium text-gray-900 dark:text-white">ChatBot</h5>
         <span className="text-xs text-gray-500 dark:text-gray-400 text-center">
           <span className="text-blue-400">{userName.charAt(0).toUpperCase() + userName.slice(1)}</span>{" "}
@@ -185,8 +190,7 @@ const ChatBotModal = () => {
           {questions.map((question, index) => (
             <button
               key={index}
-              onClick={() => handleSubmit(question)}
-              className="w-full px-4 py-3 text-sm font-semibold text-center text-white bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-lg shadow-md hover:shadow-lg hover:from-purple-600 hover:via-blue-500 hover:to-blue-400 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-600 transform transition-all duration-200 hover:scale-105 active:scale-95"
+              className="w-full max-w-[90%] mx-auto px-3 py-2 text-sm font-semibold text-center text-white bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-lg shadow-md hover:shadow-lg focus:outline-none transform transition-all duration-200 hover:scale-105 active:scale-95"
             >
               {question}
             </button>
@@ -195,6 +199,7 @@ const ChatBotModal = () => {
       </div>
     </div>
   );
+
 
   return (
     <RightBottomModal
