@@ -54,7 +54,7 @@ const FavoriteButton: React.FC<FavoriteProps> = ({
   return (
     <div
     onClick={toggleFavorite}
-    className="absolute top-[-6px] right-[-5px] md:right-6 lg:right-8 cursor-pointer" // Adjusted top and right positions
+    className="absolute top-[-6px] right-[-5px] md:right-6 lg:right-0 cursor-pointer" // Adjusted top and right positions
     >
     <svg
         xmlns="http://www.w3.org/2000/svg"
