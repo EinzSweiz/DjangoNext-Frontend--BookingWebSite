@@ -12,6 +12,7 @@ export type PropertyType = {
     price_per_night: number;
     image_url: string;
     is_favorite: boolean;
+    country: string;
 };
 
 interface PropertyListProps {
@@ -34,7 +35,6 @@ const PropertyList: React.FC<PropertyListProps> = ({
     const category = searchModal.query.category;
     const [properties, setProperties] = useState<PropertyType[]>([]);
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);  // Track favorite IDs
-
     // Mark a property as a favorite or remove from favorites
     const markFavorite = async (id: string, is_favorite: boolean) => {
         // Update the favorite state locally
@@ -74,12 +74,13 @@ const PropertyList: React.FC<PropertyListProps> = ({
 
             const tmpProperties = await apiService.get(url);
 
-
+            console.log(tmpProperties)
             // Set the properties and mark them as favorite if their ID is in `favoriteIds`
             setProperties(
                 tmpProperties.data.map((property: PropertyType) => ({
                     ...property,
                     is_favorite: property.is_favorite || favoriteIds.includes(property.id),
+                    country: property.country || "Unknown",
                 }))
             );
         } catch (error) {
