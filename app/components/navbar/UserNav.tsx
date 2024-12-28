@@ -154,10 +154,10 @@ const UserNav: React.FC<UserNavProps> = ({ userId }) => {
               label={
                 unreadCount > 0 ? (
                   <>
-                    Inbox (<span className="text-red-500">{unreadCount}</span>)
+                    Inbox (<span className="text-green-500">{unreadCount}</span>)
                   </>
                 ) : (
-                  "Inbox (0)"
+                  "Inbox"
                 )
               }
               icon={
