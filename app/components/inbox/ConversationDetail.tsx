@@ -235,7 +235,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         <FiSend
                             className="text-gray-400 text-3xl dark:text-gray-500 cursor-pointer"
                             onClick={() => {
-                                // Add send message logic here
+                                sendMessage()
                             }}
                         />
                     </span>
