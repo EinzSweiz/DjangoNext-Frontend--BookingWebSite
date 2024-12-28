@@ -218,6 +218,12 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                                 Delivered
                             </span>
                         </div>
+
+                        {isTyping && (
+                            <div className="text-sm text-white">
+                                {otherUser?.name} is typing...
+                            </div>
+                        )}
                     </div>
                 ))}
 
