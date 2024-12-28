@@ -240,7 +240,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
           </div>
         ))}
         {isTyping && (
-          <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+          <div className="text-sm text-white">
             {otherUser?.name} is typing...
           </div>
         )}
