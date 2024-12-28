@@ -34,8 +34,6 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     const [newMessage, setNewMessage] = useState('');
     const [realtimeMessages, setRealTimeMessages] = useState<MessageType[]>([]);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
-    // Keep isTyping, but we won't set it in handleTyping anymore.
     const [isTyping, setIsTyping] = useState(false);
 
     const messageDiv = useRef<HTMLDivElement>(null);
@@ -70,62 +68,66 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
         };
     }, []);
 
-    // ==============
-    // 1) Only SEND a "typing" event; do NOT set isTyping to true here.
-    // ==============
+    // Handle typing event
     const handleTyping = () => {
-        // We'll send the typing event to let the server know we're typing,
-        // but we won't set "isTyping" locally. The *other* user will handle that on their end.
-        sendJsonMessage({
-            event: 'typing',
-            data: { 
-              name: myUser?.name, 
-              conversation_id: conversation.id 
-            },
-        });
-        // No local setIsTyping(true) here.
+        if (!isTyping) {
+            sendJsonMessage({
+                event: 'typing',
+                data: { name: myUser?.name, conversation_id: conversation.id },
+            });
+            setIsTyping(true);
+        }
+        setTimeout(() => setIsTyping(false), 2000);
     };
 
-    // ==============
-    // 2) Show typing indicator ONLY if event is from the OTHER user
-    // ==============
+    // Handle "typing..." indicator for other users
+    useEffect(() => {
+        console.log("lastJsonMessage", lastJsonMessage); // <-- Add
+      
+        if (
+          lastJsonMessage &&
+          typeof lastJsonMessage === "object"
+        ) {
+          const msg = lastJsonMessage as WebSocketMessage;
+          if (msg.event === "typing") {
+            console.log("Typing event data:", msg.data); // <-- Add
+      
+            if (msg.data.name !== myUser?.name) {
+              console.log("Setting isTyping to true for 2s"); // <-- Add
+              setIsTyping(true);
+              setTimeout(() => setIsTyping(false), 2000);
+            }
+          }
+        }
+      }, [lastJsonMessage, myUser?.name]);
+      
+
+    // Handle incoming messages
     useEffect(() => {
         if (
             lastJsonMessage &&
-            typeof lastJsonMessage === "object"
+            typeof lastJsonMessage === "object" &&
+            "name" in lastJsonMessage &&
+            "body" in lastJsonMessage
         ) {
-            const wsMessage = lastJsonMessage as WebSocketMessage;
-
-            // Check if it's a "typing" event from someone else
-            if (wsMessage.event === "typing") {
-                if (wsMessage.data.name !== myUser?.name) {
-                    // If the server says "User B is typing",
-                    // we show "isTyping" for 2 seconds
-                    setIsTyping(true);
-                    setTimeout(() => setIsTyping(false), 2000);
-                }
+            if (!myUser || !otherUser) {
+                console.error("User information is missing.");
+                return;
             }
-            // Check if it's a chat_message, then add it
-            if ("name" in wsMessage && "body" in wsMessage) {
-                if (!myUser || !otherUser) {
-                    console.error("User information is missing.");
-                    return;
-                }
-                const isSentByCurrentUser = wsMessage.name === myUser.name;
 
-                const message: MessageType = {
-                    id: '', // Assign a unique ID if needed
-                    name: wsMessage.name as string,
-                    body: wsMessage.body as string,
-                    sent_to: isSentByCurrentUser ? otherUser : myUser,
-                    created_by: isSentByCurrentUser ? myUser : otherUser,
-                    conversationId: conversation.id,
-                };
-                setRealTimeMessages((prev) => [...prev, message]);
-            }
+            const isSentByCurrentUser = lastJsonMessage.name === myUser.name;
+
+            const message: MessageType = {
+                id: '', // Assign a unique ID if needed
+                name: lastJsonMessage.name as string,
+                body: lastJsonMessage.body as string,
+                sent_to: isSentByCurrentUser ? otherUser : myUser,
+                created_by: isSentByCurrentUser ? myUser : otherUser,
+                conversationId: conversation.id,
+            };
+
+            setRealTimeMessages((prev) => [...prev, message]);
         }
-
-        // always scroll to bottom
         scrollToBottom();
     }, [lastJsonMessage, myUser, otherUser]);
 
@@ -161,10 +163,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     return (
         <div className="flex flex-col space-y-4">
             {/* Chat Messages */}
-            <div
-                ref={messageDiv}
-                className="flex-1 overflow-auto p-4 bg-[url('/bg.jpg')] rounded-lg shadow-md max-h-[70vh]"
-            >
+            <div ref={messageDiv} className="flex-1 overflow-auto p-4 bg-[url('/bg.jpg')] rounded-lg shadow-md max-h-[70vh]">
                 {messages.concat(realtimeMessages).map((message, index) => (
                     <div
                         key={index}
@@ -173,8 +172,10 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         }`}
                     >
                         {/* Profile Picture */}
-                        <div className="w-8 h-8 overflow-hidden rounded-full flex-shrink-0">
-                            <Image
+                        <div
+                            className="w-8 h-8 overflow-hidden rounded-full flex-shrink-0"
+                        >
+                             <Image
                                 src={message.created_by.avatar_url || "/images.jpeg"}
                                 alt={`${message.created_by.name} avatar`}
                                 width={32}
@@ -187,13 +188,11 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                             />
                         </div>
                         {/* Message Content */}
-                        <div
-                            className={`flex flex-col w-full max-w-[320px] p-4 ${
-                                message.created_by.name === myUser?.name
-                                    ? 'bg-black text-white rounded-s-xl rounded-se-xl dark:bg-gray-900'
-                                    : 'bg-white text-black rounded-e-xl rounded-es-xl dark:bg-gray-800'
-                            }`}
-                        >
+                        <div className={`flex flex-col w-full max-w-[320px] p-4 ${
+                            message.created_by.name === myUser?.name
+                                ? 'bg-black text-white rounded-s-xl rounded-se-xl dark:bg-gray-900'
+                                : 'bg-white text-black rounded-e-xl rounded-es-xl dark:bg-gray-800'
+                        }`}>
                             <span className="text-sm font-semibold">
                                 {message.created_by.name}
                             </span>
@@ -206,10 +205,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         </div>
                     </div>
                 ))}
-                {/* 
-                  3) Now 'isTyping' means the OTHER user is typing.
-                     We show this only if the user is not me.
-                */}
+                {/* Typing Indicator */}
                 {isTyping && (
                     <div className="text-sm text-gray-500 dark:text-gray-400">
                         {otherUser?.name} is typing...
@@ -224,8 +220,6 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         value={newMessage}
                         onChange={(e) => {
                             setNewMessage(e.target.value);
-                            // Fire handleTyping to notify the server,
-                            // but we do NOT set 'isTyping' locally.
                             handleTyping();
                         }}
                         type="text"
@@ -237,7 +231,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                     {showEmojiPicker && (
                         <div
                             ref={emojiPickerRef}
-                            className="absolute top-full z-10"
+                            className="absolute top-full right-4 mt-2 z-10"
                         >
                             <EmojiPicker onEmojiClick={onEmojiClick} />
                         </div>
