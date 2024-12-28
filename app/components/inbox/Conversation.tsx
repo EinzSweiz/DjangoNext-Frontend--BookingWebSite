@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ConversationType } from "@/app/inbox/page";
 import { format } from "date-fns";
+import Image from "next/image";
 
 interface ConversationProps {
     userId: string;
@@ -35,11 +36,13 @@ const Conversation: React.FC<ConversationProps> = ({ userId, conversation }) => 
             <div className="flex items-center gap-4">
                 {/* User Avatar */}
                 <div className="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-700 overflow-hidden">
-                    <img
-                        src={otherUser?.avatar_url || "/default-avatar.png"}
-                        alt={`${otherUser?.name}'s avatar`}
-                        className="w-full h-full object-cover"
-                    />
+                <Image src={otherUser?.avatar_url || "/default-avatar.png"}
+                    alt={`${otherUser?.name}'s avatar`}
+                    width={48}     // or any fixed size you prefer
+                    height={48}
+                    className="w-full h-full object-cover"
+                />
+           
                 </div>
 
                 {/* Name and Modified Date */}
