@@ -1,12 +1,36 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import useWebSocket from "react-use-websocket";
+import useWebSocket, { ReadyState } from "react-use-websocket";
 import EmojiPicker from "emoji-picker-react";
-import { MessageType } from "@/app/inbox/[id]/page";
-import { ConversationType } from "@/app/inbox/page";
 import { FiSend } from "react-icons/fi";
 import Image from "next/image";
+
+/**
+ * -------------------
+ * Type Definitions
+ * -------------------
+ */
+export interface UserType {
+  id: string;
+  name: string;
+  avatar_url?: string;
+}
+
+export interface MessageType {
+  id: string;
+  name: string;
+  body: string;
+  created_by: UserType;
+  sent_to: UserType;
+  conversationId: number;
+}
+
+export interface ConversationType {
+  id: number;
+  users?: UserType[];
+  // ...any other fields
+}
 
 interface ConversationDetailProps {
   conversation: ConversationType;
@@ -24,6 +48,11 @@ interface WebSocketMessage {
   };
 }
 
+/**
+ * -------------------
+ * Component
+ * -------------------
+ */
 const ConversationDetail: React.FC<ConversationDetailProps> = ({
   conversation,
   userId,
@@ -46,22 +75,69 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
   const myUser = conversation.users?.find((user) => user.id == userId);
   const otherUser = conversation.users?.find((user) => user.id != userId);
 
-  // WebSocket
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket<WebSocketMessage>(
+  // WebSocket hook
+  const {
+    lastJsonMessage,
+    lastMessage,
+    sendJsonMessage,
+    readyState,
+  } = useWebSocket<WebSocketMessage>(
     `${process.env.NEXT_PUBLIC_WS_HOST}/ws/${conversation.id}/?token=${token}`,
     {
       shouldReconnect: () => true,
     }
   );
 
-  // Scroll to the bottom of the chat whenever messages change
+  /**
+   * -------------------------------
+   * Debug logging - helps diagnose
+   * -------------------------------
+   */
+  // 1. Log WebSocket ready state
+  useEffect(() => {
+    const connectionStates = ["CONNECTING", "OPEN", "CLOSING", "CLOSED"];
+    console.log(
+      "WebSocket readyState:",
+      connectionStates[readyState] ?? readyState
+    );
+  }, [readyState]);
+
+  // 2. Log the raw lastMessage whenever it changes
+  useEffect(() => {
+    if (!lastMessage) return;
+    console.log("🔹 Raw lastMessage data:", lastMessage.data);
+    // Optional: Try to parse it as JSON
+    try {
+      const parsed = JSON.parse(lastMessage.data);
+      console.log("🔹 lastMessage parsed as JSON:", parsed);
+    } catch (err) {
+      console.warn("⚠️ Could not parse lastMessage as JSON:", err);
+    }
+  }, [lastMessage]);
+
+  // 3. Log the structured lastJsonMessage whenever it changes
+  useEffect(() => {
+    if (!lastJsonMessage) return;
+    console.log("🔸 lastJsonMessage from server:", lastJsonMessage);
+  }, [lastJsonMessage]);
+
+  /**
+   * -------------------------------
+   * Scroll to the bottom of the chat
+   * whenever `chatMessages` changes
+   * -------------------------------
+   */
   useEffect(() => {
     if (messageDiv.current) {
       messageDiv.current.scrollTop = messageDiv.current.scrollHeight;
     }
   }, [chatMessages]);
 
-  // Close emoji picker on outside click
+  /**
+   * -------------------------------
+   * Close emoji picker on outside click
+   * -------------------------------
+   */
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if (
@@ -71,14 +147,17 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
         setShowEmojiPicker(false);
       }
     };
-
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
 
-  // Handle typing event (notify server)
+  /**
+   * -------------------------------
+   * Handle typing event
+   * -------------------------------
+   */
   const handleTyping = () => {
     if (!isTyping) {
       sendJsonMessage({
@@ -95,23 +174,28 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     setTimeout(() => setIsTyping(false), 4000);
   };
 
-  // Listen for incoming WebSocket messages
+  /**
+   * -------------------------------
+   * Listen for incoming WebSocket messages
+   * -------------------------------
+   */
   useEffect(() => {
+    // If lastJsonMessage is `null`, it might mean the server didn't send valid JSON
+    // or there's no new message from the server yet
     if (!lastJsonMessage) return;
 
-    console.log("Received WebSocket message:", lastJsonMessage);
+    const { event, data } = lastJsonMessage;
 
-    if (lastJsonMessage.event === "typing") {
-      const { name } = lastJsonMessage.data;
-      // If the other user is typing, set isTyping
+    if (event === "typing") {
+      const { name } = data;
       if (name !== myUser?.name) {
         setIsTyping(true);
         setTimeout(() => setIsTyping(false), 4000);
       }
     }
 
-    if (lastJsonMessage.event === "chat_message") {
-      const { name, body = "" } = lastJsonMessage.data;
+    if (event === "chat_message") {
+      const { name, body = "" } = data;
       const isSentByCurrentUser = name === myUser?.name;
 
       // Construct the new message
@@ -131,44 +215,58 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
       // Update local messages
       setChatMessages((prev) => [...prev, incomingMessage]);
     }
-  }, [lastJsonMessage, myUser, otherUser, conversation.id]);
+  }, [lastJsonMessage, myUser, otherUser, conversation.id, sendJsonMessage]);
 
-  // Send a new message
+  /**
+   * -------------------------------
+   * Send a new message
+   * -------------------------------
+   */
   const sendMessage = () => {
-    if (newMessage.trim()) {
-      const localMessage: MessageType = {
-        id: "", // Assign a unique ID if needed
-        name: myUser?.name ?? "",
+    if (!newMessage.trim()) return;
+
+    // Construct a local message
+    const localMessage: MessageType = {
+      id: "",
+      name: myUser?.name ?? "",
+      body: newMessage,
+      sent_to: otherUser ?? { id: "", name: "" },
+      created_by: myUser ?? { id: "", name: "" },
+      conversationId: conversation.id,
+    };
+
+    // 1. Optimistically update the UI
+    setChatMessages((prev) => [...prev, localMessage]);
+
+    // 2. Send to server via WebSocket
+    sendJsonMessage({
+      event: "chat_message",
+      data: {
         body: newMessage,
-        sent_to: otherUser ?? { id: "", name: "" },
-        created_by: myUser ?? { id: "", name: "" },
-        conversationId: conversation.id,
-      };
+        name: myUser?.name,
+        sent_to_id: otherUser?.id,
+        conversation_id: conversation.id,
+      },
+    });
 
-      // Optimistically update the chat
-      setChatMessages((prev) => [...prev, localMessage]);
-
-      // Send message through WebSocket
-      sendJsonMessage({
-        event: "chat_message",
-        data: {
-          body: newMessage,
-          name: myUser?.name,
-          sent_to_id: otherUser?.id,
-          conversation_id: conversation.id,
-        },
-      });
-
-      // Reset input
-      setNewMessage("");
-    }
+    // 3. Reset input
+    setNewMessage("");
   };
 
-  // Add emoji to the input field
+  /**
+   * -------------------------------
+   * Handle emoji selection
+   * -------------------------------
+   */
   const onEmojiClick = (emojiObject: any) => {
     setNewMessage((prevMessage) => prevMessage + emojiObject.emoji);
   };
 
+  /**
+   * -------------------------------
+   * Render
+   * -------------------------------
+   */
   return (
     <div className="flex flex-col space-y-4">
       {/* Chat Messages */}
@@ -180,7 +278,9 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
           <div
             key={index}
             className={`flex items-start gap-2.5 mb-4 ${
-              message.created_by.name === myUser?.name ? "flex-row-reverse" : ""
+              message.created_by.name === myUser?.name
+                ? "flex-row-reverse"
+                : ""
             }`}
           >
             {/* Profile Picture */}
@@ -239,10 +339,16 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
             }}
             type="text"
             placeholder="Type a message..."
-            className="w-full p-3 pl-4 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-white dark:border-gray-600 dark:bg-gray-700 placeholder-gray-400"
+            className="w-full p-3 pl-4 pr-12 border border-gray-300 rounded-full
+                       focus:outline-none focus:ring-2 focus:ring-blue-500
+                       text-gray-800 dark:text-white dark:border-gray-600
+                       dark:bg-gray-700 placeholder-gray-400"
           />
           {showEmojiPicker && (
-            <div ref={emojiPickerRef} className="absolute top-full right-4 mt-2 z-10">
+            <div
+              ref={emojiPickerRef}
+              className="absolute top-full right-4 mt-2 z-10"
+            >
               <EmojiPicker onEmojiClick={onEmojiClick} />
             </div>
           )}
