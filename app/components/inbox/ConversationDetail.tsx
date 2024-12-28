@@ -21,7 +21,8 @@ interface WebSocketMessage {
     event: string;
     data: {
         name: string;
-        [key: string]: any;
+        conversation_id: number;
+        body?: string; // Optional for "typing" events
     };
 }
 
@@ -42,7 +43,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     const myUser = conversation.users?.find((user) => user.id == userId);
     const otherUser = conversation.users?.find((user) => user.id != userId);
 
-    const { readyState, lastJsonMessage, sendJsonMessage } = useWebSocket(
+    const { readyState, lastJsonMessage, sendJsonMessage } = useWebSocket<WebSocketMessage>(
         `${process.env.NEXT_PUBLIC_WS_HOST}/ws/${conversation.id}/?token=${token}`,
         {
             onError: (error) => console.error("WebSocket Error:", error),
@@ -71,69 +72,79 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     // Handle typing event
     const handleTyping = () => {
         if (!isTyping) {
-            sendJsonMessage({
+            const payload = {
                 event: 'typing',
-                data: { name: myUser?.name, conversation_id: conversation.id },
-            });
+                data: {
+                    name: myUser?.name,
+                    conversation_id: conversation.id,
+                    sent_to_id: otherUser?.id,
+                },
+            };
+            console.log("Sending typing event:", payload);
+            sendJsonMessage(payload);
             setIsTyping(true);
         }
-        setTimeout(() => setIsTyping(false), 2000);
+        setTimeout(() => setIsTyping(false), 4000);
     };
 
-    // Handle "typing..." indicator for other users
+    // Handle incoming WebSocket messages
     useEffect(() => {
-        console.log("lastJsonMessage", lastJsonMessage); // <-- Add
-      
-        if (
-          lastJsonMessage &&
-          typeof lastJsonMessage === "object"
-        ) {
-          const msg = lastJsonMessage as WebSocketMessage;
-          if (msg.event === "typing") {
-            console.log("Typing event data:", msg.data); // <-- Add
-      
-            if (msg.data.name !== myUser?.name) {
-              console.log("Setting isTyping to true for 2s"); // <-- Add
-              setIsTyping(true);
-              setTimeout(() => setIsTyping(false), 2000);
-            }
-          }
-        }
-      }, [lastJsonMessage, myUser?.name]);
-      
+        if (lastJsonMessage && typeof lastJsonMessage === "object") {
+            console.log("Received WebSocket message:", lastJsonMessage);
 
-    // Handle incoming messages
-    useEffect(() => {
-        if (
-            lastJsonMessage &&
-            typeof lastJsonMessage === "object" &&
-            "name" in lastJsonMessage &&
-            "body" in lastJsonMessage
-        ) {
-            if (!myUser || !otherUser) {
-                console.error("User information is missing.");
-                return;
+            if (lastJsonMessage.event === "typing") {
+                const { name } = lastJsonMessage.data;
+
+                if (name !== myUser?.name) {
+                    console.log(`${name} is typing...`);
+                    setIsTyping(true);
+                    setTimeout(() => setIsTyping(false), 4000);
+                }
             }
 
-            const isSentByCurrentUser = lastJsonMessage.name === myUser.name;
+            if (lastJsonMessage.event === "chat_message") {
+                const { name, body = '' } = lastJsonMessage.data;
 
-            const message: MessageType = {
-                id: '', // Assign a unique ID if needed
-                name: lastJsonMessage.name as string,
-                body: lastJsonMessage.body as string,
-                sent_to: isSentByCurrentUser ? otherUser : myUser,
-                created_by: isSentByCurrentUser ? myUser : otherUser,
-                conversationId: conversation.id,
-            };
+                if (!myUser || !otherUser) {
+                    console.error("User information is missing.");
+                    return;
+                }
 
-            setRealTimeMessages((prev) => [...prev, message]);
+                const isSentByCurrentUser = name === myUser.name;
+
+                const message: MessageType = {
+                    id: '', // Assign a unique ID if needed
+                    name,
+                    body,
+                    sent_to: isSentByCurrentUser ? otherUser : myUser,
+                    created_by: isSentByCurrentUser ? myUser : otherUser,
+                    conversationId: conversation.id,
+                };
+
+                // Update the local state for both sender and receiver
+                setRealTimeMessages((prev) => [...prev, message]);
+            }
+
+            scrollToBottom();
         }
-        scrollToBottom();
     }, [lastJsonMessage, myUser, otherUser]);
 
     // Send a new message
     const sendMessage = () => {
         if (newMessage.trim()) {
+            const message: MessageType = {
+                id: '', // Assign a unique ID if needed
+                name: myUser?.name ?? '',
+                body: newMessage,
+                sent_to: otherUser ?? { id: '', name: '' },
+                created_by: myUser ?? { id: '', name: '' },
+                conversationId: conversation.id,
+            };
+
+            // Update the local state immediately for the sender
+            setRealTimeMessages((prev) => [...prev, message]);
+
+            // Send the message through WebSocket
             sendJsonMessage({
                 event: 'chat_message',
                 data: {
@@ -143,6 +154,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                     conversation_id: conversation.id,
                 },
             });
+
             setNewMessage('');
             scrollToBottom();
         }
@@ -164,7 +176,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
         <div className="flex flex-col space-y-4">
             {/* Chat Messages */}
             <div ref={messageDiv} className="flex-1 overflow-auto p-4 bg-[url('/bg.jpg')] rounded-lg shadow-md max-h-[70vh]">
-                {messages.concat(realtimeMessages).map((message, index) => (
+            {messages.concat(realtimeMessages).map((message, index) => (
                     <div
                         key={index}
                         className={`flex items-start gap-2.5 mb-4 ${
@@ -175,7 +187,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         <div
                             className="w-8 h-8 overflow-hidden rounded-full flex-shrink-0"
                         >
-                             <Image
+                            <Image
                                 src={message.created_by.avatar_url || "/images.jpeg"}
                                 alt={`${message.created_by.name} avatar`}
                                 width={32}
@@ -188,29 +200,27 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                             />
                         </div>
                         {/* Message Content */}
-                        <div className={`flex flex-col w-full max-w-[320px] p-4 ${
-                            message.created_by.name === myUser?.name
-                                ? 'bg-black text-white rounded-s-xl rounded-se-xl dark:bg-gray-900'
-                                : 'bg-white text-black rounded-e-xl rounded-es-xl dark:bg-gray-800'
-                        }`}>
-                            <span className="text-sm font-semibold">
-                                {message.created_by.name}
-                            </span>
-                            <p className="text-sm font-normal py-2.5">
-                                {message.body}
-                            </p>
+                        <div
+                            className={`flex flex-col w-full max-w-[320px] p-4 ${
+                                message.created_by.name === myUser?.name
+                                    ? 'bg-black text-white rounded-s-xl rounded-se-xl dark:bg-gray-900'
+                                    : 'bg-white text-black rounded-e-xl rounded-es-xl dark:bg-gray-800'
+                            }`}
+                            style={{
+                                wordWrap: 'break-word',
+                                overflowWrap: 'break-word',
+                                whiteSpace: 'pre-wrap',
+                            }}
+                        >
+                            <span className="text-sm font-semibold">{message.created_by.name}</span>
+                            <p className="text-sm font-normal py-2.5">{message.body}</p>
                             <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                                 Delivered
                             </span>
                         </div>
                     </div>
                 ))}
-                {/* Typing Indicator */}
-                {isTyping && (
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                        {otherUser?.name} is typing...
-                    </div>
-                )}
+
             </div>
 
             {/* Message Input Section */}
