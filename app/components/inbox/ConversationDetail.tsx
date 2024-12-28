@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import useWebSocket from "react-use-websocket";
 import EmojiPicker from "emoji-picker-react";
 import { MessageType } from "@/app/inbox/[id]/page";
+import { UserType } from "@/app/inbox/page";
 import { ConversationType } from "@/app/inbox/page";
 import { FiSend } from "react-icons/fi";
 import Image from "next/image";
@@ -48,28 +49,16 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
         }
     );
 
-    // Close emoji picker on outside click
-    useEffect(() => {
-        const handleOutsideClick = (event: MouseEvent) => {
-            if (
-                emojiPickerRef.current &&
-                !emojiPickerRef.current.contains(event.target as Node)
-            ) {
-                setShowEmojiPicker(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleOutsideClick);
-        return () => {
-            document.removeEventListener("mousedown", handleOutsideClick);
-        };
-    }, []);
     // Scroll to the bottom of the chat
     const scrollToBottom = () => {
         if (messageDiv.current) {
             messageDiv.current.scrollTop = messageDiv.current.scrollHeight;
         }
     };
+
+    useEffect(() => {
+        scrollToBottom(); // Scroll on component mount
+    }, []);
 
     // Handle typing event
     const handleTyping = () => {
@@ -106,22 +95,25 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     
                 const isSentByCurrentUser = name === myUser?.name;
     
+                // Provide a fallback empty user object to prevent TypeScript errors
+                const fallbackUser: UserType = { id: '', name: 'Unknown User' };
+    
                 const message: MessageType = {
                     id: '', // Assign a unique ID if needed
                     name,
                     body,
-                    sent_to: isSentByCurrentUser ? (otherUser ?? { id: '', name: '' }) : (myUser ?? { id: '', name: '' }),
-                    created_by: isSentByCurrentUser ? (myUser ?? { id: '', name: '' }) : (otherUser ?? { id: '', name: '' }),
+                    sent_to: isSentByCurrentUser ? otherUser ?? fallbackUser : myUser ?? fallbackUser,
+                    created_by: isSentByCurrentUser ? myUser ?? fallbackUser : otherUser ?? fallbackUser,
                     conversationId: conversation.id,
                 };
     
+                // Update messages in real-time for all users
                 setRealTimeMessages((prev) => [...prev, message]);
                 scrollToBottom(); // Ensure this is called when a new message is added
             }
         }
-    }, [lastJsonMessage]);
+    }, [lastJsonMessage, myUser, otherUser]);
     
-            
 
     // Send a new message
     const sendMessage = () => {
@@ -152,7 +144,6 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
             scrollToBottom();
         }
     };
-
 
     // Add emoji to the input field
     const onEmojiClick = (emojiObject: any) => {
