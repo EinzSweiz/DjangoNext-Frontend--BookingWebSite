@@ -244,7 +244,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                     {showEmojiPicker && (
                         <div
                             ref={emojiPickerRef} // Attach ref to emoji picker
-                            className="absolute bottom-full right-4 z-10"
+                            className="absolute top-full right-4 mt-2 z-10" // Adjusted position
                         >
                             <EmojiPicker onEmojiClick={onEmojiClick} />
                         </div>
