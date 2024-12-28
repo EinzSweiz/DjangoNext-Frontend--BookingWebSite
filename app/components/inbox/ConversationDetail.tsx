@@ -4,6 +4,7 @@ import CustomButton from "@/app/forms/CustomButton";
 import { ConversationType } from "@/app/inbox/page";
 import { useEffect, useState, useRef } from "react";
 import useWebSocket from "react-use-websocket";
+import EmojiPicker from "emoji-picker-react";
 import { MessageType } from "@/app/inbox/[id]/page";
 import { UserType } from "@/app/inbox/page";
 import { FiSend } from 'react-icons/fi';
@@ -14,6 +15,14 @@ interface ConversationDetailProps {
     token: string;
     userId: string;
     messages: MessageType[];
+}
+
+interface WebSocketMessage {
+    event: string;
+    data: {
+        name: string;
+        [key: string]: any; // Allows for additional properties if needed
+    };
 }
 
 const ConversationDetail: React.FC<ConversationDetailProps> = ({
@@ -27,6 +36,36 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     const otherUser = conversation.users?.find((user) => user.id != userId);
     const messageDiv = useRef<HTMLDivElement>(null);
     const [realtimeMessages, setRealTimeMessages] = useState<MessageType[]>([]);
+    const [showEmojiPicker, setshowEmojiPicker] = useState(false)
+    const [isTyping, setIsTyping] = useState(false);
+    const emojiPickerRef = useRef<HTMLDivElement>(null); // Ref for emoji picker
+
+    useEffect(() => {
+        const handleOutsideClick = (event: MouseEvent) => {
+            if (
+                emojiPickerRef.current &&
+                !emojiPickerRef.current.contains(event.target as Node)
+            ) {
+                setshowEmojiPicker(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleOutsideClick);
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+        };
+    }, []);
+
+    const handleTyping = () => {
+        if (!isTyping) {
+            sendJsonMessage({
+                event: 'typing',
+                data: {name: myUser?.name, conversation_id: conversation.id}
+            });
+            setIsTyping(true)
+        }
+        setTimeout(() => setIsTyping(false), 2000)
+    }
 
     const { readyState, lastJsonMessage, sendJsonMessage } = useWebSocket(
         `${process.env.NEXT_PUBLIC_WS_HOST}/ws/${conversation.id}/?token=${token}`,
@@ -36,10 +75,27 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
             shouldReconnect: () => true,
         }
     );
+    
+    const onEmojiClick = (emojiObject: any) => {
+        setNewMessage((prevMessage) => prevMessage + emojiObject.emoji)
+    }
 
     useEffect(() => {
         console.log('Connection State Changed', readyState);
     }, [readyState]);
+
+    useEffect(() => {
+        if (
+            lastJsonMessage &&
+            typeof lastJsonMessage === "object" &&
+            (lastJsonMessage as WebSocketMessage).event === "typing" &&
+            (lastJsonMessage as WebSocketMessage).data.name !== myUser?.name
+        ) {
+            setIsTyping(true);
+            setTimeout(() => setIsTyping(false), 2000); // Automatically hide after 2 seconds
+        }
+    }, [lastJsonMessage, myUser?.name]);
+    
 
     useEffect(() => {
         if (
@@ -164,22 +220,37 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         placeholder="Type a message..."
                         className="w-full p-3 pl-4 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-white dark:border-gray-600 dark:bg-gray-700 placeholder-gray-400"
                     />
-                    {/* Add a subtle icon inside the input field */}
-                    <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500">
-                        <FiSend />
-                    </span>
-                </div>
 
-                {/* Send Button */}
-                <div className="flex-shrink-0">
-                    <CustomButton
-                        label="Send"
-                        onClick={sendMessage}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-medium shadow-lg transition-all duration-200 transform hover:scale-105 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
+                    {/* Send Icon */}
+                    <span className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
+                        {/* Emoji Picker Toggle Button */}
+                        <button
+                            className="text-gray-400 dark:text-gray-500 text-xl"
+                            onClick={() => setshowEmojiPicker((prev) => !prev)}
+                        >
+                            ❤️
+                        </button>
+
+                        {/* Send Button */}
+                        <FiSend
+                            className="text-gray-400 text-3xl dark:text-gray-500 cursor-pointer"
+                            onClick={() => {
+                                // Add send message logic here
+                            }}
+                        />
+                    </span>
+
+                    {/* Emoji Picker */}
+                    {showEmojiPicker && (
+                        <div
+                            ref={emojiPickerRef} // Attach ref to emoji picker
+                            className="absolute bottom-full right-4 z-10"
+                        >
+                            <EmojiPicker onEmojiClick={onEmojiClick} />
+                        </div>
+                    )}
                 </div>
             </div>
-
         </div>
     );
 };
