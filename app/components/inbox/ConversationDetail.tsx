@@ -87,6 +87,27 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     };
     
 
+    // Handle "typing..." indicator for other users
+    useEffect(() => {
+        console.log("lastJsonMessage", lastJsonMessage); // <-- Add
+      
+        if (
+          lastJsonMessage &&
+          typeof lastJsonMessage === "object"
+        ) {
+          const msg = lastJsonMessage as WebSocketMessage;
+          if (msg.event === "typing") {
+            console.log("Typing event data:", msg.data); // <-- Add
+      
+            if (msg.data.name !== myUser?.name) {
+              console.log("Setting isTyping to true for 2s"); // <-- Add
+              setIsTyping(true);
+              setTimeout(() => setIsTyping(false), 2000);
+            }
+          }
+        }
+      }, [lastJsonMessage, myUser?.name]);
+      
 
     // Handle incoming messages
     useEffect(() => {
