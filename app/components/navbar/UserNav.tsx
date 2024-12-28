@@ -31,29 +31,33 @@ const UserNav: React.FC<UserNavProps> = ({ userId }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Fetch unread count when userId is available
+  // Fetch unread count when userId is available (Should be changed into normal websockets signal for now keep like this if users amount less than 1000)
   useEffect(() => {
     if (!userId) return;
-
+  
     const fetchConversations = async () => {
       try {
-        // Same endpoint you used in InboxPage
         const conversationsData = await apiService.getWithToken("/api/chat/");
         if (conversationsData) {
           const unreadConvCount = conversationsData.filter(
             (conv: { has_unread_messages: boolean }) => conv.has_unread_messages
           ).length;
-
           setUnreadCount(unreadConvCount);
         }
       } catch (error) {
         console.error("Failed to fetch conversations:", error);
       }
     };
-
+  
+    // Initial fetch
     fetchConversations();
+  
+    // Poll every 5 seconds
+    const intervalId = setInterval(fetchConversations, 10000);
+  
+    return () => clearInterval(intervalId);
   }, [userId]);
-
+  
   // Close dropdown on outside click
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {

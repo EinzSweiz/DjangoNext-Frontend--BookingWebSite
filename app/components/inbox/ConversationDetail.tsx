@@ -58,6 +58,10 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
   token,
   messages,
 }) => {
+  const playNotificationSound = () => {
+    const audio = new Audio("/sounds/notification-2-269292.mp3");
+    audio.play().catch((err) => console.error("Failed to play sound:", err));
+  };
   // Unified local state for all messages (initial + real-time)
   const [chatMessages, setChatMessages] = useState<MessageType[]>(messages);
 
@@ -160,6 +164,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
 
       // Add to chat state
       setChatMessages((prev) => [...prev, incomingMessage]);
+      playNotificationSound()
     }
   }, [lastJsonMessage, myUser, otherUser, conversation.id, sendJsonMessage]);
 
@@ -180,6 +185,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     });
 
     setNewMessage("");
+    
   };
 
   /**
