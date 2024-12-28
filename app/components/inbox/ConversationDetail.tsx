@@ -1,12 +1,13 @@
 'use client';
 
+import CustomButton from "@/app/forms/CustomButton";
+import { ConversationType } from "@/app/inbox/page";
 import { useEffect, useState, useRef } from "react";
 import useWebSocket from "react-use-websocket";
 import EmojiPicker from "emoji-picker-react";
 import { MessageType } from "@/app/inbox/[id]/page";
-import { UserType } from "@/app/inbox/page";
-import { ConversationType } from "@/app/inbox/page";
 import { FiSend } from "react-icons/fi";
+import { UserType } from "@/app/inbox/page";
 import Image from "next/image";
 
 interface ConversationDetailProps {
@@ -20,8 +21,7 @@ interface WebSocketMessage {
     event: string;
     data: {
         name: string;
-        conversation_id: number;
-        body?: string; // Optional for "typing" events
+        [key: string]: any;
     };
 }
 
@@ -42,94 +42,84 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     const myUser = conversation.users?.find((user) => user.id == userId);
     const otherUser = conversation.users?.find((user) => user.id != userId);
 
-    const { lastJsonMessage, sendJsonMessage } = useWebSocket<WebSocketMessage>(
+    const { readyState, lastJsonMessage, sendJsonMessage } = useWebSocket(
         `${process.env.NEXT_PUBLIC_WS_HOST}/ws/${conversation.id}/?token=${token}`,
         {
+            onError: (error) => console.error("WebSocket Error:", error),
+            onClose: (event) => console.log("WebSocket Closed:", event),
             shouldReconnect: () => true,
         }
     );
 
-    // Scroll to the bottom of the chat
-    const scrollToBottom = () => {
-        if (messageDiv.current) {
-            messageDiv.current.scrollTop = messageDiv.current.scrollHeight;
-        }
-    };
-
+    // Close emoji picker on outside click
     useEffect(() => {
-        scrollToBottom(); // Scroll on component mount
+        const handleOutsideClick = (event: MouseEvent) => {
+            if (
+                emojiPickerRef.current &&
+                !emojiPickerRef.current.contains(event.target as Node)
+            ) {
+                setShowEmojiPicker(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleOutsideClick);
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+        };
     }, []);
 
     // Handle typing event
     const handleTyping = () => {
         if (!isTyping) {
-            sendJsonMessage({
+            const payload = {
                 event: 'typing',
                 data: {
                     name: myUser?.name,
                     conversation_id: conversation.id,
                     sent_to_id: otherUser?.id,
                 },
-            });
+            };
+            console.log("Sending typing event:", payload);
+            sendJsonMessage(payload);
             setIsTyping(true);
         }
-        setTimeout(() => setIsTyping(false), 4000);
+        setTimeout(() => setIsTyping(false), 2000);
     };
+    
 
-    // Handle incoming WebSocket messages
+
+    // Handle incoming messages
     useEffect(() => {
-        if (lastJsonMessage) {
-            console.log("Received WebSocket message:", lastJsonMessage);
-    
-            if (lastJsonMessage.event === "typing") {
-                const { name } = lastJsonMessage.data;
-    
-                if (name !== myUser?.name) {
-                    setIsTyping(true);
-                    setTimeout(() => setIsTyping(false), 4000);
-                }
+        if (
+            lastJsonMessage &&
+            typeof lastJsonMessage === "object" &&
+            "name" in lastJsonMessage &&
+            "body" in lastJsonMessage
+        ) {
+            if (!myUser || !otherUser) {
+                console.error("User information is missing.");
+                return;
             }
-    
-            if (lastJsonMessage.event === "chat_message") {
-                const { name, body = '' } = lastJsonMessage.data;
-    
-                const isSentByCurrentUser = name === myUser?.name;
-    
-                // Provide a fallback empty user object to prevent TypeScript errors
-                const fallbackUser: UserType = { id: '', name: 'Unknown User' };
-    
-                const message: MessageType = {
-                    id: '', // Assign a unique ID if needed
-                    name,
-                    body,
-                    sent_to: isSentByCurrentUser ? otherUser ?? fallbackUser : myUser ?? fallbackUser,
-                    created_by: isSentByCurrentUser ? myUser ?? fallbackUser : otherUser ?? fallbackUser,
-                    conversationId: conversation.id,
-                };
-    
-                // Update messages in real-time for all users
-                setRealTimeMessages((prev) => [...prev, message]);
-                scrollToBottom(); // Ensure this is called when a new message is added
-            }
+
+            const isSentByCurrentUser = lastJsonMessage.name === myUser.name;
+
+            const message: MessageType = {
+                id: '', // Assign a unique ID if needed
+                name: lastJsonMessage.name as string,
+                body: lastJsonMessage.body as string,
+                sent_to: isSentByCurrentUser ? otherUser : myUser,
+                created_by: isSentByCurrentUser ? myUser : otherUser,
+                conversationId: conversation.id,
+            };
+
+            setRealTimeMessages((prev) => [...prev, message]);
         }
+        scrollToBottom();
     }, [lastJsonMessage, myUser, otherUser]);
-    
 
     // Send a new message
     const sendMessage = () => {
         if (newMessage.trim()) {
-            const message: MessageType = {
-                id: '', // Assign a unique ID if needed
-                name: myUser?.name ?? '',
-                body: newMessage,
-                sent_to: otherUser ?? { id: '', name: '' },
-                created_by: myUser ?? { id: '', name: '' },
-                conversationId: conversation.id,
-            };
-
-            // Update local state immediately for sender
-            setRealTimeMessages((prev) => [...prev, message]);
-
             sendJsonMessage({
                 event: 'chat_message',
                 data: {
@@ -139,9 +129,15 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                     conversation_id: conversation.id,
                 },
             });
-
             setNewMessage('');
             scrollToBottom();
+        }
+    };
+
+    // Scroll to the bottom of the chat
+    const scrollToBottom = () => {
+        if (messageDiv.current) {
+            messageDiv.current.scrollTop = messageDiv.current.scrollHeight;
         }
     };
 
@@ -162,8 +158,10 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         }`}
                     >
                         {/* Profile Picture */}
-                        <div className="w-8 h-8 overflow-hidden rounded-full flex-shrink-0">
-                            <Image
+                        <div
+                            className="w-8 h-8 overflow-hidden rounded-full flex-shrink-0"
+                        >
+                             <Image
                                 src={message.created_by.avatar_url || "/images.jpeg"}
                                 alt={`${message.created_by.name} avatar`}
                                 width={32}
@@ -176,20 +174,17 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                             />
                         </div>
                         {/* Message Content */}
-                        <div
-                            className={`flex flex-col w-full max-w-[320px] p-4 ${
-                                message.created_by.name === myUser?.name
-                                    ? 'bg-black text-white rounded-s-xl rounded-se-xl dark:bg-gray-900'
-                                    : 'bg-white text-black rounded-e-xl rounded-es-xl dark:bg-gray-800'
-                            }`}
-                            style={{
-                                wordWrap: 'break-word',
-                                overflowWrap: 'break-word',
-                                whiteSpace: 'pre-wrap',
-                            }}
-                        >
-                            <span className="text-sm font-semibold">{message.created_by.name}</span>
-                            <p className="text-sm font-normal py-2.5">{message.body}</p>
+                        <div className={`flex flex-col w-full max-w-[320px] p-4 ${
+                            message.created_by.name === myUser?.name
+                                ? 'bg-black text-white rounded-s-xl rounded-se-xl dark:bg-gray-900'
+                                : 'bg-white text-black rounded-e-xl rounded-es-xl dark:bg-gray-800'
+                        }`}>
+                            <span className="text-sm font-semibold">
+                                {message.created_by.name}
+                            </span>
+                            <p className="text-sm font-normal py-2.5">
+                                {message.body}
+                            </p>
                             <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                                 Delivered
                             </span>
@@ -198,7 +193,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                 ))}
                 {/* Typing Indicator */}
                 {isTyping && (
-                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
                         {otherUser?.name} is typing...
                     </div>
                 )}
@@ -217,16 +212,27 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                         placeholder="Type a message..."
                         className="w-full p-3 pl-4 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-white dark:border-gray-600 dark:bg-gray-700 placeholder-gray-400"
                     />
+
+                    {/* Emoji Picker */}
                     {showEmojiPicker && (
-                        <div ref={emojiPickerRef} className="absolute top-full right-4 mt-2 z-10">
+                        <div
+                            ref={emojiPickerRef}
+                            className="absolute top-full right-4 mt-2 z-10"
+                        >
                             <EmojiPicker onEmojiClick={onEmojiClick} />
                         </div>
                     )}
                 </div>
-                <button className="text-gray-400 dark:text-gray-500 text-xl" onClick={() => setShowEmojiPicker((prev) => !prev)}>
+                <button
+                    className="text-gray-400 dark:text-gray-500 text-xl"
+                    onClick={() => setShowEmojiPicker((prev) => !prev)}
+                >
                     😊
                 </button>
-                <FiSend className="text-gray-400 text-3xl dark:text-gray-500 cursor-pointer" onClick={sendMessage} />
+                <FiSend
+                    className="text-gray-400 text-3xl dark:text-gray-500 cursor-pointer"
+                    onClick={sendMessage}
+                />
             </div>
         </div>
     );
