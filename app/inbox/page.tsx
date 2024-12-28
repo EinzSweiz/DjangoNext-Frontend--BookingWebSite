@@ -15,6 +15,7 @@ export type ConversationType = {
     id: string
     users: UserType[]
     modified_at: string
+    has_unread_messages: boolean // Add this field
 }
 
 const InboxPage = () => {
@@ -31,6 +32,7 @@ const InboxPage = () => {
             setUserId(userId)
 
             const conversationsData = await apiService.getWithToken('/api/chat/')
+            console.log(conversationsData)
             if (conversationsData) {
                 setConversations(conversationsData)
             }
@@ -63,6 +65,6 @@ const InboxPage = () => {
             })}
         </main>
     )
-}
+}    
 
 export default InboxPage
