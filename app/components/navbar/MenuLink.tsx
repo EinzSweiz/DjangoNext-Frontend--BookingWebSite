@@ -1,5 +1,5 @@
 interface MenuLinkProps {
-    label: string;
+    label: React.ReactNode;
     icon?: React.ReactNode; // Optional icon prop
     onClick: () => void;
   }
