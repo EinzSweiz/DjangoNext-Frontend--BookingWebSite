@@ -84,33 +84,6 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     );
 
   /**
-   * 1. Debug logs (optional)
-   */
-  useEffect(() => {
-    const connectionStates = ["CONNECTING", "OPEN", "CLOSING", "CLOSED"];
-    console.log(
-      "WebSocket readyState:",
-      connectionStates[readyState] ?? readyState
-    );
-  }, [readyState]);
-
-  useEffect(() => {
-    if (!lastMessage) return;
-    console.log("🔹 Raw lastMessage data:", lastMessage.data);
-    try {
-      const parsed = JSON.parse(lastMessage.data);
-      console.log("🔹 lastMessage parsed as JSON:", parsed);
-    } catch (err) {
-      console.warn("⚠️ Could not parse lastMessage as JSON:", err);
-    }
-  }, [lastMessage]);
-
-  useEffect(() => {
-    if (!lastJsonMessage) return;
-    console.log("🔸 lastJsonMessage from server:", lastJsonMessage);
-  }, [lastJsonMessage]);
-
-  /**
    * 2. Scroll to bottom on new messages
    */
   useEffect(() => {
@@ -141,18 +114,14 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
    * 4. Handle typing event
    */
   const handleTyping = () => {
-    if (!isTyping) {
-      sendJsonMessage({
-        event: "typing",
-        data: {
-          name: myUser?.name,
-          conversation_id: conversation.id,
-          sent_to_id: otherUser?.id,
-        },
-      });
-      setIsTyping(true);
-    }
-    setTimeout(() => setIsTyping(false), 4000);
+    sendJsonMessage({
+      event: "typing",
+      data: {
+        name: myUser?.name,
+        conversation_id: conversation.id,
+        sent_to_id: otherUser?.id,
+      },
+    });
   };
 
   /**
@@ -167,7 +136,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
       const { name } = data;
       if (name !== myUser?.name) {
         setIsTyping(true);
-        setTimeout(() => setIsTyping(false), 4000);
+        setTimeout(() => setIsTyping(false), 6000);
       }
     }
 
@@ -177,7 +146,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
 
       // Build the incoming message
       const incomingMessage: MessageType = {
-        id: "", // (Server can assign ID if needed)
+        id: "",
         name,
         body,
         sent_to: isSentByCurrentUser
@@ -195,13 +164,11 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
   }, [lastJsonMessage, myUser, otherUser, conversation.id, sendJsonMessage]);
 
   /**
-   * 6. Send a new message (no local push)
+   * 6. Send a new message
    */
   const sendMessage = () => {
     if (!newMessage.trim()) return;
 
-    // We DO NOT insert a local/optimistic message here.
-    // We'll wait for the server's "chat_message" event to arrive.
     sendJsonMessage({
       event: "chat_message",
       data: {
@@ -241,7 +208,6 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                 : ""
             }`}
           >
-            {/* Profile Picture */}
             <div className="w-8 h-8 overflow-hidden rounded-full flex-shrink-0">
               <Image
                 src={message.created_by.avatar_url || "/images.jpeg"}
@@ -251,12 +217,11 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                 style={{ objectFit: "cover", width: "100%", height: "100%" }}
               />
             </div>
-            {/* Message Content */}
             <div
               className={`flex flex-col w-full max-w-[320px] p-4 ${
                 message.created_by.name === myUser?.name
-                  ? "bg-black text-white rounded-s-xl rounded-se-xl dark:bg-gray-900"
-                  : "bg-white text-black rounded-e-xl rounded-es-xl dark:bg-gray-800"
+                  ? "bg-black text-white rounded-s-xl rounded-se-xl"
+                  : "bg-white text-black rounded-e-xl rounded-es-xl"
               }`}
               style={{
                 wordWrap: "break-word",
@@ -274,15 +239,13 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
             </div>
           </div>
         ))}
-        {/* Typing Indicator */}
         {isTyping && (
-          <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
             {otherUser?.name} is typing...
           </div>
         )}
       </div>
 
-      {/* Message Input Section */}
       <div className="flex items-center gap-4 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg shadow-md">
         <div className="flex-1 relative">
           <input
@@ -293,10 +256,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
             }}
             type="text"
             placeholder="Type a message..."
-            className="w-full p-3 pl-4 pr-12 border border-gray-300 rounded-full
-                       focus:outline-none focus:ring-2 focus:ring-blue-500
-                       text-gray-800 dark:text-white dark:border-gray-600
-                       dark:bg-gray-700 placeholder-gray-400"
+            className="w-full p-3 pl-4 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-white dark:border-gray-600 dark:bg-gray-700 placeholder-gray-400"
           />
           {showEmojiPicker && (
             <div ref={emojiPickerRef} className="absolute top-full mt-2 z-10">
