@@ -28,7 +28,7 @@ const LandlordDetailPage = async ({ params }: { params: Params }) => {
                 className="mb-6"
             >
                 <Image
-                    src="https://api.diplomaroad.pro/media/uploads/avatars/WhatsApp_Image_2024-12-13_at_12_4P2AIrM.24.10.jpeg"
+                    src={landlord.avatar_url}
                     width={200}
                     height={200}
                     alt={`${landlord.name}'s avatar`}
