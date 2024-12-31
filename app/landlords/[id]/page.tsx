@@ -10,8 +10,8 @@ const LandlordDetailPage = async ({ params }: { params: Params }) => {
     const resolvedParams = await params;
     const { id } = resolvedParams;
     const landlord = await apiService.get(`/api/auth/${id}`);
-    console.log('Landlord', landlord)
     const userId = await getUserId();
+    console.log('Landlord API Response:', landlord);
 
     return (
         <main className="max-w-[1500px] mx-auto px-6 py-6 pb-6">
