@@ -1,8 +1,10 @@
+'use client'
 import Image from "next/image";
 import ContactButton from "@/app/components/ContactButton";
 import PropertyList from "@/app/components/properties/PropertyList";
 import apiService from "@/app/services/apiService";
 import { getUserId } from "@/app/lib/actions";
+import { useEffect } from 'react'
 
 type Params = Promise<{ id: string }>;
 
@@ -11,7 +13,10 @@ const LandlordDetailPage = async ({ params }: { params: Params }) => {
     const { id } = resolvedParams;
     const landlord = await apiService.get(`/api/auth/${id}`);
     const userId = await getUserId();
-    console.log('Landlord API Response:', landlord);
+
+    useEffect(() => {
+        console.log('Client-Side Landlord:', landlord);
+    }, [landlord]);
 
     return (
         <main className="max-w-[1500px] mx-auto px-6 py-6 pb-6">
