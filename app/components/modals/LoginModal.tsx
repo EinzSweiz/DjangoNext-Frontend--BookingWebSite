@@ -294,6 +294,7 @@ export default function LoginModal() {
                 type="button"
                 onClick={handleGoogleLogin}
                 className="w-full mt-4 bg-black text-white hover:bg-gray-800 transition-colors py-2 px-6 rounded-lg shadow-sm flex items-center justify-center"
+                disabled={loading}
               >
                 {/* Google SVG Icon */}
                 <span>Login with Google</span>
@@ -338,3 +339,4 @@ export default function LoginModal() {
     />
   );
 }
+
