@@ -10,6 +10,7 @@ const LandlordDetailPage = async ({ params }: { params: Params }) => {
     const resolvedParams = await params;
     const { id } = resolvedParams;
     const landlord = await apiService.get(`/api/auth/${id}`);
+    console.log('Landlord', landlord)
     const userId = await getUserId();
 
     return (
